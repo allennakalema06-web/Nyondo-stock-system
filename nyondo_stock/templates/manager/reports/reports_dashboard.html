@@ -1,0 +1,282 @@
+{% extends 'manager/base_manager.html' %}
+
+{% load static %}
+
+{% block page_title %}
+Reports Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Reports Dashboard</h1>
+
+        <p>
+            Access inventory reports, stock analytics,
+            supplier insights and operational summaries.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="reports-grid">
+
+    <!-- LOW STOCK -->
+
+    <a href="{% url 'low_stock_report' %}"
+       class="report-card">
+
+        <div class="report-icon blue">
+
+            <i class="ph ph-warning-circle"></i>
+
+        </div>
+
+        <div class="report-content">
+
+            <h3>Low Stock Report</h3>
+
+            <p>
+                Monitor products nearing reorder level.
+            </p>
+
+        </div>
+
+        <i class="ph ph-arrow-right arrow-icon"></i>
+
+    </a>
+
+    <!-- STOCK HISTORY -->
+
+    <a href="{% url 'stock_history' %}"
+       class="report-card">
+
+        <div class="report-icon green">
+
+            <i class="ph ph-clock-counter-clockwise"></i>
+
+        </div>
+
+        <div class="report-content">
+
+            <h3>Stock Movement</h3>
+
+            <p>
+                View all incoming stock transactions.
+            </p>
+
+        </div>
+
+        <i class="ph ph-arrow-right arrow-icon"></i>
+
+    </a>
+
+    <!-- ADJUSTMENTS -->
+
+    <a href="{% url 'stock_adjustments' %}"
+       class="report-card">
+
+        <div class="report-icon orange">
+
+            <i class="ph ph-arrows-clockwise"></i>
+
+        </div>
+
+        <div class="report-content">
+
+            <h3>Adjustment Report</h3>
+
+            <p>
+                Review stock corrections and damages.
+            </p>
+
+        </div>
+
+        <i class="ph ph-arrow-right arrow-icon"></i>
+
+    </a>
+
+    <!-- SUPPLIERS -->
+
+    <a href="{% url 'supplier_list' %}"
+       class="report-card">
+
+        <div class="report-icon purple">
+
+            <i class="ph ph-truck"></i>
+
+        </div>
+
+        <div class="report-content">
+
+            <h3>Supplier Report</h3>
+
+            <p>
+                Analyze supplier activity and deliveries.
+            </p>
+
+        </div>
+
+        <i class="ph ph-arrow-right arrow-icon"></i>
+
+    </a>
+
+</div>
+
+<style>
+
+.page-header{
+
+    margin-bottom:30px;
+
+}
+
+.page-header h1{
+
+    font-size:32px;
+
+    margin-bottom:10px;
+
+    color:#0f172a;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+    max-width:700px;
+
+    line-height:1.7;
+
+}
+
+.reports-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit, minmax(300px,1fr));
+
+    gap:24px;
+
+}
+
+.report-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:28px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    text-decoration:none;
+
+    transition:0.3s ease;
+
+    box-shadow:0 4px 10px rgba(0,0,0,0.04);
+
+    border:1px solid #f1f5f9;
+
+}
+
+.report-card:hover{
+
+    transform:translateY(-4px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+
+}
+
+.report-icon{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    font-size:28px;
+
+    flex-shrink:0;
+
+}
+
+.blue{
+
+    background:linear-gradient(235deg,#0B1F3A,#2563eb);
+
+}
+
+.green{
+
+    background:linear-gradient(235deg,#065f46,#10b981);
+
+}
+
+.orange{
+
+    background:linear-gradient(235deg,#9a3412,#f97316);
+
+}
+
+.purple{
+
+    background:linear-gradient(235deg,#581c87,#a855f7);
+
+}
+
+.report-content{
+
+    flex:1;
+
+}
+
+.report-content h3{
+
+    color:#0f172a;
+
+    margin-bottom:8px;
+
+    font-size:18px;
+
+}
+
+.report-content p{
+
+    color:#64748b;
+
+    line-height:1.6;
+
+    font-size:14px;
+
+}
+
+.arrow-icon{
+
+    font-size:22px;
+
+    color:#94a3b8;
+
+}
+
+</style>
+
+{% endblock %}

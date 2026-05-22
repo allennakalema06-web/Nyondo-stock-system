@@ -26,7 +26,15 @@ Pricing Management
     </div>
 
 </div>
+<div class="search-box">
 
+    <i class="ph ph-magnifying-glass"></i>
+
+    <input
+    type="text"
+    placeholder="Search pricing...">
+
+</div>
 <div class="card">
 
     <div class="table-responsive">
@@ -129,6 +137,16 @@ Pricing Management
 
                 </tr>
 
+                {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="ph ph-package"></i>
+                            <p>No products available yet.</p>
+                        </div>
+                    </td>
+                </tr>
+
                 {% endfor %}
 
             </tbody>
@@ -176,6 +194,24 @@ Pricing Management
 
 }
 
+.empty-state{
+
+    text-align:center;
+
+    padding:40px;
+
+    color:#94a3b8;
+
+}
+
+.empty-state i{
+
+    font-size:42px;
+
+    margin-bottom:12px;
+
+}
+
 .page-header{
 
     margin-bottom:24px;
@@ -215,6 +251,42 @@ Pricing Management
     color:white;
 
     text-decoration:none;
+
+
+}
+.search-box{
+
+    position:relative;
+
+    width:320px;
+
+}
+
+.search-box input{
+
+    width:100%;
+
+    padding:14px 18px 14px 45px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:#f1f5f9;
+
+    outline:none;
+
+}
+
+.search-box i{
+
+    position:absolute;
+
+    left:15px;
+
+    top:15px;
+
+    color:#64748b;
 
 }
 

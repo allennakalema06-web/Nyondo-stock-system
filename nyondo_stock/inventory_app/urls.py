@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('manager_dashboard/', views.manager_dashboard, name='manager_dashboard'),
+    path('access_denied/', views.access_denied,
+    name='access_denied'),
     path('products/', views.product_list, name='product_list'),
     path('register_stock/', views.register_stock, name='register_stock'),
     path('add_product/', views.add_product, name='add_product'),
@@ -26,6 +28,7 @@ urlpatterns = [
     path('pricing/',views.pricing_list,
     name='pricing_list'),
     path('pricing/update/<int:id>/',views.update_pricing, name='update_pricing'),
-    path('reports-dashboard/', views.reports_dashboard, name='reports_dashboard'),
+    path('reports/', views.reports_dashboard, name='reports_dashboard'),
+    path('low_stock_report/', views.low_stock_report, name='low_stock_report'),
 
 ]

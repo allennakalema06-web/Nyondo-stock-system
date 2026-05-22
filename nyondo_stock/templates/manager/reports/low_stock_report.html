@@ -1,0 +1,260 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Low Stock Report
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>Low Stock Report</h1>
+
+        <p>
+            Monitor products that need urgent restocking.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th>Category</th>
+
+                    <th>Quantity</th>
+
+                    <th>Reorder Level</th>
+
+                    <th>Unit</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for product in low_stock_products %}
+
+                <tr>
+
+                    <td>
+
+                        {{ product.product_name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ product.category.category_name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ product.quantity }}
+
+                    </td>
+
+                    <td>
+
+                        {{ product.reorder_level }}
+
+                    </td>
+
+                    <td>
+
+                        {{ product.unit }}
+
+                    </td>
+
+                    <td>
+
+                        {% if product.quantity == 0 %}
+
+                            <span class="badge danger">
+
+                                Out of Stock
+
+                            </span>
+
+                        {% elif product.quantity <= 5 %}
+
+                            <span class="badge warning">
+
+                                Critical
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge low">
+
+                                Low Stock
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6">
+                        <div class="empty-state">
+
+                            <i class="ph ph-folder-open"></i>
+
+                            <h3>No Low Stock Products Found</h3>
+
+                            <p>
+
+                                All products are well-stocked.
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.page-header h1{
+
+    font-size:28px;
+
+    color:#0f172a;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+    margin-top:6px;
+
+}
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+thead{
+
+    background:#f8fafc;
+
+}
+
+th{
+
+    text-align:left;
+
+    padding:16px;
+
+    font-size:14px;
+
+    color:#475569;
+
+}
+
+td{
+
+    padding:16px;
+
+    border-top:1px solid #e2e8f0;
+
+}
+
+.badge{
+
+    padding:6px 14px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.badge.danger{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+}
+
+.badge.warning{
+
+    background:#fef3c7;
+
+    color:#d97706;
+
+}
+
+.badge.low{
+
+    background:#dcfce7;
+
+    color:#16a34a;
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,349 +1,339 @@
-{% extends 'manager/base_manager.html' %}
-
-{% block page_title %}
-
-Products
-
-{% endblock %}
-
-{% block content %}
+{% extends 'manager/base_manager.html' %} {% block page_title %} Products {%
+endblock %} {% block content %}
 
 <div class="top-actions">
+  <div class="stats-row">
+    <div class="card mini-stat">
+      <h3>{{ total_products }}</h3>
 
-    <div class="stats-row">
-
-        <div class="card mini-stat">
-
-            <h3>{{ total_products }}</h3>
-
-            <p>Total Products</p>
-
-        </div>
-
-        <div class="card mini-stat danger">
-
-            <h3>{{ low_stock_count }}</h3>
-
-            <p>Low Stock</p>
-
-        </div>
-
+      <p>Total Products</p>
     </div>
 
-    <a href="{% url 'add_product' %}"
-    class="btn btn-primary">
+    <div class="card mini-stat danger">
+      <h3>{{ low_stock_count }}</h3>
 
-        <i class="ph ph-plus"></i>
+      <p>Low Stock</p>
+    </div>
+  </div>
 
-        Add Product
+  <a href="{% url 'add_product' %}" class="btn btn-primary">
+    <i class="ph ph-plus"></i>
 
-    </a>
-
+    Add Product
+  </a>
 </div>
 
 <div class="card">
+  <form method="GET" class="filter-form">
+    <div class="search-box">
+        <i class="ph ph-magnifying-glass"></i>
+    <input
+      type="text"
+      name="search"
+      placeholder="Search products..."
+      class="form-control"
+      value="{{ request.GET.search }}"
+    />
+    </div>
 
-    <form method="GET"
-    class="filter-form">
+    <select name="category" class="form-control">
+      <option value="">All Categories</option>
 
-        <input
-        type="text"
-        name="search"
-        placeholder="Search products..."
-        class="form-control"
-        value="{{ request.GET.search }}">
+      {% for category in categories %}
 
-        <select
-        name="category"
-        class="form-control">
+      <option value="{{ category.id }}">{{ category.category_name }}</option>
 
-            <option value="">
+      {% endfor %}
+    </select>
 
-                All Categories
+    <button class="btn btn-primary">
+      <i class="ph ph-magnifying-glass"></i>
 
-            </option>
-
-            {% for category in categories %}
-
-            <option
-            value="{{ category.id }}">
-
-                {{ category.category_name }}
-
-            </option>
-
-            {% endfor %}
-
-        </select>
-
-        <button class="btn btn-primary">
-
-            <i class="ph ph-magnifying-glass"></i>
-
-            Search
-
-        </button>
-
-    </form>
-
+      Search
+    </button>
+  </form>
 </div>
 
-<div class="card table-card">
+<div class="card table-card table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>SKU</th>
 
-    <table>
+        <th>Product</th>
 
-        <thead>
+        <th>Category</th>
 
-            <tr>
+        <th>Quantity</th>
 
-                <th>SKU</th>
+        <th>Unit Cost</th>
 
-                <th>Product</th>
+        <th>Normal</th>
 
-                <th>Category</th>
+        <th>Retail</th>
 
-                <th>Quantity</th>
+        <th>Wholesale</th>
 
-                <th>Unit Cost</th>
+        <th>Status</th>
 
-                <th>Normal</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
 
-                <th>Retail</th>
+    <tbody>
+      {% for product in page_obj %}
 
-                <th>Wholesale</th>
+      <tr>
+        <td>{{ product.sku }}</td>
 
-                <th>Status</th>
+        <td>
+          <strong> {{ product.product_name }} </strong>
+        </td>
 
-                <th>Actions</th>
+        <td>{{ product.category.category_name }}</td>
 
-            </tr>
+        <td>{{ product.quantity }} {{ product.unit }}</td>
 
-        </thead>
+        <td>UGX {{ product.unit_cost }}</td>
 
-        <tbody>
+        <td>UGX {{ product.normal_price }}</td>
 
-            {% for product in products %}
+        <td>UGX {{ product.retail_price }}</td>
 
-            <tr>
+        <td>UGX {{ product.wholesale_price }}</td>
 
-                <td>
+        <td>
+          {% if product.quantity <= product.reorder_level %}
 
-                    {{ product.sku }}
+          <span class="badge danger-badge"> Low Stock </span>
 
-                </td>
+          {% else %}
 
-                <td>
+          <span class="badge success-badge"> In Stock </span>
 
-                    <strong>
+          {% endif %}
+        </td>
 
-                        {{ product.product_name }}
+        <td>
+          <div class="action-buttons">
+            <a
+              href="{% url 'edit_product' product.id %}"
+              class="btn btn-warning"
+            >
+              <i class="ph ph-pencil"></i>
+            </a>
 
-                    </strong>
+            <a
+              href="{% url 'delete_product' product.id %}"
+              class="btn btn-danger"
+            >
+              <i class="ph ph-trash"></i>
+            </a>
+          </div>
+        </td>
+      </tr>
 
-                </td>
+      {% empty %}
+      <tr>
+        <td colspan="6">
+          <div class="empty-state">
+            <i class="ph ph-package"></i>
 
-                <td>
+            <p>No products available yet.</p>
+          </div>
+        </td>
+      </tr>
 
-                    {{ product.category.category_name }}
-
-                </td>
-
-                <td>
-
-                    {{ product.quantity }}
-
-                    {{ product.unit }}
-
-                </td>
-
-                <td>
-
-                    UGX {{ product.unit_cost }}
-
-                </td>
-
-                <td>
-
-                    UGX {{ product.normal_price }}
-
-                </td>
-
-                <td>
-
-                    UGX {{ product.retail_price }}
-
-                </td>
-
-                <td>
-
-                    UGX {{ product.wholesale_price }}
-
-                </td>
-
-                <td>
-
-                    {% if product.quantity <= product.reorder_level %}
-
-                        <span class="badge danger-badge">
-
-                            Low Stock
-
-                        </span>
-
-                    {% else %}
-
-                        <span class="badge success-badge">
-
-                            In Stock
-
-                        </span>
-
-                    {% endif %}
-
-                </td>
-
-                <td>
-
-                    <div class="action-buttons">
-
-                        <a href="{% url 'edit_product' product.id %}"
-                        class="btn btn-warning">
-
-                            <i class="ph ph-pencil"></i>
-
-                        </a>
-
-                        <a href="{% url 'delete_product' product.id %}"
-                        class="btn btn-danger">
-
-                            <i class="ph ph-trash"></i>
-
-                        </a>
-
-                    </div>
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-
-            <tr>
-
-                <td colspan="10">
-
-                    No products found.
-
-                </td>
-
-            </tr>
-
-            {% endfor %}
-
-        </tbody>
-
+      {% endfor %}
+    </tbody>
     </table>
+    <div class="pagination-wrapper">
 
+    {% if page_obj.has_previous %}
+
+        <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&category={{ selected_category }}"
+        
+        class="pagination-btn">
+
+            <i class="ph ph-caret-left"></i>
+
+            Previous
+
+        </a>
+
+    {% endif %}
+
+    <span class="page-info">
+
+        Page {{ page_obj.number }}
+        of
+        {{ page_obj.paginator.num_pages }}
+
+    </span>
+
+    {% if page_obj.has_next %}
+
+        <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&category={{ selected_category }}"
+      
+        class="pagination-btn">
+
+            Next
+
+            <i class="ph ph-caret-right"></i>
+
+        </a>
+
+    {% endif %}
+
+</div>
+  
 </div>
 
 <style>
+  .top-actions {
+    display: flex;
 
-.top-actions{
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 24px;
+  }
+
+  .empty-state{
+
+    text-align:center;
+
+    padding:40px;
+
+    color:#94a3b8;
+
+}
+
+.empty-state i{
+
+    font-size:42px;
+
+    margin-bottom:12px;
+
+}
+
+  .stats-row {
+    display: flex;
+
+    gap: 20px;
+  }
+
+  .mini-stat {
+    min-width: 180px;
+  }
+
+  .mini-stat h3 {
+    font-size: 28px;
+  }
+
+  .mini-stat p {
+    color: #64748b;
+  }
+
+  .danger {
+    border-left: 5px solid #ef4444;
+  }
+
+  .filter-form {
+    display: grid;
+
+    grid-template-columns: 2fr 1fr auto;
+
+    gap: 16px;
+  }
+
+  .table-card {
+    margin-top: 24px;
+
+    overflow-x: auto;
+  }
+
+  .badge {
+    padding: 6px 14px;
+
+    border-radius: 30px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+  }
+
+  .success-badge {
+    background: #dcfce7;
+
+    color: #166534;
+  }
+
+  .danger-badge {
+    background: #fee2e2;
+
+    color: #b91c1c;
+  }
+
+  .action-buttons {
+    display: flex;
+
+    gap: 8px;
+  }
+  .pagination-wrapper{
 
     display:flex;
 
-    justify-content:space-between;
+    justify-content:center;
 
     align-items:center;
 
-    margin-bottom:24px;
+    gap:20px;
+
+    margin-top:30px;
 
 }
 
-.stats-row{
+.pagination-btn{
 
     display:flex;
 
-    gap:20px;
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 18px;
+
+    border-radius:12px;
+
+    text-decoration:none;
+
+    background:linear-gradient(
+        235deg,
+        #0B1F3A,
+        #1ABC9C
+    );
+
+    color:white;
+
+    font-weight:600;
+
+    transition:0.3s;
 
 }
 
-.mini-stat{
+.pagination-btn:hover{
 
-    min-width:180px;
-
-}
-
-.mini-stat h3{
-
-    font-size:28px;
+    transform:translateY(-2px);
 
 }
 
-.mini-stat p{
+.page-info{
 
     color:#64748b;
 
-}
-
-.danger{
-
-    border-left:5px solid #ef4444;
-
-}
-
-.filter-form{
-
-    display:grid;
-
-    grid-template-columns:
-    2fr 1fr auto;
-
-    gap:16px;
-
-}
-
-.table-card{
-
-    margin-top:24px;
-
-    overflow-x:auto;
-
-}
-
-.badge{
-
-    padding:6px 14px;
-
-    border-radius:30px;
-
-    font-size:12px;
-
-    font-weight:bold;
-
-}
-
-.success-badge{
-
-    background:#dcfce7;
-
-    color:#166534;
-
-}
-
-.danger-badge{
-
-    background:#fee2e2;
-
-    color:#b91c1c;
-
-}
-
-.action-buttons{
-
-    display:flex;
-
-    gap:8px;
+    font-weight:600;
 
 }
 

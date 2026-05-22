@@ -13,10 +13,12 @@
 
     </div>
 
-    <nav class="nav-menu">
+    {% if request.user.userprofile.role.username == 'MANAGER' or request.user.userprofile.role.username == 'ADMIN' %}
+
+   <nav class="nav-menu">
 
         <a href="{% url 'manager_dashboard' %}"
-        class="nav-item">
+        class="nav-item {% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}">
 
             <i class="ph ph-squares-four"></i>
 
@@ -24,8 +26,7 @@
 
         </a>
 
-        <a href="{% url 'product_list' %}"
-        class="nav-item">
+        <a href="{% url 'product_list' %}"class="nav-item {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
 
             <i class="ph ph-package"></i>
 
@@ -36,7 +37,7 @@
         
 
         <a href="{% url 'supplier_list' %}"
-        class="nav-item">
+        class="nav-item {% if request.resolver_match.url_name == 'supplier_list' %}active{% endif %}">
 
             <i class="ph ph-truck"></i>
 
@@ -45,7 +46,7 @@
         </a>
 
         <a href="{% url 'register_stock' %}"
-        class="nav-item">
+        class="nav-item {% if request.resolver_match.url_name == 'register_stock' %}active{% endif %}">
 
             <i class="ph ph-plus-circle"></i>
 
@@ -54,7 +55,7 @@
         </a>
 
         <a href="{% url 'stock_adjustments' %}"
-        class="nav-item">
+        class="nav-item {% if request.resolver_match.url_name == 'stock_adjustments' %}active{% endif %}">
 
             <i class="ph ph-arrows-clockwise"></i>
 
@@ -63,7 +64,7 @@
         </a>
 
         <a href="{% url 'low_stock' %}"
-        class="nav-item">
+        class="nav-item {% if request.resolver_match.url_name == 'low_stock' %}active{% endif %}">
 
             <i class="ph ph-warning-circle"></i>
 
@@ -71,26 +72,27 @@
 
         </a>
 
-        <a href="{% url 'category_list' %}"class="nav-item">
+        <a href="{% url 'category_list' %}"class="nav-item {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">
             <i class="ph ph-squares-four"></i>
             Categories
         </a>
 
-        <a href="{% url 'pricing_list' %}"class="nav-item">
+        <a href="{% url 'pricing_list' %}" class="nav-item {% if request.resolver_match.url_name == 'pricing_list' %}active{% endif %}">
+    
             <i class="ph ph-currency-circle-dollar"></i>
             Pricing
         </a>
 
-        <a href="#"
-        class="nav-item">
-
+        <a href="{% url 'reports_dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'reports_dashboard' %}active{% endif %}">
+    
+           
             <i class="ph ph-chart-bar"></i>
-
             Reports
-
         </a>
 
+        
     </nav>
+    {% endif %}
 
     <div class="sidebar-footer">
 
@@ -101,7 +103,7 @@
         </div>
 
         <div class="user-details">
-            <div>
+            
              
             <strong>
                 {{ request.user.username }}
@@ -110,7 +112,7 @@
             <span>
                 Stock Manager
             </span>
-            </div>
+            
             <a href="{% url 'logout' %}" class="logout-btn">
                 <i class="ph ph-sign-out"></i>
             </a>

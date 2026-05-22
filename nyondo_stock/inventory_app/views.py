@@ -1,3 +1,5 @@
+from urllib import request
+
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from .models import Product, StockEntry, StockEntryItem, Category, Supplier, StockAdjustment
@@ -5,10 +7,54 @@ from django.db import models
 from .forms import StockEntryForm, ProductForm, StockEntryItemFormSet, StockAdjustmentForm, SupplierForm, CategoryForm, PricingForm
 from decimal import Decimal
 from django.db.models import Sum, F, DecimalField
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.core.paginator import Paginator
 
 # Create your views here.
 
+def access_denied(request):
+
+    return render(
+        request,
+        'access_denied.html'
+    )
+
+def is_admin(user):
+
+    return (
+        hasattr(user, 'userprofile')
+        and user.userprofile.role
+        and user.userprofile.role.username == 'ADMIN'
+    )
+
+
+def is_manager(user):
+
+    return (
+        hasattr(user, 'userprofile')
+        and user.userprofile.role
+        and user.userprofile.role.username == 'MANAGER'
+    )
+
+
+def is_attendant(user):
+
+    return (
+        hasattr(user, 'userprofile')
+        and user.userprofile.role
+        and user.userprofile.role.username == 'ATTENDANT'
+    )
+
+@login_required
 def manager_dashboard(request):
+
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
 
     total_products = Product.objects.count()
 
@@ -71,7 +117,17 @@ def manager_dashboard(request):
         'manager/dashboard.html',
         context
     )
+
+
+@login_required
 def product_list(request):
+
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
 
     products = Product.objects.select_related(
         'category'
@@ -93,6 +149,14 @@ def product_list(request):
             category_id=category_id
         )
 
+    # PAGINATION
+
+    paginator = Paginator(products, 10)
+
+    page_number = request.GET.get('page')
+
+    page_obj = paginator.get_page(page_number)
+
     categories = Category.objects.all()
 
     total_products = products.count()
@@ -103,13 +167,17 @@ def product_list(request):
 
     context = {
 
-        'products': products,
+        'page_obj': page_obj,
 
         'categories': categories,
 
         'total_products': total_products,
 
         'low_stock_count': low_stock_count,
+
+        'search_query': search_query,
+
+        'selected_category': category_id,
 
     }
 
@@ -120,9 +188,15 @@ def product_list(request):
     )
 
 
-
-
+@login_required
 def register_stock(request):
+
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
 
     if request.method == 'POST':
 
@@ -236,6 +310,9 @@ def register_stock(request):
         'form': form,
         'formset': formset
     }
+    messages.success(request,
+    'Stock registered successfully.'
+    )
 
     return render(
         request,
@@ -243,7 +320,15 @@ def register_stock(request):
         context
     )
 
+@login_required
 def stock_history(request):
+
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
 
     stock_entries = StockEntry.objects.all().order_by(
         '-date_added'
@@ -259,7 +344,16 @@ def stock_history(request):
         context
     )
 
+
+@login_required
 def stock_details(request, id):
+
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')    
 
     stock_entry = get_object_or_404(
         StockEntry,
@@ -280,7 +374,15 @@ def stock_details(request, id):
     )
 
 
+@login_required
 def low_stock(request):
+
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
 
     products = Product.objects.filter(
         quantity__lte=models.F('reorder_level')
@@ -299,8 +401,16 @@ def low_stock(request):
         context
     )
 
+
+@login_required
 def stock_adjustments(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     adjustments = StockAdjustment.objects.select_related('product', 'adjusted_by').order_by(
         '-adjusted_at'
     )
@@ -344,8 +454,16 @@ def stock_adjustments(request):
         context
     )
 
+
+@login_required
 def add_product(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     if request.method == 'POST':
 
         form = ProductForm(request.POST)
@@ -364,8 +482,16 @@ def add_product(request):
 
     return render(request, 'manager/add_product.html', context)
 
+
+@login_required
 def edit_product(request, id):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     product = get_object_or_404(Product, id=id)
 
     if request.method == 'POST':
@@ -386,8 +512,16 @@ def edit_product(request, id):
 
     return render(request, 'manager/edit_product.html', context)
 
+
+@login_required
 def delete_product(request, id):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     product = get_object_or_404(Product, id=id)
 
     if request.method == 'POST':
@@ -403,8 +537,16 @@ def delete_product(request, id):
     return render(request, 'manager/delete_product.html', context)
 
 
+
+@login_required
 def supplier_list(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     suppliers = Supplier.objects.all().order_by(
         'supplier_name'
     )
@@ -420,8 +562,16 @@ def supplier_list(request):
     )
 
 
+
+@login_required
 def add_supplier(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     if request.method == 'POST':
 
         form = SupplierForm(request.POST)
@@ -447,8 +597,16 @@ def add_supplier(request):
     )
 
 
+
+@login_required
 def supplier_details(request, id):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     supplier = get_object_or_404(
         Supplier,
         id=id
@@ -470,8 +628,16 @@ def supplier_details(request, id):
     )
 
 
+
+@login_required
 def supplier_credit(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     suppliers = Supplier.objects.filter(
         balance_due__gt=0
     ).order_by('-balance_due')
@@ -504,8 +670,15 @@ def supplier_credit(request):
         context
     )
 
+@login_required
 def category_list(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     categories = Category.objects.all().order_by(
         'category_name'
     )
@@ -521,8 +694,16 @@ def category_list(request):
     )
 
 
+
+@login_required
 def add_category(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     if request.method == 'POST':
 
         form = CategoryForm(request.POST)
@@ -548,8 +729,16 @@ def add_category(request):
     )
 
 
+
+@login_required
 def edit_category(request, id):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     category = get_object_or_404(
         Category,
         id=id
@@ -583,8 +772,16 @@ def edit_category(request, id):
     )
 
 
+
+@login_required
 def delete_category(request, id):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     category = get_object_or_404(
         Category,
         id=id
@@ -610,8 +807,16 @@ def delete_category(request, id):
         context
     )
 
+
+@login_required
 def category_details(request, id):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     category = get_object_or_404(
         Category,
         id=id
@@ -646,8 +851,16 @@ def category_details(request, id):
         context
     )
 
+
+@login_required
 def pricing_list(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     products = Product.objects.all().order_by(
         'product_name'
     )
@@ -665,8 +878,16 @@ def pricing_list(request):
         context
     )
 
+
+@login_required
 def update_pricing(request, id):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     product = get_object_or_404(
         Product,
         id=id
@@ -703,8 +924,16 @@ def update_pricing(request, id):
         context
     )
 
+
+@login_required
 def reports_dashboard(request):
 
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
     total_products = Product.objects.count()
 
     total_quantity = (
@@ -753,6 +982,30 @@ def reports_dashboard(request):
 
     return render(
         request,
-        'manager/reports_dashboard.html',
+        'manager/reports/reports_dashboard.html',
+        context
+    )
+
+
+@login_required
+def low_stock_report(request):
+
+    if not (
+        is_admin(request.user)
+        or is_manager(request.user)
+    ):
+
+        return redirect('access_denied')
+    low_stock_products = Product.objects.filter(
+        quantity__lte=F('reorder_level')
+    ).order_by('quantity')
+
+    context = {
+        'low_stock_products': low_stock_products
+    }
+
+    return render(
+        request,
+        'manager/reports/low_stock_report.html',
         context
     )

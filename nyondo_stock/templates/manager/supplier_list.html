@@ -35,8 +35,16 @@ Suppliers
     </a>
 
 </div>
+<div class="search-box">
 
-<div class="card table-card">
+    <i class="ph ph-magnifying-glass"></i>
+
+    <input
+    type="text"
+    placeholder="Search suppliers...">
+
+</div>
+<div class="card table-card table-responsive">
 
     <table>
 
@@ -109,6 +117,21 @@ Suppliers
                 </td>
 
             </tr>
+
+            {% empty %}
+            <tr>
+
+                <td colspan="6">
+
+                    <div class="empty-state">
+
+                        <i class="ph ph-users"></i>
+
+                        <p>No suppliers added yet.</p>
+
+                    </div>
+
+                </td>
 
             {% endfor %}
 
