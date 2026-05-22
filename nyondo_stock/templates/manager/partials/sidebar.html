@@ -33,14 +33,7 @@
 
         </a>
 
-        <a href="#"
-        class="nav-item">
-
-            <i class="ph ph-stack"></i>
-
-            Categories
-
-        </a>
+        
 
         <a href="{% url 'supplier_list' %}"
         class="nav-item">
@@ -78,13 +71,14 @@
 
         </a>
 
-        <a href="#"
-        class="nav-item">
+        <a href="{% url 'category_list' %}"class="nav-item">
+            <i class="ph ph-squares-four"></i>
+            Categories
+        </a>
 
+        <a href="{% url 'pricing_list' %}"class="nav-item">
             <i class="ph ph-currency-circle-dollar"></i>
-
             Pricing
-
         </a>
 
         <a href="#"

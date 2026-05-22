@@ -1,0 +1,292 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Categories
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>Product Categories</h1>
+
+        <p>
+            Organize inventory products into
+            structured business groups.
+        </p>
+    </div>
+
+    <a href="{% url 'add_category' %}"
+       class="btn btn-primary">
+
+        <i class="ph ph-plus"></i>
+
+        Add Category
+
+    </a>
+
+</div>
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="custom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>Category</th>
+
+                    <th>Products</th>
+
+                    <th>Created</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for category in categories %}
+
+                <tr>
+
+                    <td>{{ forloop.counter }}</td>
+
+                    <td>
+
+                        <div class="category-name">
+
+                            <div class="category-icon">
+
+                                <i class="ph ph-squares-four"></i>
+
+                            </div>
+
+                            <span>
+                                {{ category.category_name }}
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {{ category.product_set.count }}
+
+                    </td>
+
+                    <td>
+
+                        Recently Added
+
+                    </td>
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a href="{% url 'edit_category' category.id %}"
+                               class="btn-icon edit">
+
+                                <i class="ph ph-pencil-simple"></i>
+
+                            </a>
+
+                            <a href="{% url 'delete_category' category.id %}"
+                               class="btn-icon delete">
+
+                                <i class="ph ph-trash"></i>
+
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="5">
+
+                        <div class="empty-state">
+
+                            <i class="ph ph-folder-open"></i>
+
+                            <h3>No Categories Found</h3>
+
+                            <p>
+                                Start by creating your first
+                                inventory category.
+                            </p>
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:24px;
+
+}
+
+.page-header h1{
+
+    font-size:28px;
+    margin-bottom:6px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+}
+
+.table-responsive{
+
+    overflow-x:auto;
+
+}
+
+.custom-table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+.custom-table th{
+
+    text-align:left;
+    padding:18px;
+    font-size:13px;
+    color:#64748b;
+    border-bottom:1px solid #e2e8f0;
+
+}
+
+.custom-table td{
+
+    padding:18px;
+    border-bottom:1px solid #f1f5f9;
+
+}
+
+.category-name{
+
+    display:flex;
+    align-items:center;
+    gap:14px;
+
+}
+
+.category-icon{
+
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:linear-gradient(
+        235deg,
+        #0B1F3A,
+        #1ABC9C
+    );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    font-size:20px;
+
+}
+
+.action-buttons{
+
+    display:flex;
+    gap:10px;
+
+}
+
+.btn-icon{
+
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    color:white;
+
+}
+
+.btn-icon.edit{
+
+    background:#0ea5e9;
+
+}
+
+.btn-icon.delete{
+
+    background:#ef4444;
+
+}
+
+.empty-state{
+
+    padding:60px 20px;
+    text-align:center;
+
+}
+
+.empty-state i{
+
+    font-size:60px;
+    color:#94a3b8;
+    margin-bottom:16px;
+
+}
+
+.empty-state h3{
+
+    margin-bottom:8px;
+
+}
+
+.empty-state p{
+
+    color:#64748b;
+
+}
+
+</style>
+
+{% endblock %}

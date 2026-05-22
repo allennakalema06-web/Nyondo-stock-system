@@ -1,0 +1,110 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Add Category
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1 class="page-title">
+            Add Product Category
+        </h1>
+
+        <p class="page-subtitle">
+            Create organized product groupings
+            for better inventory management.
+        </p>
+    </div>
+
+</div>
+
+<div class="form-card">
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="input-group">
+
+            <label>
+                Category Name
+            </label>
+
+            {{ form.category_name }}
+
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+
+            <i class="ph ph-folder-plus"></i>
+
+            Save Category
+
+        </button>
+
+    </form>
+
+</div>
+
+<style>
+
+.form-card{
+
+    background:white;
+
+    padding:32px;
+
+    border-radius:20px;
+
+    max-width:600px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+
+}
+
+.input-group{
+
+    margin-bottom:24px;
+
+}
+
+.input-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-weight:600;
+
+    color:#0f172a;
+
+}
+
+.page-header{
+
+    margin-bottom:30px;
+
+}
+
+.page-title{
+
+    font-size:30px;
+
+    margin-bottom:8px;
+
+}
+
+.page-subtitle{
+
+    color:#64748b;
+
+}
+
+</style>
+
+{% endblock %}

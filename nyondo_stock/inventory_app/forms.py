@@ -1,5 +1,5 @@
 from django import forms
-from .models import StockEntry, Product, StockEntryItem, StockAdjustment, Supplier
+from .models import StockEntry, Product, StockEntryItem, StockAdjustment, Supplier, Category
 from django.forms import inlineformset_factory
 
 
@@ -361,3 +361,65 @@ class SupplierForm(forms.ModelForm):
 
         }
 
+class CategoryForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Category
+
+        fields = ['category_name']
+
+        widgets = {
+
+            'category_name': forms.TextInput(attrs={
+
+                'class': 'form-control',
+
+                'placeholder': 'Enter category name'
+
+            })
+
+        }
+
+
+class PricingForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Product
+
+        fields = [
+
+            'normal_percentage',
+            'retail_percentage',
+            'wholesale_percentage'
+
+        ]
+
+        widgets = {
+
+            'normal_percentage': forms.NumberInput(attrs={
+
+                'class': 'form-control',
+
+                'step': '0.01'
+
+            }),
+
+            'retail_percentage': forms.NumberInput(attrs={
+
+                'class': 'form-control',
+
+                'step': '0.01'
+
+            }),
+
+            'wholesale_percentage': forms.NumberInput(attrs={
+
+                'class': 'form-control',
+
+                'step': '0.01'
+
+            }),
+
+        }

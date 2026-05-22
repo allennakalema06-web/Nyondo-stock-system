@@ -1,0 +1,223 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Pricing Management
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1 class="page-title">
+            Pricing Management
+        </h1>
+
+        <p class="page-subtitle">
+
+            Control selling percentages and
+            pricing structure for all products.
+
+        </p>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="table-responsive">
+
+        <table class="custom-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th>Cost</th>
+
+                    <th>Normal %</th>
+
+                    <th>Retail %</th>
+
+                    <th>Wholesale %</th>
+
+                    <th>Normal Price</th>
+
+                    <th>Retail Price</th>
+
+                    <th>Wholesale Price</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for product in products %}
+
+                <tr>
+
+                    <td>
+
+                        <strong>
+                            {{ product.product_name }}
+                        </strong>
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ product.unit_cost }}
+
+                    </td>
+
+                    <td>
+
+                        {{ product.normal_percentage }}%
+
+                    </td>
+
+                    <td>
+
+                        {{ product.retail_percentage }}%
+
+                    </td>
+
+                    <td>
+
+                        {{ product.wholesale_percentage }}%
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ product.normal_price }}
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ product.retail_price }}
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ product.wholesale_price }}
+
+                    </td>
+
+                    <td>
+
+                        <a href="{% url 'update_pricing' product.id %}"
+
+                        class="btn-icon edit">
+
+                            <i class="ph ph-pencil-simple"></i>
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<style>
+
+.table-responsive{
+
+    overflow-x:auto;
+
+}
+
+.custom-table{
+
+    width:100%;
+    border-collapse:collapse;
+
+}
+
+.custom-table th{
+
+    padding:18px;
+
+    text-align:left;
+
+    font-size:13px;
+
+    color:#64748b;
+
+    border-bottom:1px solid #e2e8f0;
+
+}
+
+.custom-table td{
+
+    padding:18px;
+
+    border-bottom:1px solid #f1f5f9;
+
+}
+
+.page-header{
+
+    margin-bottom:24px;
+
+}
+
+.page-title{
+
+    font-size:30px;
+
+    margin-bottom:8px;
+
+}
+
+.page-subtitle{
+
+    color:#64748b;
+
+}
+
+.btn-icon{
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:10px;
+
+    background:#0ea5e9;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:white;
+
+    text-decoration:none;
+
+}
+
+</style>
+
+{% endblock %}

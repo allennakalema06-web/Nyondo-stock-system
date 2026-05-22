@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from .models import Product, StockEntry, StockEntryItem, Category, Supplier, StockAdjustment
 from django.db import models
-from .forms import StockEntryForm, ProductForm, StockEntryItemFormSet, StockAdjustmentForm, SupplierForm
+from .forms import StockEntryForm, ProductForm, StockEntryItemFormSet, StockAdjustmentForm, SupplierForm, CategoryForm, PricingForm
 from decimal import Decimal
 from django.db.models import Sum, F, DecimalField
 
@@ -501,5 +501,258 @@ def supplier_credit(request):
     return render(
         request,
         'manager/supplier_credit.html',
+        context
+    )
+
+def category_list(request):
+
+    categories = Category.objects.all().order_by(
+        'category_name'
+    )
+
+    context = {
+        'categories': categories
+    }
+
+    return render(
+        request,
+        'manager/category_list.html',
+        context
+    )
+
+
+def add_category(request):
+
+    if request.method == 'POST':
+
+        form = CategoryForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('category_list')
+
+    else:
+
+        form = CategoryForm()
+
+    context = {
+        'form': form
+    }
+
+    return render(
+        request,
+        'manager/add_category.html',
+        context
+    )
+
+
+def edit_category(request, id):
+
+    category = get_object_or_404(
+        Category,
+        id=id
+    )
+
+    if request.method == 'POST':
+
+        form = CategoryForm(
+            request.POST,
+            instance=category
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('category_list')
+
+    else:
+
+        form = CategoryForm(instance=category)
+
+    context = {
+        'form': form
+    }
+
+    return render(
+        request,
+        'manager/edit_category.html',
+        context
+    )
+
+
+def delete_category(request, id):
+
+    category = get_object_or_404(
+        Category,
+        id=id
+    )
+
+    if category.product_set.exists():
+
+        return redirect('category_list')
+
+    if request.method == 'POST':
+
+        category.delete()
+
+        return redirect('category_list')
+
+    context = {
+        'category': category
+    }
+
+    return render(
+        request,
+        'manager/delete_category.html',
+        context
+    )
+
+def category_details(request, id):
+
+    category = get_object_or_404(
+        Category,
+        id=id
+    )
+
+    products = Product.objects.filter(
+        category=category
+    )
+
+    low_stock = products.filter(
+        quantity__lte=models.F('reorder_level')
+    )
+
+    total_quantity = sum(
+        product.quantity
+        for product in products
+    )
+
+    context = {
+
+        'category': category,
+        'products': products,
+        'low_stock': low_stock,
+        'total_quantity': total_quantity
+
+    }
+
+    return render(
+
+        request,
+        'manager/category_details.html',
+        context
+    )
+
+def pricing_list(request):
+
+    products = Product.objects.all().order_by(
+        'product_name'
+    )
+
+    context = {
+
+        'products': products
+
+    }
+
+    return render(
+
+        request,
+        'manager/pricing_list.html',
+        context
+    )
+
+def update_pricing(request, id):
+
+    product = get_object_or_404(
+        Product,
+        id=id
+    )
+
+    if request.method == 'POST':
+
+        form = PricingForm(
+            request.POST,
+            instance=product
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('pricing_list')
+
+    else:
+
+        form = PricingForm(instance=product)
+
+    context = {
+
+        'form': form,
+        'product': product
+
+    }
+
+    return render(
+
+        request,
+        'manager/update_pricing.html',
+        context
+    )
+
+def reports_dashboard(request):
+
+    total_products = Product.objects.count()
+
+    total_quantity = (
+        Product.objects.aggregate(
+            total=Sum('quantity')
+        )['total'] or 0
+    )
+
+    stock_value = 0
+
+    products = Product.objects.all()
+
+    for product in products:
+
+        stock_value += (
+            product.quantity * product.unit_cost
+        )
+
+    low_stock_products = Product.objects.filter(
+        quantity__lte=F('reorder_level')
+    ).order_by('quantity')
+
+    recent_stock_entries = StockEntry.objects.order_by(
+        '-date_added'
+    )[:5]
+
+    recent_adjustments = StockAdjustment.objects.order_by(
+        '-adjusted_at'
+    )[:5]
+
+    context = {
+
+        'total_products': total_products,
+
+        'total_quantity': total_quantity,
+
+        'stock_value': stock_value,
+
+        'low_stock_products': low_stock_products,
+
+        'recent_stock_entries': recent_stock_entries,
+
+        'recent_adjustments': recent_adjustments,
+
+    }
+
+    return render(
+        request,
+        'manager/reports_dashboard.html',
         context
     )

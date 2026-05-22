@@ -16,5 +16,16 @@ urlpatterns = [
     path('add_supplier/', views.add_supplier,name='add_supplier'),
     path('supplier_details/<int:id>/', views.supplier_details, name='supplier_details'),
     path('supplier_credit/', views.supplier_credit, name='supplier_credit'),
+    path('categories/', views.category_list,
+    name='category_list'),
+    path('add_category/', views.add_category,
+    name='add_category'),
+    path('edit_category/<int:id>/', views.edit_category, name='edit_category'),
+    path('delete_category/<int:id>/', views.delete_category, name='delete_category'),
+    path('category_details/<int:id>/', views.category_details, name='category_details'),
+    path('pricing/',views.pricing_list,
+    name='pricing_list'),
+    path('pricing/update/<int:id>/',views.update_pricing, name='update_pricing'),
+    path('reports-dashboard/', views.reports_dashboard, name='reports_dashboard'),
 
 ]
