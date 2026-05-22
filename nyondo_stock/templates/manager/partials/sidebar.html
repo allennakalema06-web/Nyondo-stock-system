@@ -104,7 +104,7 @@
 
         <div class="user-details">
             
-             
+             <div style="display: inline-block;">
             <strong>
                 {{ request.user.username }}
             </strong>
@@ -112,7 +112,7 @@
             <span>
                 Stock Manager
             </span>
-            
+            </div>
             <a href="{% url 'logout' %}" class="logout-btn">
                 <i class="ph ph-sign-out"></i>
             </a>

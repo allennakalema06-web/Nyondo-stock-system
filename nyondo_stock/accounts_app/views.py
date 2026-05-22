@@ -23,13 +23,13 @@ def login_view(request):
             role = user.userprofile.role.username
 
             if role == 'ADMIN':
-                return redirect('admin-dashboard')
+                return redirect('admin_dashboard')
 
             elif role == 'MANAGER':
-                return redirect('manager-dashboard')
+                return redirect('manager_dashboard')
 
             elif role == 'ATTENDANT':
-                return redirect('attendant-dashboard')
+                return redirect('attendant_dashboard')
 
     return render(request, 'accounts/login.html')
 
@@ -54,7 +54,7 @@ def manager_dashboard(request):
     if request.user.userprofile.role.username != 'MANAGER':
         return redirect('login')
 
-    return render(request, 'manager/dashboard.html')
+    return render(request, 'manager/manager_dashboard.html')
 
 @login_required
 def attendant_dashboard(request):

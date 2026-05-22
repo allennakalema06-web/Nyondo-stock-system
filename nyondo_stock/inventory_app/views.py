@@ -114,7 +114,7 @@ def manager_dashboard(request):
 
     return render(
         request,
-        'manager/dashboard.html',
+        'manager/manager_dashboard.html',
         context
     )
 
