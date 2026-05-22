@@ -1,0 +1,121 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Suppliers
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h2 class="page-title">
+
+            Suppliers
+
+        </h2>
+
+        <p class="page-subtitle">
+
+            Manage hardware suppliers
+
+        </p>
+
+    </div>
+
+    <a
+    href="{% url 'add_supplier' %}"
+    class="btn btn-primary">
+
+        Add Supplier
+
+    </a>
+
+</div>
+
+<div class="card table-card">
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>Supplier</th>
+
+                <th>Contact Person</th>
+
+                <th>Phone</th>
+
+                <th>City</th>
+
+                <th>Balance Due</th>
+
+                <th>Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for supplier in suppliers %}
+
+            <tr>
+
+                <td>
+
+                    {{ supplier.supplier_name }}
+
+                </td>
+
+                <td>
+
+                    {{ supplier.contact_person }}
+
+                </td>
+
+                <td>
+
+                    {{ supplier.phone_number }}
+
+                </td>
+
+                <td>
+
+                    {{ supplier.city }}
+
+                </td>
+
+                <td>
+
+                    UGX {{ supplier.balance_due }}
+
+                </td>
+
+                <td>
+
+                    <a
+                    href="{% url 'supplier_details' supplier.id %}"
+                    class="btn-action view">
+
+                        <i class="ph ph-eye"></i>
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

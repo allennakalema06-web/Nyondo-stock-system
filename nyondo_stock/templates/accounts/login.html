@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core/css/login.css' %}" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <form method="post">
+          {% csrf_token %}  
+          <h1 class="logo">Nyondo</h1>
+          <h3 style="color: #103463">GENERAL HARDWARE LTD</h3>
+          <h2>Welcome back</h2>
+          <p style="color: #103463; font-size: 17px">
+            Sign in to take control of your inventory and track orders
+            efficiently.
+          </p>
+          <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              name="username"
+              placeholder="Sarah"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              name="password"
+              placeholder="........"
+            />
+          </div>
+          <div class="check">
+            <input type="checkbox" name="checkBox" />
+            <label for="checkBox">Remember me</label>
+          </div>
+          <div class="d-grid gap-2">
+            <button class="btn btn-primary button" type="submit">
+              Login
+            </button>
+          </div>
+          <p style="color: #555; text-align: center">
+            &#169;2026 Nyondo General Hardware | All rights reserved.
+          </p>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

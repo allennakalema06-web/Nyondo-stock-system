@@ -1,0 +1,47 @@
+
+<aside class="sidebar">
+  <div class="plogo-section">
+    <i class="fas fa-hammer"></i>
+
+    <div>
+      <h1>NyondoStock</h1>
+      <p>ATTENDANT PORTAL</p>
+    </div>
+  </div>
+
+  <nav class="nav-menu">
+    <a href="" class="nav-item">
+      <i class="ph ph-squares-four"></i>
+      Overview
+    </a>
+
+    <a href="" class="nav-item">
+      <i class="ph ph-shopping-cart"></i>
+      New Sale
+    </a>
+
+    <a href="" class="nav-item">
+      <i class="ph ph-receipt"></i>
+      Sales Records
+    </a>
+
+    <a href="" class="nav-item">
+      <i class="ph ph-package"></i>
+      Stock Check
+    </a>
+  </nav>
+
+  <div class="user-profile">
+    <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
+
+    <div class="user-info">
+      <span class="name"> {{ request.user.username }} </span>
+
+      <span class="role"> Sales Attendant </span>
+    </div>
+
+    <a href="{% url 'logout' %}" class="logout-link" >
+      <i class="ph ph-sign-out logout-icon"></i>
+    </a>
+  </div>
+</aside>

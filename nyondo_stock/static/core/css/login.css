@@ -1,0 +1,89 @@
+body {
+  height: 100vh;
+  background: linear-gradient(235deg, #0b1f3a, #1abc9c);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* .container {
+  height: 50vh;
+} */
+h2 {
+  color: #1abc9c;
+}
+.next {
+  display: flex;
+  justify-content: end;
+}
+.card {
+  background: white;
+  padding: 15px 40px;
+  width: 330px;
+  height: 480px;
+  border-radius: 18px;
+  text-align: start;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  margin-top: 50px !important;
+}
+input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  width: 80%;
+  margin: 8px;
+  border: none;
+  border-radius: 5px;
+  background: linear-gradient(135deg, #0b1f3a, #1abc9c);
+}
+input[type="password"],
+[type="tel"],
+[type="text"],
+[type="email"] {
+  color: #ccc;
+}
+button {
+  font-size: 18px;
+}
+.check {
+  display: flex !important;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.check input {
+  display: inline !important;
+  width: auto;
+  margin-right: 8px;
+}
+.check label {
+  display: inline !important;
+  width: auto;
+}
+label {
+  display: block;
+  font-weight: bold;
+  color: #16437d;
+}
+.button {
+  display: block;
+  width: 90%;
+  padding-bottom: 7px;
+  padding-top: 7px; /* background: linear-gradient(135deg, #0B1F3A, #1ABC9C); */
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  background: linear-gradient(135deg, #1abc9c, #16e0bd);
+  color: white;
+}
+.hard {
+  color: #1abc9c;
+  text-decoration: none;
+  font-size: 18px;
+}
+.submit {
+  padding: 8px 40px;
+  border-radius: 20px;
+  border-color: #1abc9c;
+  border-style: solid;
+}

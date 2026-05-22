@@ -1,0 +1,56 @@
+
+<aside class="sidebar">
+
+    <div class="logo-section">
+        <i class="fas fa-hammer"></i>
+
+        <div>
+            <h1>NyondoStock</h1>
+            <p>STORE MANAGER</p>
+        </div>
+    </div>
+
+    <nav class="nav-menu">
+
+        <a href="" class="nav-item">
+            <i class="ph ph-chart-bar"></i>
+            Dashboard
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-package"></i>
+            Products
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-stack"></i>
+            Register Stock
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-currency-circle-dollar"></i>
+            Pricing
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-truck"></i>
+            Transport
+        </a>
+
+    </nav>
+
+    <div class="user-profile">
+    <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
+
+    <div class="user-info">
+      <span class="name"> {{ request.user.username }} </span>
+
+      <span class="role"> Stock Manager </span>
+    </div>
+
+    <a href="{% url 'logout' %}" class="logout-link" >
+      <i class="ph ph-sign-out logout-icon"></i>
+    </a>
+  </div>
+
+</aside>

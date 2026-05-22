@@ -1,0 +1,402 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Low Stock Alerts
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            <i class="ph ph-warning-circle"></i>
+
+            Low Stock Alerts
+
+        </h1>
+
+        <p>
+            Monitor products that are running low
+            and require urgent restocking.
+        </p>
+
+    </div>
+
+    <div class="alert-counter">
+
+        <span>{{ total_low_stock }}</span>
+
+        Critical Products
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th>Category</th>
+
+                    <th>Current Qty</th>
+
+                    <th>Reorder Level</th>
+
+                    <th>Status</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for product in products %}
+
+                <tr>
+
+                    <td>
+
+                        <div class="product-info">
+
+                            <strong>
+
+                                {{ product.product_name }}
+
+                            </strong>
+
+                            <span>
+
+                                SKU:
+                                {{ product.sku }}
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {{ product.category.category_name }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="qty-badge">
+
+                            {{ product.quantity }}
+                            {{ product.unit }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ product.reorder_level }}
+
+                    </td>
+
+                    <td>
+
+                        {% if product.quantity <= 5 %}
+
+                            <span class="status critical">
+
+                                Critical
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="status warning">
+
+                                Low Stock
+
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        <a
+                        href="{% url 'register_stock' %}"
+                        class="restock-btn">
+
+                            <i class="ph ph-plus-circle"></i>
+
+                            Restock
+
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6">
+
+                        <div class="empty-state">
+
+                            <i class="ph ph-check-circle"></i>
+
+                            <h3>
+                                No Low Stock Products
+                            </h3>
+
+                            <p>
+                                Inventory levels are healthy.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.page-header h1{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:28px;
+
+    margin-bottom:8px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+}
+
+.alert-counter{
+
+    background:linear-gradient(
+        235deg,
+        #dc2626,
+        #ef4444
+    );
+
+    color:white;
+
+    padding:16px 22px;
+
+    border-radius:14px;
+
+    text-align:center;
+
+    font-weight:600;
+
+}
+
+.alert-counter span{
+
+    display:block;
+
+    font-size:24px;
+
+}
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+th{
+
+    text-align:left;
+
+    padding:16px;
+
+    font-size:13px;
+
+    color:#64748b;
+
+    border-bottom:1px solid #e2e8f0;
+
+}
+
+td{
+
+    padding:18px 16px;
+
+    border-bottom:1px solid #f1f5f9;
+
+}
+
+.product-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
+
+}
+
+.product-info span{
+
+    color:#64748b;
+
+    font-size:13px;
+
+}
+
+.qty-badge{
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.status{
+
+    padding:7px 14px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.status.critical{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+.status.warning{
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+}
+
+.restock-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:10px 14px;
+
+    border-radius:10px;
+
+    background:#ecfeff;
+
+    color:#0891b2;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.empty-state{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+}
+
+.empty-state i{
+
+    font-size:50px;
+
+    color:#22c55e;
+
+    margin-bottom:16px;
+
+}
+
+.empty-state h3{
+
+    margin-bottom:10px;
+
+}
+
+.empty-state p{
+
+    color:#64748b;
+
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+    <title>Nyondo Stock</title>
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- PHOSPHOR ICONS -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+
+    <style>
+
+        :root {
+
+            --sidebar-gradient:
+            linear-gradient(235deg,
+            #0B1F3A,
+            #1ABC9C);
+
+            --body-bg: #f8fafc;
+
+            --card-bg: #ffffff;
+
+            --text-dark: #1e293b;
+
+            --text-muted: #64748b;
+
+            --border-color: #e2e8f0;
+
+            --shadow:
+            0 4px 10px rgba(0,0,0,0.05);
+
+            --radius: 18px;
+
+        }
+
+        *{
+
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Inter', sans-serif;
+
+        }
+
+        body{
+
+            background:var(--body-bg);
+
+        }
+
+        .layout{
+
+            display:flex;
+            min-height:100vh;
+
+        }
+
+        /* SIDEBAR */
+
+        .sidebar{
+
+            width:260px;
+
+            background:var(--sidebar-gradient);
+
+            color:white;
+
+            padding:24px;
+
+            display:flex;
+
+            flex-direction:column;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            overflow-y: auto;
+
+        }
+
+        .logo-section{
+
+            display:flex;
+
+            align-items:center;
+
+            gap:15px;
+
+            margin-bottom:40px;
+
+        }
+
+        .logo-icon{
+
+            width:50px;
+
+            height:50px;
+
+            border-radius:14px;
+
+            background:rgba(255,255,255,0.1);
+
+            display:flex;
+
+            align-items:center;
+
+            justify-content:center;
+
+            font-size:24px;
+
+        }
+
+        .logo-section h2{
+
+            font-size:20px;
+
+        }
+
+        .logo-section p{
+
+            font-size:11px;
+
+            opacity:0.7;
+
+            letter-spacing:1px;
+
+        }
+
+        .nav-menu{
+
+            flex-grow:1;
+
+        }
+
+        .nav-item{
+
+            display:flex;
+
+            align-items:center;
+
+            gap:14px;
+
+            text-decoration:none;
+
+            color:white;
+
+            padding:14px 16px;
+
+            border-radius:12px;
+
+            margin-bottom:10px;
+
+            transition:0.3s;
+
+        }
+
+        .nav-item:hover{
+
+            background:rgba(255,255,255,0.1);
+            border:#e5faf5 solid 1px;
+
+        }
+
+        .sidebar-footer{
+
+            display:flex;
+
+            align-items:center;
+
+            gap: 8px;
+
+            padding-top:20px;
+
+            border-top:
+            1px solid rgba(255,255,255,0.1);
+
+        }
+
+        .avatar{
+
+            width:65px;
+
+            height:45px;
+
+            border-radius:50%;
+
+            background:#4ade80;
+
+            color:#064e3b;
+
+            display:flex;
+
+            align-items:center;
+
+            justify-content:center;
+
+            font-weight:bold;
+
+        }
+
+        .user-details{
+
+            display:flex;
+            justify-content:space-between;
+            align-items: center;
+            gap: 4px;
+
+            flex-direction:row;
+
+        }
+
+        .user-details span{
+
+            font-size:12px;
+
+            opacity:0.7;
+
+        }
+
+        .logout-btn{
+            color:white;
+            font-size:22px;
+            text-decoration:none;
+        }
+
+        /* MAIN */
+
+        .main{
+
+            flex-grow:1;
+            margin-left:260px;
+            min-height:100vh;
+
+            padding:32px;
+
+        }
+
+        .topbar{
+
+            display:flex;
+
+            justify-content:space-between;
+
+            align-items:center;
+
+            margin-bottom:30px;
+
+        }
+
+        .page-title{
+
+            font-size:30px;
+
+            color:var(--text-dark);
+
+        }
+
+        .page-subtitle{
+
+            color:var(--text-muted);
+
+            margin-top:5px;
+
+        }
+
+        .topbar-actions{
+
+            display:flex;
+
+            gap:10px;
+
+        }
+
+        .topbar-btn{
+
+            width:45px;
+
+            height:45px;
+
+            border:none;
+
+            border-radius:12px;
+
+            background:white;
+
+            box-shadow:var(--shadow);
+
+            cursor:pointer;
+
+            font-size:18px;
+
+        }
+
+        /* CARDS */
+
+        .card{
+
+            background:var(--card-bg);
+
+            border-radius:var(--radius);
+
+            padding:24px;
+
+            box-shadow:var(--shadow);
+
+        }
+
+        /* TABLES */
+
+        table{
+
+            width:100%;
+
+            border-collapse:collapse;
+
+        }
+
+        table th{
+
+            text-align:left;
+
+            padding:14px;
+
+            color:var(--text-muted);
+
+            font-size:13px;
+
+            border-bottom:
+            1px solid var(--border-color);
+
+        }
+
+        table td{
+
+            padding:16px 14px;
+
+            border-bottom:
+            1px solid var(--border-color);
+
+        }
+
+        /* BUTTONS */
+
+        .btn{
+
+            border:none;
+
+            padding:12px 18px;
+            margin: 10px;
+
+            border-radius:10px;
+
+            cursor:pointer;
+
+            text-decoration:none;
+
+            display:inline-flex;
+            justify-content:center;
+
+            align-items:center;
+
+            gap:8px;
+
+        }
+
+        .btn-primary{
+
+            background:
+            linear-gradient(235deg,
+            #0B1F3A,
+            #1ABC9C);
+
+            color:white;
+
+        }
+
+        .btn-danger{
+
+            background:#ef4444;
+
+            color:white;
+
+        }
+
+        .btn-warning{
+
+            background:#f59e0b;
+
+            color:white;
+
+        }
+
+        /* FORMS */
+
+        .form-control{
+
+            width:100%;
+
+            padding:12px;
+
+            border-radius:10px;
+
+            border:
+            1px solid var(--border-color);
+
+            margin-top:6px;
+
+            margin-bottom:16px;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="layout">
+
+    {% include 'manager/partials/sidebar.html' %}
+
+    <main class="main">
+
+        {% include 'manager/partials/topbar.html' %}
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

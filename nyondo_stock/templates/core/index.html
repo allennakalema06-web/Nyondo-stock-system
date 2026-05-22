@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nyondo Stock System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core/css/index.css' %}" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!--NAVBAR-->
+    <nav class="navbar">
+      <div class="logo">Nyondo Stock System</div>
+      <div><a href="{% url 'login' %}" class="btn-outline">Login</a></div>
+    </nav>
+    <!--HERO SECTION-->
+    <section class="hero">
+      <div class="hero-overlay">
+        <div class="hero-content">
+          <h2>
+            Take Full Control of Your Hardware Business | Without the Stress
+          </h2>
+          <p>
+            Stop guessing your stock levels and worrying about missing sales
+            records. Nyondo Stock System helps you track sales, manage
+            inventory, and stay in control of your business every single day
+            with ease.
+          </p>
+          <p class="hero-subtext">
+            No more lost records. No more running out of stock unexpectedly.
+            Just clear, simple, and reliable business management.
+          </p>
+          <div class="actions">
+            <a href="{% url 'login' %}" class="btn-link">
+            <button class="btn-primary">
+              Start Recording Sales
+            </button>
+            </a>
+            <a href="{% url 'login' %}" class="btn-link">
+            <button class="btn-secondary">Check Your Stock</button>
+            </a>
+            <a href="{% url 'login' %}" class="btn-link">
+            <button class="btn-outline">
+              See How Your Business Is Performing
+            </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="marquee-text">
+      <div class="marquee-text-track">
+        <p>
+          Track Sales &#8226; Manage Inventory &#8226; Monitor Stock &#8226;
+          Generate Reports &#8226; Grow Your Business &#8226; Track Sales&#8226;
+          Manage Inventory &#8226; Monitor Stock &#8226; Generate Reports
+          &#8226; Grow Your Business &#8226;
+        </p>
+      </div>
+    </section>
+    <section class="marquee">
+      <div class="marquee-track">
+        <!--ITEM-->
+        <div class="marquee-item">
+          <img src="{% static 'core/images/cementi.jpg' %}" alt="Cement Image" />
+          <span>Cement</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/nails.jpg' %}" alt="Nails Image" /> <span>Nails</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/ironsheets.jpg' %}" alt="Ironsheets Image" />
+          <span>Ironsheets</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/paints.jpg' %}" alt="Paint Image" /> <span>Paint</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/tools.jpg' %}" alt="Tools Image" /> <span>Tools</span>
+        </div>
+        <!--DUPLICATE FOR LOOP-->
+        <div class="marquee-item">
+          <img src="{% static 'core/images/cementi.jpg' %}" alt="Cement Image" />
+          <span>Cement</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/nails.jpg' %}" alt="Nails Image" /> <span>Nails</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/ironsheets.jpg' %}" alt="Ironsheets Image" />
+          <span>Ironsheets</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/paints.jpg' %}" alt="Paint Image" /> <span>Paint</span>
+        </div>
+        <div class="marquee-item">
+          <img src="{% static 'core/images/tools.jpg' %}" alt="Tools Image" /> <span>Tools</span>
+        </div>
+      </div>
+    </section>
+    <!--FEATURES SECTION-->
+    <section class="features">
+      <div class="card">
+        <div class="badge">Popular</div>
+        <i class="fas fa-cash-register icon"></i>
+        <h3>Sales Management</h3>
+        <p>
+          Record daily sales quickly and accurately. Generate receipts and keep
+          track of all transactions without errors or confusion.
+        </p>
+      </div>
+      <div class="card">
+        <div class="badge">Essential</div>
+        <i class="fas fa-boxes-stacked icon"></i>
+        <h3>Inventory Tracking</h3>
+        <p>
+          Monitor stock levels in real time. Know which products are running low
+          and restock before you lose potential sales
+        </p>
+      </div>
+      <div class="card">
+        <div class="badge">Insights</div>
+        <i class="fas fa-chart-line icon"></i>
+        <h3>Business Insights</h3>
+        <p>
+          Get insights into your business performance. Understand your
+          top-selling products and make better decisions every day.
+        </p>
+      </div>
+    </section>
+    <section class="how-it-works">
+      <h2>How the System Works</h2>
+      <p class="intro-text">
+        Our system is designed to simplify your daily business operations. In
+        just a few steps, you can manage sales, track inventory, and gain
+        insights into your performance without any complexity.
+      </p>
+      <div class="steps">
+        <div class="step">
+          <i class="fas fa-receipt icon"></i>
+          <h3>1. Record Sales</h3>
+          <p>
+            Quickly and accurately record every sale made in your store. The
+            system automatically calculates totals and helps you keep a clear
+            record of all transactions for future reference.
+          </p>
+        </div>
+        <div class="step">
+          <i class="fas fa-warehouse icon"></i>
+          <h3>2. Track Inventory</h3>
+          <p>
+            Monitor your stock levels in real time and always know what is
+            available. Receive alerts when items are running low so you can
+            restock before losing potential customers.
+          </p>
+        </div>
+        <div class="step">
+          <i class="fas fa-chart-pie icon"></i>
+          <h3>3. Get Business Insights</h3>
+          <p>
+            View simple and clear reports that help you understand your sales
+            trends, top-performing products, and overall business performance to
+            make better decisions.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="why-us">
+      <h2>Why Choose Nyondo Stock System?</h2>
+      <p class="intro-text">
+        Running a hardware business can be challenging, especially when managing
+        stock and sales manually. Our system is built to reduce stress, improve
+        accuracy, and give you full control over your business operations.
+      </p>
+      <div class="reasons">
+        <div>
+          <h4>Easy to Use</h4>
+          <p>
+            The system is designed with simplicity in mind, making it easy for
+            anyone to use without requiring technical knowledge or extensive
+            training.
+          </p>
+        </div>
+        <div>
+          <h4>Accurate Record Keeping</h4>
+          <p>
+            Eliminate errors caused by manual tracking. Every sale, stock
+            update, and transaction is recorded accurately and stored securely.
+          </p>
+        </div>
+        <div>
+          <h4>Real-Time Updates</h4>
+          <p>
+            Stay informed at all times with instant updates on stock levels,
+            sales activity, and business performance.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section class="preview">
+      <h2>System Preview</h2>
+      <p class="section-intro">
+        Take a look at how the system is designed to be simple, clean, and easy
+        to use. Every feature is organized to help you complete tasks quickly
+        and efficiently.
+      </p>
+      <div class="preview-images">
+        <img src="{% static 'core/images/dashboard.png' %}" alt="Dashboard preview" />
+        <img src="{% static 'core/images/sales.png' %}" alt="Sales preview" />
+      </div>
+    </section>
+    <!--CALL TO ACTION SECTION-->
+    <section class="cta">
+      <h2>Start Managing Your Business with Confidence</h2>
+      <p>
+        Join Nyondo Stock System today and simplify how you run your hardware
+        business. Stay organized, reduce errors, and improve your daily
+        operations.
+      </p>
+      <a href="{% url 'login' %}" class="btn-primary">Get Started Now</a>
+    </section>
+    <!--FOOTER-->
+    <footer class="footer">
+      <p>&copy; 2026 Nyondo General Hardware LTD. All rights reserved.</p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}
+            NyondoStock
+        {% endblock %}
+    </title>
+    {% load static %}
+    <!-- CSS FILES -->
+    <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/tables.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/forms.css' %}">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- PHOSPHOR ICONS -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        {% if request.user.role == 'ADMIN' %}
+            {% include 'base/sidebar_admin.html' %}
+
+        {% elif request.user.role == 'MANAGER' %}
+            {% include 'base/sidebar_manager.html' %}
+
+        {% elif request.user.role == 'ATTENDANT' %}
+            {% include 'base/sidebar_attendant.html' %}
+        {% endif %}
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        {% block content %}
+
+        {% endblock %}
+
+    </main>
+
+</div>
+
+</body>
+</html>

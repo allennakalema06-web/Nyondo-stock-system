@@ -1,0 +1,503 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Supplier Credit
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            <i class="ph ph-wallet"></i>
+
+            Supplier Credit Tracking
+
+        </h1>
+
+        <p>
+
+            Monitor suppliers with outstanding
+            balances and credit stock activity.
+
+        </p>
+
+    </div>
+
+    <div class="credit-card">
+
+        <span>Total Credit Owed</span>
+
+        <strong>
+
+            UGX {{ total_credit|floatformat:0 }}
+
+        </strong>
+
+    </div>
+
+</div>
+
+<div class="credit-grid">
+
+    <!-- LEFT -->
+
+    <div class="card">
+
+        <div class="section-title">
+
+            <h3>
+
+                Suppliers With Balances
+
+            </h3>
+
+        </div>
+
+        <div class="supplier-list">
+
+            {% for supplier in suppliers %}
+
+            <div class="supplier-item">
+
+                <div class="supplier-top">
+
+                    <div>
+
+                        <h4>
+
+                            {{ supplier.supplier_name }}
+
+                        </h4>
+
+                        <span>
+
+                            {{ supplier.phone_number }}
+
+                        </span>
+
+                    </div>
+
+                    <div class="balance-badge">
+
+                        UGX {{ supplier.balance_due|floatformat:0 }}
+
+                    </div>
+
+                </div>
+
+                <div class="supplier-bottom">
+
+                    <span>
+
+                        {{ supplier.city }}
+
+                    </span>
+
+                    <span>
+
+                        {{ supplier.company_type }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <i class="ph ph-check-circle"></i>
+
+                <h3>
+
+                    No Outstanding Supplier Credit
+
+                </h3>
+
+                <p>
+
+                    All supplier balances are cleared.
+
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div class="card">
+
+        <div class="section-title">
+
+            <h3>
+
+                Recent Credit Stock Entries
+
+            </h3>
+
+        </div>
+
+        <div class="history-scroll">
+
+            {% for entry in recent_credit_stock %}
+
+            <div class="history-item">
+
+                <div class="history-top">
+
+                    <div>
+
+                        <strong>
+
+                            {{ entry.supplier.supplier_name }}
+
+                        </strong>
+
+                        <span>
+
+                            {{ entry.stock_date }}
+
+                        </span>
+
+                    </div>
+
+                    <div class="credit-badge">
+
+                        Credit
+
+                    </div>
+
+                </div>
+
+                <div class="history-info">
+
+                    <span>
+
+                        Invoice:
+                        {{ entry.invoice_number }}
+
+                    </span>
+
+                    <strong>
+
+                        UGX
+                        {{ entry.total_cost|floatformat:0 }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <i class="ph ph-receipt"></i>
+
+                <h3>
+
+                    No Credit Entries
+
+                </h3>
+
+                <p>
+
+                    Credit stock entries
+                    will appear here.
+
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:24px;
+
+}
+
+.page-header h1{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:10px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+}
+
+.credit-card{
+
+    background:linear-gradient(
+        235deg,
+        #0B1F3A,
+        #1ABC9C
+    );
+
+    color:white;
+
+    padding:20px 26px;
+
+    border-radius:18px;
+
+    min-width:260px;
+
+}
+
+.credit-card span{
+
+    display:block;
+
+    opacity:0.8;
+
+    margin-bottom:8px;
+
+}
+
+.credit-card strong{
+
+    font-size:28px;
+
+}
+
+.credit-grid{
+
+    display:grid;
+
+    grid-template-columns:1.2fr 1fr;
+
+    gap:24px;
+
+}
+
+.section-title{
+
+    margin-bottom:20px;
+
+}
+
+.supplier-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+
+}
+
+.supplier-item{
+
+    border:1px solid #e2e8f0;
+
+    border-radius:16px;
+
+    padding:18px;
+
+}
+
+.supplier-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:14px;
+
+}
+
+.supplier-top h4{
+
+    margin-bottom:6px;
+
+}
+
+.supplier-top span{
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+.balance-badge{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+    padding:10px 16px;
+
+    border-radius:30px;
+
+    font-weight:700;
+
+}
+
+.supplier-bottom{
+
+    display:flex;
+
+    gap:18px;
+
+    color:#64748b;
+
+    font-size:14px;
+
+}
+
+.history-scroll{
+
+    max-height:700px;
+
+    overflow-y:auto;
+
+    padding-right:8px;
+
+}
+
+.history-scroll::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.history-scroll::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+
+}
+
+.history-item{
+
+    border:1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    padding:18px;
+
+    margin-bottom:16px;
+
+}
+
+.history-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:14px;
+
+}
+
+.history-top span{
+
+    display:block;
+
+    color:#64748b;
+
+    margin-top:5px;
+
+    font-size:13px;
+
+}
+
+.credit-badge{
+
+    background:#fef3c7;
+
+    color:#92400e;
+
+    padding:8px 14px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.history-info{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+.history-info span{
+
+    color:#64748b;
+
+}
+
+.empty-state{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+}
+
+.empty-state i{
+
+    font-size:48px;
+
+    color:#22c55e;
+
+    margin-bottom:16px;
+
+}
+
+.empty-state p{
+
+    color:#64748b;
+
+}
+
+</style>
+
+{% endblock %}

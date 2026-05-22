@@ -1,0 +1,485 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Stock Details
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            <i class="ph ph-package"></i>
+
+            Stock Entry Details
+
+        </h1>
+
+        <p>
+            Inspect supplier delivery information,
+            product quantities, pricing,
+            and inventory calculations.
+        </p>
+
+    </div>
+
+    <a
+    href="{% url 'stock_history' %}"
+    class="back-btn">
+
+        <i class="ph ph-arrow-left"></i>
+
+        Back
+
+    </a>
+
+</div>
+
+<div class="details-grid">
+
+    <!-- LEFT -->
+
+    <div>
+
+        <div class="card info-card">
+
+            <div class="card-header">
+
+                <h3>Delivery Information</h3>
+
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <span>Supplier</span>
+
+                    <strong>
+                        {{ stock_entry.supplier.supplier_name }}
+                    </strong>
+
+                </div>
+
+                <div class="info-item">
+
+                    <span>Invoice</span>
+
+                    <strong>
+
+                        {% if stock_entry.invoice_number %}
+
+                            {{ stock_entry.invoice_number }}
+
+                        {% else %}
+
+                            No Invoice
+
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+                <div class="info-item">
+
+                    <span>Stock Date</span>
+
+                    <strong>
+                        {{ stock_entry.stock_date }}
+                    </strong>
+
+                </div>
+
+                <div class="info-item">
+
+                    <span>Recorded By</span>
+
+                    <strong>
+                        {{ stock_entry.added_by }}
+                    </strong>
+
+                </div>
+
+                <div class="info-item">
+
+                    <span>Payment Status</span>
+
+                    <strong>
+
+                        {% if stock_entry.supplied_on_credit %}
+
+                            <span class="badge danger">
+
+                                Credit
+
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge success">
+
+                                Paid
+
+                            </span>
+
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+                <div class="info-item">
+
+                    <span>Total Cost</span>
+
+                    <strong class="price">
+
+                        UGX {{ stock_entry.total_cost }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="card table-card">
+
+            <div class="card-header">
+
+                <h3>Delivered Products</h3>
+
+            </div>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Product</th>
+
+                            <th>Qty</th>
+
+                            <th>Unit</th>
+
+                            <th>Cost</th>
+
+                            <th>Subtotal</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in items %}
+
+                        <tr>
+
+                            <td>
+
+                                {{ item.product.product_name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.quantity }}
+
+                            </td>
+
+                            <td>
+
+                                {{ item.product.unit }}
+
+                            </td>
+
+                            <td>
+
+                                UGX {{ item.unit_cost }}
+
+                            </td>
+
+                            <td>
+
+                                UGX {{ item.subtotal }}
+
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div>
+
+        <div class="card summary-card">
+
+            <h3>Stock Summary</h3>
+
+            <div class="summary-item">
+
+                <span>Total Products</span>
+
+                <strong>
+
+                    {{ items.count }}
+
+                </strong>
+
+            </div>
+
+            <div class="summary-item">
+
+                <span>Total Cost</span>
+
+                <strong class="price">
+
+                    UGX {{ stock_entry.total_cost }}
+
+                </strong>
+
+            </div>
+
+            <div class="summary-item">
+
+                <span>Delivery Type</span>
+
+                <strong>
+
+                    {% if stock_entry.supplied_on_credit %}
+
+                        Credit Supply
+
+                    {% else %}
+
+                        Cash Supply
+
+                    {% endif %}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:24px;
+
+}
+
+.page-header h1{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:28px;
+
+    margin-bottom:8px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+    max-width:700px;
+
+    line-height:1.6;
+
+}
+
+.back-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 18px;
+
+    border-radius:10px;
+
+    background:#ecfeff;
+
+    color:#0891b2;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.details-grid{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:24px;
+
+}
+
+.info-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+.info-item{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+}
+
+.info-item span{
+
+    font-size:13px;
+
+    color:#64748b;
+
+}
+
+.price{
+
+    color:#059669;
+
+}
+
+.table-card{
+
+    margin-top:24px;
+
+}
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+th{
+
+    text-align:left;
+
+    padding:14px;
+
+    font-size:13px;
+
+    color:#64748b;
+
+    border-bottom:1px solid #e2e8f0;
+
+}
+
+td{
+
+    padding:16px 14px;
+
+    border-bottom:1px solid #f1f5f9;
+
+}
+
+.summary-card{
+
+    position:sticky;
+
+    top:20px;
+
+}
+
+.summary-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:20px;
+
+}
+
+.badge{
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.badge.success{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+.badge.danger{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+</style>
+
+{% endblock %}

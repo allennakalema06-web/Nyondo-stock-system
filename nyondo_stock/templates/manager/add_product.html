@@ -1,0 +1,29 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Add Product
+
+{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <h1>Add Product</h1>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="submit-btn">
+            Save Product
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

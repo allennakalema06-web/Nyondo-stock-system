@@ -1,0 +1,56 @@
+
+<aside class="sidebar">
+
+    <div class="logo-section">
+        <i class="fas fa-hammer"></i>
+
+        <div>
+            <h1>NyondoStock</h1>
+            <p>ADMIN PANEL</p>
+        </div>
+    </div>
+
+    <nav class="nav-menu">
+
+        <a href="" class="nav-item">
+            <i class="ph ph-chart-pie"></i>
+            Dashboard
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-users"></i>
+            Users
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-debt-card"></i>
+            Deposit Scheme
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-credit-card"></i>
+            Supplier Credit
+        </a>
+
+        <a href="" class="nav-item">
+            <i class="ph ph-file-text"></i>
+            Reports
+        </a>
+
+    </nav>
+
+    <div class="user-profile">
+    <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
+
+    <div class="user-info">
+      <span class="name"> {{ request.user.username }} </span>
+
+      <span class="role"> Admin </span>
+    </div>
+
+    <a href="{% url 'logout' %}" class="logout-link" >
+      <i class="ph ph-sign-out logout-icon"></i>
+    </a>
+  </div>
+
+</aside>

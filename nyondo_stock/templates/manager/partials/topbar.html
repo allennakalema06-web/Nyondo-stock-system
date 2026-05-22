@@ -1,0 +1,40 @@
+<header class="topbar">
+
+    <div>
+
+        <h1 class="page-title">
+
+            {% block page_title %}
+
+            Dashboard
+
+            {% endblock %}
+
+        </h1>
+
+        <p class="page-subtitle">
+
+            Welcome back,
+            {{ request.user.username }}
+
+        </p>
+
+    </div>
+
+    <div class="topbar-actions">
+
+        <button class="topbar-btn">
+
+            <i class="ph ph-bell"></i>
+
+        </button>
+
+        <button class="topbar-btn">
+
+            <i class="ph ph-gear"></i>
+
+        </button>
+
+    </div>
+
+</header>

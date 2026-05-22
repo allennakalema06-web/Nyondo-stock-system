@@ -1,0 +1,30 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Delete Product
+
+{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <h2>
+        Are you sure you want to delete:
+        {{ product.product_name }} ?
+    </h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <button type="submit" class="delete-btn">
+            Delete
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

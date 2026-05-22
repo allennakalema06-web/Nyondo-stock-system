@@ -1,0 +1,127 @@
+<aside class="sidebar">
+
+    <div class="logo-section">
+
+        <div class="logo-icon">
+            <i class="ph ph-garage"></i>
+        </div>
+
+        <div>
+            <h2>NyondoStock</h2>
+            <p>STOCK MANAGER</p>
+        </div>
+
+    </div>
+
+    <nav class="nav-menu">
+
+        <a href="{% url 'manager_dashboard' %}"
+        class="nav-item">
+
+            <i class="ph ph-squares-four"></i>
+
+            Dashboard
+
+        </a>
+
+        <a href="{% url 'product_list' %}"
+        class="nav-item">
+
+            <i class="ph ph-package"></i>
+
+            Products
+
+        </a>
+
+        <a href="#"
+        class="nav-item">
+
+            <i class="ph ph-stack"></i>
+
+            Categories
+
+        </a>
+
+        <a href="{% url 'supplier_list' %}"
+        class="nav-item">
+
+            <i class="ph ph-truck"></i>
+
+            Suppliers
+
+        </a>
+
+        <a href="{% url 'register_stock' %}"
+        class="nav-item">
+
+            <i class="ph ph-plus-circle"></i>
+
+            Register Stock
+
+        </a>
+
+        <a href="{% url 'stock_adjustments' %}"
+        class="nav-item">
+
+            <i class="ph ph-arrows-clockwise"></i>
+
+            Stock Adjustments
+
+        </a>
+
+        <a href="{% url 'low_stock' %}"
+        class="nav-item">
+
+            <i class="ph ph-warning-circle"></i>
+
+            Low Stock
+
+        </a>
+
+        <a href="#"
+        class="nav-item">
+
+            <i class="ph ph-currency-circle-dollar"></i>
+
+            Pricing
+
+        </a>
+
+        <a href="#"
+        class="nav-item">
+
+            <i class="ph ph-chart-bar"></i>
+
+            Reports
+
+        </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+
+        <div class="avatar">
+
+            {{ request.user.username|slice:":2"|upper }}
+
+        </div>
+
+        <div class="user-details">
+            <div>
+             
+            <strong>
+                {{ request.user.username }}
+            </strong>
+
+            <span>
+                Stock Manager
+            </span>
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <i class="ph ph-sign-out"></i>
+            </a>
+        </div>
+
+    </div>
+
+</aside>

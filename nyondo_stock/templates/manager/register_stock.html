@@ -1,0 +1,696 @@
+{% extends 'manager/base_manager.html' %}
+
+{% load static %}
+
+{% block page_title %}
+
+Register Stock
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            <i class="ph ph-package"></i>
+
+            Register New Stock
+
+        </h1>
+
+        <p>
+            Record supplier deliveries, update inventory quantities,
+            and automatically calculate selling prices for all customer levels.
+        </p>
+
+    </div>
+
+</div>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    {{ formset.management_form }}
+
+    <div class="register-grid">
+
+        <!-- LEFT SECTION -->
+
+        <div class="left-section">
+
+            <div class="card">
+
+                <div class="section-header">
+
+                    <h3>Stock Information</h3>
+
+                </div>
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Supplier</label>
+                        {{ form.supplier }}
+                    </div>
+
+                    <div>
+                        <label>Invoice Number</label>
+                        {{ form.invoice_number }}
+                    </div>
+
+                    <div>
+                        <label>Stock Date</label>
+                        {{ form.stock_date }}
+                    </div>
+
+                    <div class="checkbox-wrapper">
+
+                        {{ form.supplied_on_credit }}
+
+                        <label>
+
+                            Supplied on Credit
+
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div class="notes-wrapper">
+
+                    <label>Notes</label>
+
+                    {{ form.notes }}
+
+                </div>
+
+            </div>
+
+            <div class="card table-card">
+
+                <div class="table-top">
+
+                    <h3>Stock Items</h3>
+
+                    <button
+                    type="button"
+                    class="btn btn-primary"
+                    id="add-row">
+
+                        <i class="ph ph-plus"></i>
+
+                        Add Product
+
+                    </button>
+
+                </div>
+
+                <table id="stock-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Product</th>
+
+                            <th>Quantity</th>
+
+                            <th>Unit Cost</th>
+
+                            <th>Normal %</th>
+                            <th>Retail %</th>
+                            <th>Wholesale %</th>
+
+                            <th>Subtotal</th>
+
+                            <th></th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        {% for form in formset %}
+
+                        <tr class="stock-row">
+
+                            <td>
+
+                                {{ form.product }}
+
+                            </td>
+
+                            <td>
+                                {{ form.quantity }}
+                            </td>
+                           
+
+                            <td>
+
+                                {{ form.unit_cost }}
+
+                            </td>
+
+                            <td>
+                                {{ form.normal_percentage }}
+                            </td>
+
+                            <td>
+                                {{ form.retail_percentage }}
+                            </td>
+
+                            <td>
+                                {{ form.wholesale_percentage }}
+                            </td>
+
+                            <td>
+
+                                <input
+                                type="text"
+                                class="subtotal-display form-control"
+                                readonly>
+
+                            </td>
+
+                            <td>
+                                
+                                {{ form.DELETE.as_hidden }}
+                                <button
+                                type="button"
+                                class="btn-icon remove-row">
+                                
+                                <i class="ph ph-trash"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SECTION -->
+
+        <div class="right-section">
+
+            <div class="card summary-card">
+
+                <h3>Stock Summary</h3>
+
+                <div class="summary-item">
+
+                    <span>Total Items</span>
+
+                    <strong id="total-items">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+                <div class="summary-item">
+
+                    <span>Total Quantity</span>
+
+                    <strong id="total-quantity">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+                <div class="summary-item total">
+
+                    <span>Total Cost</span>
+
+                    <strong id="grand-total">
+
+                        UGX 0
+
+                    </strong>
+
+                </div>
+
+                <button class="btn btn-primary full-btn">
+
+                    <i class="ph ph-floppy-disk"></i>
+
+                    Save Stock
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>
+
+<style>
+
+.page-header{
+
+    margin-bottom:24px;
+
+}
+
+.page-header h1{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:28px;
+
+    color:#0f172a;
+
+    margin-bottom:8px;
+
+}
+
+.page-header h1 i{
+
+    color:#10b981;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+    font-size:15px;
+
+    max-width:700px;
+
+    line-height:1.6;
+
+}
+.register-grid{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:24px;
+
+}
+
+
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+.checkbox-wrapper{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:30px;
+
+}
+
+.notes-wrapper{
+
+    margin-top:20px;
+
+}
+
+.table-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.table-card{
+
+    margin-top:24px;
+
+}
+
+.summary-card{
+
+    position:sticky;
+
+    top:20px;
+
+}
+
+.summary-item{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-bottom:20px;
+
+}
+
+.summary-item.total{
+
+    padding-top:20px;
+
+    border-top:1px solid #e2e8f0;
+
+    font-size:20px;
+
+}
+
+.full-btn{
+
+    width:100%;
+
+}
+
+.remove-row{
+
+    padding:10px;
+
+}
+
+.cost-input{
+    min-width:100px;
+}
+
+.quantity-input{
+    min-width:60px;
+}
+.percentage-input{
+    width:60px;
+    text-align:center;
+}
+
+.subtotal-display{
+    width:120px;
+}
+
+.table-card{
+    overflow-x:auto;
+}
+
+.product-select{
+
+    min-width:180px;
+
+}
+
+.btn-icon{
+
+    background:#fee2e2;
+
+    color:#dc2626;
+
+    border:none;
+
+    width:36px;
+
+    height:36px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+</style>
+
+<script>
+
+    const addRowBtn = document.getElementById('add-row')
+
+    const totalForms = document.getElementById(
+        'id_items-TOTAL_FORMS'
+    )
+
+    const tableBody = document.querySelector(
+        '#stock-table tbody'
+    )
+
+    addRowBtn.addEventListener('click', function(){
+
+        const currentFormCount = parseInt(
+            totalForms.value
+        )
+
+        const firstRow = document.querySelector(
+            '.stock-row'
+        )
+
+        const newRow = firstRow.cloneNode(true)
+
+        const inputs = newRow.querySelectorAll(
+            'input, select'
+        )
+        inputs.forEach(function(input){
+            if(input.name){
+                input.name = input.name.replace(
+                    /items-(\d+)-/,
+                    `items-${currentFormCount}-`
+                )
+            }
+            
+            if(input.id){
+                input.id = input.id.replace(
+                    /items-(\d+)-/,
+                    `items-${currentFormCount}-`
+                )
+            }
+            
+            if(input.tagName === 'SELECT'){
+                input.selectedIndex = 0
+            }else if(
+                input.type !== 'hidden' &&
+                input.type !== 'checkbox'
+            ){
+                input.value = ''
+            }
+        })
+        const subtotalField = newRow.querySelector(
+            '.subtotal-display'
+        )
+        if(subtotalField){
+            subtotalField.value = ''
+        }
+
+        attachUnitDisplayEvents()
+        
+        
+
+        tableBody.appendChild(newRow)
+
+        totalForms.value = currentFormCount + 1
+
+        attachRemoveEvents()
+
+        attachCalculationEvents()
+
+    })
+    
+    
+    
+    function attachRemoveEvents(){
+        const removeButtons = document.querySelectorAll(
+            '.remove-row'
+        )
+        removeButtons.forEach(function(button){
+            button.onclick = function(){
+                const row = button.closest('tr')
+                const rows = document.querySelectorAll(
+                    '.stock-row'
+                )
+                if(rows.length === 1){
+                    const inputs = row.querySelectorAll(
+                        'input, select'
+                    )
+                    inputs.forEach(function(input){
+                        if(input.tagName === 'SELECT'){
+                            input.selectedIndex = 0
+                        }else if(
+                            input.type !== 'hidden' &&
+                            input.type !== 'checkbox'
+                        ){
+                            input.value = ''
+                        }
+                    })
+                    row.querySelector(
+                        '.subtotal-display'
+                    ).value = ''
+                }else{
+                    row.remove()
+                }
+                calculateTotals()
+            }
+        })
+    }
+    
+    function attachCalculationEvents(){
+
+        const rows = document.querySelectorAll(
+            '.stock-row'
+        )
+
+        rows.forEach(function(row){
+
+            const quantityInput = row.querySelector(
+                '.quantity-input'
+            )
+
+            const costInput = row.querySelector(
+                '.cost-input'
+            )
+
+            quantityInput.oninput = function(){
+
+                calculateRow(row)
+
+            }
+
+            costInput.oninput = function(){
+
+                calculateRow(row)
+
+            }
+
+        })
+
+    }
+    function attachUnitDisplayEvents(){
+        const rows = document.querySelectorAll(
+            '.stock-row'
+        )
+        rows.forEach(function(row){
+            const productSelect = row.querySelector(
+                '.product-select'
+            )
+            const unitDisplay = row.querySelector(
+                '.unit-display'
+            )
+            productSelect.onchange = function(){
+                const selectedText =
+                productSelect.options[
+                    productSelect.selectedIndex
+                ].text
+                
+                if(
+                    selectedText.includes('Iron Bar')
+                ){
+                    unitDisplay.innerText = 'Length'
+                }else if(
+                    selectedText.includes('Cement')
+                ){
+                    unitDisplay.innerText = 'Bag'
+                }else if(
+                    selectedText.includes('Iron Sheets')
+                ){
+                    unitDisplay.innerText = 'Sheet'
+                }else if(
+                    selectedText.includes('Nails')
+                ){
+                    unitDisplay.innerText = 'Kg'
+                }else{
+                    unitDisplay.innerText = '-'
+                }
+            }
+        })
+    }
+
+    function calculateRow(row){
+
+        const quantity = parseFloat(
+            row.querySelector('.quantity-input').value
+        ) || 0
+
+        const cost = parseFloat(
+            row.querySelector('.cost-input').value
+        ) || 0
+
+        const subtotal = quantity * cost
+
+        row.querySelector(
+            '.subtotal-display'
+        ).value = subtotal.toLocaleString()
+
+        calculateTotals()
+
+    }
+
+    function calculateTotals(){
+
+        const rows = document.querySelectorAll(
+            '.stock-row'
+        )
+
+        let totalQuantity = 0
+
+        let grandTotal = 0
+
+        rows.forEach(function(row){
+
+            const quantity = parseFloat(
+                row.querySelector('.quantity-input').value
+            ) || 0
+
+            const cost = parseFloat(
+                row.querySelector('.cost-input').value
+            ) || 0
+
+            totalQuantity += quantity
+
+            grandTotal += quantity * cost
+
+        })
+
+        document.getElementById(
+            'total-items'
+        ).innerText = rows.length
+
+        document.getElementById(
+            'total-quantity'
+        ).innerText = totalQuantity
+
+        document.getElementById(
+            'grand-total'
+        ).innerText =
+            'UGX ' + grandTotal.toLocaleString()
+
+    }
+
+    attachRemoveEvents()
+
+    attachCalculationEvents()
+
+</script>
+{% endblock %}

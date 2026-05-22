@@ -1,0 +1,381 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+
+Stock Adjustments
+
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>
+
+            <i class="ph ph-package"></i>
+
+            Stock Adjustments
+
+        </h1>
+
+        <p>
+            Record damaged, lost, corrected,
+            or manually adjusted stock.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="adjustment-grid">
+
+    <!-- FORM SIDE -->
+
+    <div class="card">
+
+        <div class="section-title">
+
+            <h3>
+
+                New Adjustment
+
+            </h3>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-group">
+
+                <label>Product</label>
+
+                {{ form.product }}
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Quantity Change</label>
+
+                {{ form.quantity_changed }}
+
+                <small>
+                    Use negative numbers for
+                    damaged/lost stock.
+                </small>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Reason</label>
+
+                {{ form.reason }}
+
+            </div>
+
+            <button class="btn btn-primary full-btn">
+
+                <i class="ph ph-floppy-disk"></i>
+
+                Save Adjustment
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- HISTORY SIDE -->
+
+    <div class="card">
+
+        <div class="section-title">
+
+            <h3>
+
+                Adjustment History
+
+            </h3>
+
+        </div>
+
+        <div class="history-scroll">
+
+            {% for adjustment in adjustments %}
+
+            <div class="history-item">
+
+                <div class="history-top">
+
+                    <div>
+
+                        <strong>
+
+                            {{ adjustment.product.product_name }}
+
+                        </strong>
+
+                        <span>
+
+                            {{ adjustment.adjusted_at|date:"d M Y - H:i" }}
+
+                        </span>
+
+                    </div>
+
+                    {% if adjustment.quantity_changed < 0 %}
+
+                    <span class="badge danger">
+
+                        {{ adjustment.quantity_changed }}
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge success">
+
+                        +{{ adjustment.quantity_changed }}
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+                <p>
+
+                    {{ adjustment.reason }}
+
+                </p>
+
+                <small>
+
+                    By:
+                    {{ adjustment.adjusted_by }}
+
+                </small>
+
+            </div>
+
+            {% empty %}
+
+            <div class="empty-state">
+
+                <i class="ph ph-package"></i>
+
+                <h3>No Adjustments Yet</h3>
+
+                <p>
+                    Adjustment history will
+                    appear here.
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    margin-bottom:24px;
+
+}
+
+.page-header h1{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    font-size:28px;
+
+    margin-bottom:10px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+}
+
+.adjustment-grid{
+
+    display:grid;
+
+    grid-template-columns:1fr 1.3fr;
+
+    gap:24px;
+
+}
+
+.section-title{
+
+    margin-bottom:24px;
+
+}
+
+.form-group{
+
+    margin-bottom:20px;
+
+}
+
+.form-group label{
+
+    display:block;
+
+    margin-bottom:10px;
+
+    font-weight:600;
+
+}
+
+.form-group small{
+
+    display:block;
+
+    margin-top:8px;
+
+    color:#64748b;
+
+}
+
+.full-btn{
+
+    width:100%;
+
+}
+
+.history-scroll{
+
+    max-height:700px;
+
+    overflow-y:auto;
+
+    padding-right:8px;
+
+}
+
+.history-scroll::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.history-scroll::-webkit-scrollbar-thumb{
+
+    background:#cbd5e1;
+
+    border-radius:20px;
+
+}
+
+.history-item{
+
+    border:1px solid #e2e8f0;
+
+    border-radius:14px;
+
+    padding:18px;
+
+    margin-bottom:16px;
+
+}
+
+.history-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    margin-bottom:12px;
+
+}
+
+.history-top span{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:13px;
+
+    margin-top:4px;
+
+}
+
+.badge{
+
+    padding:7px 14px;
+
+    border-radius:30px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.badge.success{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+.badge.danger{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+.history-item p{
+
+    margin-bottom:12px;
+
+    line-height:1.6;
+
+}
+
+.empty-state{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+}
+
+.empty-state i{
+
+    font-size:48px;
+
+    color:#94a3b8;
+
+    margin-bottom:16px;
+
+}
+
+</style>
+
+{% endblock %}
