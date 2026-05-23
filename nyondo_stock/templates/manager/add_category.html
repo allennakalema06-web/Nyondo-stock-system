@@ -1,110 +1,84 @@
-{% extends 'manager/base_manager.html' %}
-
-{% block page_title %}
-
-Add Category
-
-{% endblock %}
+{% extends 'manager/base_manager.html' %} {% block page_title %} 
+Add Category 
+{% endblock %} 
 
 {% block content %}
 
 <div class="page-header">
+  <div>
+    <h1 class="page-title">Add Product Category</h1>
 
-    <div>
-        <h1 class="page-title">
-            Add Product Category
-        </h1>
-
-        <p class="page-subtitle">
-            Create organized product groupings
-            for better inventory management.
-        </p>
-    </div>
-
+    <p class="page-subtitle">
+      Create organized product groupings for better inventory management.
+    </p>
+  </div>
 </div>
 
 <div class="form-card">
+  <form method="POST">
+    {% csrf_token %}
 
-    <form method="POST">
+    <div class="input-group">
+      <label> Category Name </label>
 
-        {% csrf_token %}
+      {{ form.category_name }}
+    </div>
 
-        <div class="input-group">
+    <button type="submit" class="btn btn-primary">
+      <i class="ph ph-folder-plus"></i>
 
-            <label>
-                Category Name
-            </label>
+      Save Category
+    </button>
+  </form>
+  <div class="page-top">
+    <a href="javascript:history.back()" class="back-btn">
+      <i class="ph ph-arrow-left"></i>
 
-            {{ form.category_name }}
-
-        </div>
-
-        <button type="submit" class="btn btn-primary">
-
-            <i class="ph ph-folder-plus"></i>
-
-            Save Category
-
-        </button>
-
-    </form>
-
+      Back
+    </a>
+  </div>
 </div>
 
 <style>
+  .form-card {
+    background: white;
 
-.form-card{
+    padding: 32px;
 
-    background:white;
+    border-radius: 20px;
 
-    padding:32px;
+    max-width: 600px;
 
-    border-radius:20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  }
 
-    max-width:600px;
+  .input-group {
+    margin-bottom: 24px;
+  }
 
-    box-shadow:0 10px 30px rgba(0,0,0,0.06);
+  .input-group label {
+    display: block;
 
-}
+    margin-bottom: 10px;
 
-.input-group{
+    font-weight: 600;
 
-    margin-bottom:24px;
+    color: #0f172a;
+  }
 
-}
+  .page-header {
+    margin-bottom: 30px;
+  }
 
-.input-group label{
+  .page-title {
+    font-size: 30px;
 
-    display:block;
+    margin-bottom: 8px;
+  }
 
-    margin-bottom:10px;
-
-    font-weight:600;
-
-    color:#0f172a;
-
-}
-
-.page-header{
-
-    margin-bottom:30px;
-
-}
-
-.page-title{
-
-    font-size:30px;
-
-    margin-bottom:8px;
-
-}
-
-.page-subtitle{
-
-    color:#64748b;
-
-}
-
+  .page-subtitle {
+    color: #64748b;
+  }
 </style>
 
 {% endblock %}

@@ -1,49 +1,37 @@
-{% extends 'manager/base_manager.html' %}
-
-{% block page_title %}
-Edit Category
-{% endblock %}
-
-{% block content %}
+{% extends 'manager/base_manager.html' %} {% block page_title %} Edit Category
+{% endblock %} {% block content %}
 
 <div class="form-card">
+  <div class="form-header">
+    <h2>Edit Category</h2>
 
-    <div class="form-header">
+    <p>Update category information.</p>
+  </div>
 
-        <h2>Edit Category</h2>
+  <form method="POST">
+    {% csrf_token %}
 
-        <p>
-            Update category information.
-        </p>
+    <div class="input-group">
+      <label>Category Name</label>
 
+      {{ form.category_name }}
     </div>
 
-    <form method="POST">
+    <div class="form-actions">
+      <button class="btn btn-primary">
+        <i class="ph ph-floppy-disk"></i>
 
-        {% csrf_token %}
+        Update Category
+      </button>
+    </div>
+    <div class="page-top">
+      <a href="javascript:history.back()" class="back-btn">
+        <i class="ph ph-arrow-left"></i>
 
-        <div class="input-group">
-
-            <label>Category Name</label>
-
-            {{ form.category_name }}
-
-        </div>
-
-        <div class="form-actions">
-
-            <button class="btn btn-primary">
-
-                <i class="ph ph-floppy-disk"></i>
-
-                Update Category
-
-            </button>
-
-        </div>
-
-    </form>
-
+        Back
+      </a>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

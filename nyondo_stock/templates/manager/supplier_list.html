@@ -1,144 +1,88 @@
-{% extends 'manager/base_manager.html' %}
-
-{% block page_title %}
-
-Suppliers
-
-{% endblock %}
-
+{% extends 'manager/base_manager.html' %} {% block page_title %} 
+Suppliers 
+{% endblock %} 
 {% block content %}
 
 <div class="page-header">
+  <div>
+    <h2 class="page-title">Suppliers</h2>
 
-    <div>
+    <p class="page-subtitle">Manage hardware suppliers</p>
+  </div>
 
-        <h2 class="page-title">
+  <a href="{% url 'add_supplier' %}" class="btn btn-primary"> Add Supplier </a>
+  <a
+    href="{% url 'supplier_credit' %}"
+    class="btn btn-primary"
+    style="  float: right; margin-left: 10px;"
+  >
+    <i class="ph ph-wallet"></i>
 
-            Suppliers
-
-        </h2>
-
-        <p class="page-subtitle">
-
-            Manage hardware suppliers
-
-        </p>
-
-    </div>
-
-    <a
-    href="{% url 'add_supplier' %}"
-    class="btn btn-primary">
-
-        Add Supplier
-
-    </a>
-
+    Supplier Credit
+  </a>
 </div>
+
 <div class="search-box">
+  <i class="ph ph-magnifying-glass"></i>
 
-    <i class="ph ph-magnifying-glass"></i>
-
-    <input
-    type="text"
-    placeholder="Search suppliers...">
-
+  <input type="text" placeholder="Search suppliers..." />
 </div>
 <div class="card table-card table-responsive">
+  <table>
+    <thead>
+      <tr>
+        <th>Supplier</th>
 
-    <table>
+        <th>Contact Person</th>
 
-        <thead>
+        <th>Phone</th>
 
-            <tr>
+        <th>City</th>
 
-                <th>Supplier</th>
+        <th>Balance Due</th>
 
-                <th>Contact Person</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
 
-                <th>Phone</th>
+    <tbody>
+      {% for supplier in suppliers %}
 
-                <th>City</th>
+      <tr>
+        <td>{{ supplier.supplier_name }}</td>
 
-                <th>Balance Due</th>
+        <td>{{ supplier.contact_person }}</td>
 
-                <th>Actions</th>
+        <td>{{ supplier.phone_number }}</td>
 
-            </tr>
+        <td>{{ supplier.city }}</td>
 
-        </thead>
+        <td>UGX {{ supplier.balance_due }}</td>
 
-        <tbody>
+        <td>
+          <a
+            href="{% url 'supplier_details' supplier.id %}"
+            class="btn-action view"
+          >
+            <i class="ph ph-eye"></i>
+          </a>
+        </td>
+      </tr>
 
-            {% for supplier in suppliers %}
+      {% empty %}
+      <tr>
+        <td colspan="6">
+          <div class="empty-state">
+            <i class="ph ph-users"></i>
 
-            <tr>
+            <p>No suppliers added yet.</p>
+          </div>
+        </td>
 
-                <td>
-
-                    {{ supplier.supplier_name }}
-
-                </td>
-
-                <td>
-
-                    {{ supplier.contact_person }}
-
-                </td>
-
-                <td>
-
-                    {{ supplier.phone_number }}
-
-                </td>
-
-                <td>
-
-                    {{ supplier.city }}
-
-                </td>
-
-                <td>
-
-                    UGX {{ supplier.balance_due }}
-
-                </td>
-
-                <td>
-
-                    <a
-                    href="{% url 'supplier_details' supplier.id %}"
-                    class="btn-action view">
-
-                        <i class="ph ph-eye"></i>
-
-                    </a>
-
-                </td>
-
-            </tr>
-
-            {% empty %}
-            <tr>
-
-                <td colspan="6">
-
-                    <div class="empty-state">
-
-                        <i class="ph ph-users"></i>
-
-                        <p>No suppliers added yet.</p>
-
-                    </div>
-
-                </td>
-
-            {% endfor %}
-
-        </tbody>
-
-    </table>
-
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 {% endblock %}

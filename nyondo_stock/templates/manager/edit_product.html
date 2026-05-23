@@ -1,29 +1,21 @@
-{% extends 'manager/base_manager.html' %}
-
-{% block page_title %}
-
-Edit Product
-
-{% endblock %}
-
-{% block content %}
+{% extends 'manager/base_manager.html' %} {% block page_title %} Edit Product {%
+endblock %} {% block content %}
 
 <div class="form-container">
+  <h1>Edit Product</h1>
 
-    <h1>Edit Product</h1>
+  <form method="POST">
+    {% csrf_token %} {{ form.as_p }}
 
-    <form method="POST">
+    <button type="submit" class="submit-btn">Update Product</button>
+    <div class="page-top">
+      <a href="javascript:history.back()" class="back-btn">
+        <i class="ph ph-arrow-left"></i>
 
-        {% csrf_token %}
-
-        {{ form.as_p }}
-
-        <button type="submit" class="submit-btn">
-            Update Product
-        </button>
-
-    </form>
-
+        Back
+      </a>
+    </div>
+  </form>
 </div>
 
 {% endblock %}

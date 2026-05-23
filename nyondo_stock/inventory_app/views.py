@@ -1,12 +1,9 @@
-from urllib import request
-
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from .models import Product, StockEntry, StockEntryItem, Category, Supplier, StockAdjustment
+from .models import Product, StockEntry, Category, Supplier, StockAdjustment, StockEntryItem
 from django.db import models
 from .forms import StockEntryForm, ProductForm, StockEntryItemFormSet, StockAdjustmentForm, SupplierForm, CategoryForm, PricingForm
-from decimal import Decimal
-from django.db.models import Sum, F, DecimalField
+from django.db.models import Sum, F
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -55,44 +52,41 @@ def manager_dashboard(request):
     ):
 
         return redirect('access_denied')
-
+    products = Product.objects.all()
     total_products = Product.objects.count()
 
     total_stock_quantity = 0
 
     total_inventory_value = 0
 
-    products = Product.objects.all()
+    
 
     for product in products:
+        quantity = product.quantity or 0
+        unit_cost = product.unit_cost or 0
 
-        total_stock_quantity += product.quantity
+        total_stock_quantity += quantity
 
         total_inventory_value += (
-            product.quantity * product.unit_cost
+            quantity * unit_cost
         )
 
     low_stock_products = Product.objects.filter(
-        quantity__lte=models.F('reorder_level')
+        quantity__lte=F('reorder_level')
     ).count()
 
     supplier_credit = Supplier.objects.filter(
         balance_due__gt=0
     )
 
-    total_supplier_credit = 0
+    total_supplier_credit = Supplier.objects.filter(balance_due__gt=0).aggregate(total=Sum('balance_due'))['total'] or 0
 
-    for supplier in supplier_credit:
+    recent_stock = StockEntry.objects.select_related('supplier').order_by('-date_added')[:5]
 
-        total_supplier_credit += supplier.balance_due
+    top_products = Product.objects.order_by('-quantity')[:5]
+    
 
-    recent_stock = StockEntry.objects.select_related(
-        'supplier'
-    ).order_by('-date_added')[:5]
 
-    top_products = Product.objects.order_by(
-        '-quantity'
-    )[:5]
 
     context = {
 
@@ -143,7 +137,7 @@ def product_list(request):
             product_name__icontains=search_query
         )
 
-    if category_id:
+    if category_id and category_id != 'None':
 
         products = products.filter(
             category_id=category_id
@@ -217,72 +211,56 @@ def register_stock(request):
 
             total_cost = 0
 
-            items = formset.save(commit=False)
-
-            for item in items:
-
-                item.stock_entry = stock_entry
-
-                item.subtotal = (
-                    item.quantity * item.unit_cost
-                )
-
-                total_cost += item.subtotal
-
-                item.save()
-            for deleted_form in formset.deleted_forms:
-
-                    if deleted_form.instance.pk:
-
-                       deleted_form.instance.delete()
-
-            product = item.product
-
-            product.quantity += item.quantity
-
-            product.unit_cost = item.unit_cost
-
-            wholesale_markup = formset.cleaned_data[
-                    items.index(item)
-                ]['wholesale_markup']
-
-            normal_markup = formset.cleaned_data[
-                     items.index(item)
-                ]['normal_markup']
-
-            retail_markup = formset.cleaned_data[
-                    items.index(item)
-                ]['retail_markup']
+            total_cost = 0
             
-            
-            product.wholesale_price = (
-                    item.unit_cost *
-                    (1 + (wholesale_markup / 100))
-                )
+            for item_form in formset:
+                if item_form.cleaned_data:
+                    for item_form in formset:
+                        if (
+                            item_form.cleaned_data
+                            and not item_form.cleaned_data.get('DELETE')
+                            and item_form.cleaned_data.get('product')
+                        ):
+                            item = item_form.save(commit=False)
+                            item.stock_entry = stock_entry
+                            item.subtotal = (
+                            item.quantity * item.unit_cost
+                            )
 
-            product.normal_price = (
-                    item.unit_cost *
-                    (1 + (normal_markup / 100))
-                )
+                            total_cost += item.subtotal
 
-            product.retail_price = (
-                    item.unit_cost *
-                    (1 + (retail_markup / 100))
-                )
-            
-            product.normal_percentage = form.cleaned_data[
-                'normal_percentage'
-                ]
+                            item.save()
 
-            product.retail_percentage = form.cleaned_data[
-                'retail_percentage'
-                ]
+                            product = item.product
 
-            product.wholesale_percentage = form.cleaned_data[
-                'wholesale_percentage'
-                ]
-            
-            product.save()
+                            product.quantity += item.quantity
+
+                            product.unit_cost = item.unit_cost
+
+                            # GET PERCENTAGES FROM THIS ITEM FORM
+
+                            normal_percentage = item_form.cleaned_data.get(
+                                'normal_percentage', 25
+                            )
+                            retail_percentage = item_form.cleaned_data.get(
+                                'retail_percentage', 20
+                            )
+
+                            wholesale_percentage = item_form.cleaned_data.get(
+                                'wholesale_percentage', 10
+                            )
+
+                            # SAVE PERCENTAGES
+
+                            product.normal_percentage = normal_percentage
+
+                            product.retail_percentage = retail_percentage
+
+                            product.wholesale_percentage = wholesale_percentage
+
+                            # SAVE PRODUCT
+
+                            product.save()
 
             stock_entry.total_cost = total_cost
 
@@ -295,8 +273,11 @@ def register_stock(request):
                 supplier.balance_due += total_cost
 
                 supplier.save()
+            messages.success(request,
+                             'Stock registered successfully.'
+            )    
 
-            return redirect('product_list')
+            return redirect('stock_history')
 
     else:
 
@@ -310,9 +291,7 @@ def register_stock(request):
         'form': form,
         'formset': formset
     }
-    messages.success(request,
-    'Stock registered successfully.'
-    )
+    
 
     return render(
         request,
@@ -331,11 +310,15 @@ def stock_history(request):
         return redirect('access_denied')
 
     stock_entries = StockEntry.objects.all().order_by(
-        '-date_added'
+    '-date_added'
     )
+    paginator = Paginator(stock_entries, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        'stock_entries': stock_entries
+        'stock_entries': stock_entries,
+        'page_obj': page_obj
     }
 
     return render(

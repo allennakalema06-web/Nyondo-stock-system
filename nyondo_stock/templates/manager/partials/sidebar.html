@@ -33,6 +33,14 @@
             Products
 
         </a>
+        <a href="{% url 'stock_history' %}"class="nav-item {% if request.resolver_match.url_name == 'stock_history' %}active{% endif %}">
+
+            <i class="ph ph-file-text"></i>
+
+            Stock Records
+
+        </a>
+
 
         
 

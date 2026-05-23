@@ -1,512 +1,343 @@
-{% extends 'manager/base_manager.html' %}
-
-{% block page_title %}
-
-Stock Details
-
-{% endblock %}
-
-{% block content %}
+{% extends 'manager/base_manager.html' %} {% block page_title %} Stock Details
+{% endblock %} {% block content %}
 
 <div class="page-header">
+  <div>
+    <h1>
+      <i class="ph ph-package"></i>
 
-    <div>
+      Stock Entry Details
+    </h1>
 
-        <h1>
+    <p>
+      Inspect supplier delivery information, product quantities, pricing, and
+      inventory calculations.
+    </p>
+  </div>
 
-            <i class="ph ph-package"></i>
+  <a href="{% url 'stock_history' %}" class="back-btn">
+    <i class="ph ph-arrow-left"></i>
 
-            Stock Entry Details
+    Back
+  </a>
+</div>
+<div class="page-top">
+  <a href="javascript:history.back()" class="back-btn">
+    <i class="ph ph-arrow-left"></i>
 
-        </h1>
-
-        <p>
-            Inspect supplier delivery information,
-            product quantities, pricing,
-            and inventory calculations.
-        </p>
-
-    </div>
-
-    <a
-    href="{% url 'stock_history' %}"
-    class="back-btn">
-
-        <i class="ph ph-arrow-left"></i>
-
-        Back
-
-    </a>
-
+    Back
+  </a>
 </div>
 
 <div class="details-grid">
+  <!-- LEFT -->
 
-    <!-- LEFT -->
+  <div>
+    <div class="card info-card">
+      <div class="card-header">
+        <h3>Delivery Information</h3>
+      </div>
 
-    <div>
+      <div class="info-grid">
+        <div class="info-item">
+          <span>Supplier</span>
 
-        <div class="card info-card">
-
-            <div class="card-header">
-
-                <h3>Delivery Information</h3>
-
-            </div>
-
-            <div class="info-grid">
-
-                <div class="info-item">
-
-                    <span>Supplier</span>
-
-                    <strong>
-                        {{ stock_entry.supplier.supplier_name }}
-                    </strong>
-
-                </div>
-
-                <div class="info-item">
-
-                    <span>Invoice</span>
-
-                    <strong>
-
-                        {% if stock_entry.invoice_number %}
-
-                            {{ stock_entry.invoice_number }}
-
-                        {% else %}
-
-                            No Invoice
-
-                        {% endif %}
-
-                    </strong>
-
-                </div>
-
-                <div class="info-item">
-
-                    <span>Stock Date</span>
-
-                    <strong>
-                        {{ stock_entry.stock_date }}
-                    </strong>
-
-                </div>
-
-                <div class="info-item">
-
-                    <span>Recorded By</span>
-
-                    <strong>
-                        {{ stock_entry.added_by }}
-                    </strong>
-
-                </div>
-
-                <div class="info-item">
-
-                    <span>Payment Status</span>
-
-                    <strong>
-
-                        {% if stock_entry.supplied_on_credit %}
-
-                            <span class="badge danger">
-
-                                Credit
-
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge success">
-
-                                Paid
-
-                            </span>
-
-                        {% endif %}
-
-                    </strong>
-
-                </div>
-
-                <div class="info-item">
-
-                    <span>Total Cost</span>
-
-                    <strong class="price">
-
-                        UGX {{ stock_entry.total_cost }}
-
-                    </strong>
-
-                </div>
-
-            </div>
-
+          <strong> {{ stock_entry.supplier.supplier_name }} </strong>
         </div>
 
-        <div class="card table-card">
+        <div class="info-item">
+          <span>Invoice</span>
 
-            <div class="card-header">
-
-                <h3>Delivered Products</h3>
-
-            </div>
-
-            <div class="table-wrapper table-responsive">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-
-                            <th>Product</th>
-
-                            <th>Qty</th>
-
-                            <th>Unit</th>
-
-                            <th>Cost</th>
-
-                            <th>Subtotal</th>
-
-                        </tr>
-
-                    </thead>
-
-                    <tbody>
-
-                        {% for item in items %}
-
-                        <tr>
-
-                            <td>
-
-                                {{ item.product.product_name }}
-
-                            </td>
-
-                            <td>
-
-                                {{ item.quantity }}
-
-                            </td>
-
-                            <td>
-
-                                {{ item.product.unit }}
-
-                            </td>
-
-                            <td>
-
-                                UGX {{ item.unit_cost }}
-
-                            </td>
-
-                            <td>
-
-                                UGX {{ item.subtotal }}
-
-                            </td>
-
-                        </tr>
-                        
-                        {% empty %}
-                        <tr>
-                            <td colspan="5">
-                                <div class="empty-state">
-                                    <i class="ph ph-package"></i>
-                                    <p>No products available yet.</p>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
+          <strong>
+            {% if stock_entry.invoice_number %} {{ stock_entry.invoice_number }}
+            {% else %} No Invoice {% endif %}
+          </strong>
         </div>
 
+        <div class="info-item">
+          <span>Stock Date</span>
+
+          <strong> {{ stock_entry.stock_date }} </strong>
+        </div>
+
+        <div class="info-item">
+          <span>Recorded By</span>
+
+          <strong> {{ stock_entry.added_by }} </strong>
+        </div>
+
+        <div class="info-item">
+          <span>Payment Status</span>
+
+          <strong>
+            {% if stock_entry.supplied_on_credit %}
+
+            <span class="badge danger"> Credit </span>
+
+            {% else %}
+
+            <span class="badge success"> Paid </span>
+
+            {% endif %}
+          </strong>
+        </div>
+
+        <div class="info-item">
+          <span>Total Cost</span>
+
+          <strong class="price"> UGX {{ stock_entry.total_cost }} </strong>
+        </div>
+      </div>
     </div>
 
-    <!-- RIGHT -->
+    <div class="card table-card">
+      <div class="card-header">
+        <h3>Delivered Products</h3>
+      </div>
 
-    <div>
+      <div class="table-wrapper table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
 
-        <div class="card summary-card">
+              <th>Qty</th>
 
-            <h3>Stock Summary</h3>
+              <th>Unit</th>
 
-            <div class="summary-item">
+              <th>Cost</th>
 
-                <span>Total Products</span>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
 
-                <strong>
+          <tbody>
+            {% for item in items %}
 
-                    {{ items.count }}
+            <tr>
+              <td>{{ item.product.product_name }}</td>
 
-                </strong>
+              <td>{{ item.quantity }}</td>
 
-            </div>
+              <td>{{ item.product.unit }}</td>
 
-            <div class="summary-item">
+              <td>UGX {{ item.unit_cost }}</td>
 
-                <span>Total Cost</span>
+              <td>UGX {{ item.subtotal }}</td>
+            </tr>
 
-                <strong class="price">
-
-                    UGX {{ stock_entry.total_cost }}
-
-                </strong>
-
-            </div>
-
-            <div class="summary-item">
-
-                <span>Delivery Type</span>
-
-                <strong>
-
-                    {% if stock_entry.supplied_on_credit %}
-
-                        Credit Supply
-
-                    {% else %}
-
-                        Cash Supply
-
-                    {% endif %}
-
-                </strong>
-
-            </div>
-
-        </div>
-
+            {% empty %}
+            <tr>
+              <td colspan="5">
+                <div class="empty-state">
+                  <i class="ph ph-package"></i>
+                  <p>No products available yet.</p>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
+  <!-- RIGHT -->
+
+  <div>
+    <div class="card summary-card">
+      <h3>Stock Summary</h3>
+
+      <div class="summary-item">
+        <span>Total Products</span>
+
+        <strong> {{ items.count }} </strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Total Cost</span>
+
+        <strong class="price"> UGX {{ stock_entry.total_cost }} </strong>
+      </div>
+
+      <div class="summary-item">
+        <span>Delivery Type</span>
+
+        <strong>
+          {% if stock_entry.supplied_on_credit %} Credit Supply {% else %} Cash
+          Supply {% endif %}
+        </strong>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
+  .page-header {
+    display: flex;
 
-.page-header{
+    justify-content: space-between;
 
-    display:flex;
+    align-items: flex-start;
 
-    justify-content:space-between;
+    margin-bottom: 24px;
+  }
 
-    align-items:flex-start;
+  .page-header h1 {
+    display: flex;
 
-    margin-bottom:24px;
+    align-items: center;
 
-}
+    gap: 12px;
 
-.page-header h1{
+    font-size: 28px;
 
-    display:flex;
+    margin-bottom: 8px;
+  }
 
-    align-items:center;
+  .page-header p {
+    color: #64748b;
 
-    gap:12px;
+    max-width: 700px;
 
-    font-size:28px;
+    line-height: 1.6;
+  }
 
-    margin-bottom:8px;
+  .back-btn {
+    display: flex;
 
-}
+    align-items: center;
 
-.page-header p{
+    gap: 8px;
 
-    color:#64748b;
+    padding: 12px 18px;
 
-    max-width:700px;
+    border-radius: 10px;
 
-    line-height:1.6;
+    background: #ecfeff;
 
-}
+    color: #0891b2;
 
-.back-btn{
+    text-decoration: none;
 
-    display:flex;
+    font-weight: 600;
+  }
 
-    align-items:center;
+  .details-grid {
+    display: grid;
 
-    gap:8px;
+    grid-template-columns: 2fr 1fr;
 
-    padding:12px 18px;
+    gap: 24px;
+  }
 
-    border-radius:10px;
+  .info-grid {
+    display: grid;
 
-    background:#ecfeff;
+    grid-template-columns: 1fr 1fr;
 
-    color:#0891b2;
+    gap: 20px;
+  }
 
-    text-decoration:none;
+  .info-item {
+    display: flex;
 
-    font-weight:600;
+    flex-direction: column;
 
-}
+    gap: 6px;
+  }
 
-.details-grid{
+  .info-item span {
+    font-size: 13px;
 
-    display:grid;
+    color: #64748b;
+  }
 
-    grid-template-columns:2fr 1fr;
+  .price {
+    color: #059669;
+  }
 
-    gap:24px;
+  .table-card {
+    margin-top: 24px;
+  }
 
-}
+  .table-wrapper {
+    overflow-x: auto;
+  }
 
-.info-grid{
+  table {
+    width: 100%;
 
-    display:grid;
+    border-collapse: collapse;
+  }
 
-    grid-template-columns:1fr 1fr;
+  th {
+    text-align: left;
 
-    gap:20px;
+    padding: 14px;
 
-}
+    font-size: 13px;
 
-.info-item{
+    color: #64748b;
 
-    display:flex;
+    border-bottom: 1px solid #e2e8f0;
+  }
 
-    flex-direction:column;
+  td {
+    padding: 16px 14px;
 
-    gap:6px;
+    border-bottom: 1px solid #f1f5f9;
+  }
 
-}
+  .summary-card {
+    position: sticky;
 
-.info-item span{
+    top: 20px;
+  }
 
-    font-size:13px;
+  .summary-item {
+    display: flex;
 
-    color:#64748b;
+    justify-content: space-between;
 
-}
+    margin-bottom: 20px;
+  }
 
-.price{
+  .badge {
+    padding: 6px 12px;
 
-    color:#059669;
+    border-radius: 30px;
 
-}
+    font-size: 12px;
 
-.table-card{
+    font-weight: 600;
+  }
 
-    margin-top:24px;
+  .badge.success {
+    background: #dcfce7;
 
-}
+    color: #166534;
+  }
 
-.table-wrapper{
+  .badge.danger {
+    background: #fee2e2;
 
-    overflow-x:auto;
+    color: #991b1b;
+  }
 
-}
+  .empty-state {
+    text-align: center;
 
-table{
+    padding: 40px;
 
-    width:100%;
+    color: #94a3b8;
+  }
 
-    border-collapse:collapse;
+  .empty-state i {
+    font-size: 42px;
 
-}
-
-th{
-
-    text-align:left;
-
-    padding:14px;
-
-    font-size:13px;
-
-    color:#64748b;
-
-    border-bottom:1px solid #e2e8f0;
-
-}
-
-td{
-
-    padding:16px 14px;
-
-    border-bottom:1px solid #f1f5f9;
-
-}
-
-.summary-card{
-
-    position:sticky;
-
-    top:20px;
-
-}
-
-.summary-item{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    margin-bottom:20px;
-
-}
-
-.badge{
-
-    padding:6px 12px;
-
-    border-radius:30px;
-
-    font-size:12px;
-
-    font-weight:600;
-
-}
-
-.badge.success{
-
-    background:#dcfce7;
-
-    color:#166534;
-
-}
-
-.badge.danger{
-
-    background:#fee2e2;
-
-    color:#991b1b;
-
-}
-
-.empty-state{
-
-    text-align:center;
-
-    padding:40px;
-
-    color:#94a3b8;
-
-}
-
-.empty-state i{
-
-    font-size:42px;
-
-    margin-bottom:12px;
-
-}
-
+    margin-bottom: 12px;
+  }
 </style>
 
 {% endblock %}

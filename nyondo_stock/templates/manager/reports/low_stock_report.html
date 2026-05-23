@@ -1,260 +1,170 @@
-{% extends 'manager/base_manager.html' %}
-
-{% block page_title %}
-
-Low Stock Report
-
-{% endblock %}
-
-{% block content %}
+{% extends 'manager/base_manager.html' %} {% block page_title %} Low Stock
+Report {% endblock %} {% block content %}
 
 <div class="page-header">
+  <div>
+    <h1>Low Stock Report</h1>
 
-    <div>
-
-        <h1>Low Stock Report</h1>
-
-        <p>
-            Monitor products that need urgent restocking.
-        </p>
-
-    </div>
-
+    <p>Monitor products that need urgent restocking.</p>
+  </div>
 </div>
+<div class="page-top">
+  <a href="javascript:history.back()" class="back-btn">
+    <i class="ph ph-arrow-left"></i>
 
+    Back
+  </a>
+</div>
 <div class="card">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
 
-    <div class="table-wrapper">
+          <th>Category</th>
 
-        <table>
+          <th>Quantity</th>
 
-            <thead>
+          <th>Reorder Level</th>
 
-                <tr>
+          <th>Unit</th>
 
-                    <th>Product</th>
+          <th>Status</th>
+        </tr>
+      </thead>
 
-                    <th>Category</th>
+      <tbody>
+        {% for product in low_stock_products %}
 
-                    <th>Quantity</th>
+        <tr>
+          <td>{{ product.product_name }}</td>
 
-                    <th>Reorder Level</th>
+          <td>{{ product.category.category_name }}</td>
 
-                    <th>Unit</th>
+          <td>{{ product.quantity }}</td>
 
-                    <th>Status</th>
+          <td>{{ product.reorder_level }}</td>
 
-                </tr>
+          <td>{{ product.unit }}</td>
 
-            </thead>
+          <td>
+            {% if product.quantity == 0 %}
 
-            <tbody>
+            <span class="badge danger"> Out of Stock </span>
 
-                {% for product in low_stock_products %}
+            {% elif product.quantity <= 5 %}
 
-                <tr>
+            <span class="badge warning"> Critical </span>
 
-                    <td>
+            {% else %}
 
-                        {{ product.product_name }}
+            <span class="badge low"> Low Stock </span>
 
-                    </td>
+            {% endif %}
+          </td>
+        </tr>
 
-                    <td>
+        {% empty %}
 
-                        {{ product.category.category_name }}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <i class="ph ph-folder-open"></i>
 
-                    </td>
+              <h3>No Low Stock Products Found</h3>
 
-                    <td>
+              <p>All products are well-stocked.</p>
+            </div>
+          </td>
+        </tr>
 
-                        {{ product.quantity }}
-
-                    </td>
-
-                    <td>
-
-                        {{ product.reorder_level }}
-
-                    </td>
-
-                    <td>
-
-                        {{ product.unit }}
-
-                    </td>
-
-                    <td>
-
-                        {% if product.quantity == 0 %}
-
-                            <span class="badge danger">
-
-                                Out of Stock
-
-                            </span>
-
-                        {% elif product.quantity <= 5 %}
-
-                            <span class="badge warning">
-
-                                Critical
-
-                            </span>
-
-                        {% else %}
-
-                            <span class="badge low">
-
-                                Low Stock
-
-                            </span>
-
-                        {% endif %}
-
-                    </td>
-
-                </tr>
-
-                {% empty %}
-
-                <tr>
-
-                    <td colspan="6">
-                        <div class="empty-state">
-
-                            <i class="ph ph-folder-open"></i>
-
-                            <h3>No Low Stock Products Found</h3>
-
-                            <p>
-
-                                All products are well-stocked.
-
-                            </p>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
-    </div>
-
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <style>
+  .page-header {
+    display: flex;
 
-.page-header{
+    justify-content: space-between;
 
-    display:flex;
+    align-items: center;
 
-    justify-content:space-between;
+    margin-bottom: 24px;
+  }
 
-    align-items:center;
+  .page-header h1 {
+    font-size: 28px;
 
-    margin-bottom:24px;
+    color: #0f172a;
+  }
 
-}
+  .page-header p {
+    color: #64748b;
 
-.page-header h1{
+    margin-top: 6px;
+  }
 
-    font-size:28px;
+  .table-wrapper {
+    overflow-x: auto;
+  }
 
-    color:#0f172a;
+  table {
+    width: 100%;
 
-}
+    border-collapse: collapse;
+  }
 
-.page-header p{
+  thead {
+    background: #f8fafc;
+  }
 
-    color:#64748b;
+  th {
+    text-align: left;
 
-    margin-top:6px;
+    padding: 16px;
 
-}
+    font-size: 14px;
 
-.table-wrapper{
+    color: #475569;
+  }
 
-    overflow-x:auto;
+  td {
+    padding: 16px;
 
-}
+    border-top: 1px solid #e2e8f0;
+  }
 
-table{
+  .badge {
+    padding: 6px 14px;
 
-    width:100%;
+    border-radius: 30px;
 
-    border-collapse:collapse;
+    font-size: 12px;
 
-}
+    font-weight: 600;
+  }
 
-thead{
+  .badge.danger {
+    background: #fee2e2;
 
-    background:#f8fafc;
+    color: #dc2626;
+  }
 
-}
+  .badge.warning {
+    background: #fef3c7;
 
-th{
+    color: #d97706;
+  }
 
-    text-align:left;
+  .badge.low {
+    background: #dcfce7;
 
-    padding:16px;
-
-    font-size:14px;
-
-    color:#475569;
-
-}
-
-td{
-
-    padding:16px;
-
-    border-top:1px solid #e2e8f0;
-
-}
-
-.badge{
-
-    padding:6px 14px;
-
-    border-radius:30px;
-
-    font-size:12px;
-
-    font-weight:600;
-
-}
-
-.badge.danger{
-
-    background:#fee2e2;
-
-    color:#dc2626;
-
-}
-
-.badge.warning{
-
-    background:#fef3c7;
-
-    color:#d97706;
-
-}
-
-.badge.low{
-
-    background:#dcfce7;
-
-    color:#16a34a;
-
-}
-
+    color: #16a34a;
+  }
 </style>
 
 {% endblock %}

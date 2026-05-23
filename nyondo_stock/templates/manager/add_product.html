@@ -1,29 +1,401 @@
 {% extends 'manager/base_manager.html' %}
 
 {% block page_title %}
-
 Add Product
-
 {% endblock %}
 
 {% block content %}
 
-<div class="form-container">
+<div class="page-header">
 
-    <h1>Add Product</h1>
+    <div>
 
-    <form method="POST">
+        <h1>Add New Product</h1>
 
-        {% csrf_token %}
+        <p>
+            Register new hardware products into inventory.
+        </p>
 
-        {{ form.as_p }}
+    </div>
 
-        <button type="submit" class="submit-btn">
-            Save Product
-        </button>
+    <a
+    href="javascript:history.back()"
+    class="back-btn">
 
-    </form>
+        <i class="ph ph-arrow-left"></i>
+
+        Back
+
+    </a>
 
 </div>
+
+<div class="product-form-wrapper">
+
+    <div class="card form-card">
+
+        <div class="card-header">
+
+            <h3>
+
+                Product Information
+
+            </h3>
+
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-cubes"></i>
+
+                        Product Name
+
+                    </label>
+
+                    {{ form.product_name }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-barcode"></i>
+
+                        SKU
+
+                    </label>
+
+                    {{ form.sku }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-list"></i>
+
+                        Category
+
+                    </label>
+
+                    {{ form.category }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-package"></i>
+
+                        Unit
+
+                    </label>
+
+                    {{ form.unit }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-currency-circle-dollar"></i>
+
+                        Unit Cost
+
+                    </label>
+
+                    {{ form.unit_cost }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-stack"></i>
+
+                        Quantity
+
+                    </label>
+
+                    {{ form.quantity }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-warning-circle"></i>
+
+                        Reorder Level
+
+                    </label>
+
+                    {{ form.reorder_level }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-percent"></i>
+
+                        Normal %
+
+                    </label>
+
+                    {{ form.normal_percentage }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-percent"></i>
+
+                        Retail %
+
+                    </label>
+
+                    {{ form.retail_percentage }}
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+
+                        <i class="ph ph-percent"></i>
+
+                        Wholesale %
+
+                    </label>
+
+                    {{ form.wholesale_percentage }}
+
+                </div>
+
+            </div>
+
+            <button
+            type="submit"
+            class="btn btn-primary submit-btn">
+
+                <i class="ph ph-floppy-disk"></i>
+
+                Save Product
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:30px;
+
+}
+
+.page-header h1{
+
+    font-size:32px;
+
+    margin-bottom:8px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+}
+
+.back-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:12px 18px;
+
+    background:white;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    color:#0B1F3A;
+
+    font-weight:600;
+
+    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+
+}
+
+.product-form-wrapper{
+
+    display:flex;
+
+    justify-content:center;
+
+}
+
+.form-card{
+
+    width:100%;
+
+    max-width:800px;
+
+
+
+}
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+
+}
+
+.card-header{
+
+    margin-bottom:30px;
+
+}
+
+.form-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2, 1fr);
+
+    gap:18px;
+
+}
+
+.form-group{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.form-group label{
+
+    margin-bottom:10px;
+
+    font-weight:600;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#334155;
+
+}
+
+.form-group input,
+.form-group select{
+
+    width:100%;
+
+    padding:11px 14px;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:0.3s;
+
+}
+
+.form-group input:focus,
+.form-group select:focus{
+
+    border-color:#1ABC9C;
+
+    box-shadow:0 0 0 4px rgba(26,188,156,0.15);
+
+}
+
+.submit-btn{
+
+    margin-top:30px;
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:linear-gradient(
+        235deg,
+        #0B1F3A,
+        #1ABC9C
+    );
+
+    color:white;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+}
+
+@media(max-width:768px){
+
+    .form-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+</style>
 
 {% endblock %}

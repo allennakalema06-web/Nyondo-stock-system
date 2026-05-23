@@ -1,0 +1,111 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <h1>{{ supplier.supplier_name }}</h1>
+
+        <p>Supplier details and stock history</p>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <h3>Supplier Information</h3>
+
+    <br>
+
+    <p><strong>Contact Person:</strong> {{ supplier.contact_person }}</p>
+
+    <p><strong>Phone:</strong> {{ supplier.phone_number }}</p>
+
+    <p><strong>Email:</strong> {{ supplier.email }}</p>
+
+    <p><strong>Balance Due:</strong> UGX {{ supplier.balance_due }}</p>
+
+</div>
+
+<br>
+
+<div class="card">
+
+    <h3>Recent Stock Entries</h3>
+
+    <br>
+
+    <div class="table-responsive">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Date</th>
+
+                    <th>Invoice</th>
+
+                    <th>Total Cost</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for stock in stock_entries %}
+
+                <tr>
+
+                    <td>{{ stock.stock_date }}</td>
+
+                    <td>{{ stock.invoice_number }}</td>
+
+                    <td>UGX {{ stock.total_cost }}</td>
+
+                    <td>
+
+                        {% if stock.supplied_on_credit %}
+
+                            Credit
+
+                        {% else %}
+
+                            Paid
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4">
+
+                        No stock entries found.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

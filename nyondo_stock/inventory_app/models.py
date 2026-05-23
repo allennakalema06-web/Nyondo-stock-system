@@ -303,4 +303,4 @@ class StockAdjustment(models.Model):
     )
 
     def __str__(self):
-        return f"{self.product.name} adjustment"    
+        return f"{self.product.product_name} adjustment"    
