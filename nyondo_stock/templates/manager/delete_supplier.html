@@ -1,0 +1,108 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Delete Supplier
+{% endblock %}
+
+{% block content %}
+
+<div class="delete-card">
+
+
+<div class="warning-icon">
+    <i class="ph ph-warning-circle"></i>
+</div>
+
+<h1>
+    Delete Supplier
+</h1>
+
+<p>
+    Are you sure you want to delete
+    <strong>{{ supplier.supplier_name }}</strong>?
+</p>
+
+<p class="danger-text">
+    This action cannot be undone.
+</p>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <div class="button-group">
+
+        <button type="submit" class="delete-btn">
+            Yes, Delete
+        </button>
+
+        <a href="{% url 'supplier_list' %}" class="cancel-btn">
+            Cancel
+        </a>
+
+    </div>
+
+</form>
+
+
+</div>
+
+<style>
+
+.delete-card {
+    max-width: 500px;
+    margin: 60px auto;
+    background: white;
+    padding: 40px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+}
+
+.warning-icon i {
+    font-size: 70px;
+    color: #dc2626;
+}
+
+.delete-card h1 {
+    margin-top: 20px;
+    margin-bottom: 14px;
+}
+
+.delete-card p {
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+.danger-text {
+    color: #dc2626;
+    font-weight: 700;
+}
+
+.button-group {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+.delete-btn {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background: #e2e8f0;
+    color: #0f172a;
+    padding: 12px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+}
+
+</style>
+
+{% endblock %}

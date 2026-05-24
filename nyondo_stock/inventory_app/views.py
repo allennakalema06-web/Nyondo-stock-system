@@ -7,51 +7,17 @@ from django.db.models import Sum, F
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
+from .decorators import allowed_roles
 
 # Create your views here.
 
 def access_denied(request):
-
-    return render(
-        request,
-        'access_denied.html'
-    )
-
-def is_admin(user):
-
-    return (
-        hasattr(user, 'userprofile')
-        and user.userprofile.role
-        and user.userprofile.role.username == 'ADMIN'
-    )
-
-
-def is_manager(user):
-
-    return (
-        hasattr(user, 'userprofile')
-        and user.userprofile.role
-        and user.userprofile.role.username == 'MANAGER'
-    )
-
-
-def is_attendant(user):
-
-    return (
-        hasattr(user, 'userprofile')
-        and user.userprofile.role
-        and user.userprofile.role.username == 'ATTENDANT'
-    )
+    return render(request, 'access_denied.html', status=403)
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def manager_dashboard(request):
-
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
+        
     products = Product.objects.all()
     total_products = Product.objects.count()
 
@@ -75,9 +41,6 @@ def manager_dashboard(request):
         quantity__lte=F('reorder_level')
     ).count()
 
-    supplier_credit = Supplier.objects.filter(
-        balance_due__gt=0
-    )
 
     total_supplier_credit = Supplier.objects.filter(balance_due__gt=0).aggregate(total=Sum('balance_due'))['total'] or 0
 
@@ -105,6 +68,7 @@ def manager_dashboard(request):
         'top_products': top_products,
 
     }
+    
 
     return render(
         request,
@@ -114,14 +78,9 @@ def manager_dashboard(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def product_list(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
 
     products = Product.objects.select_related(
         'category'
@@ -183,26 +142,17 @@ def product_list(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def register_stock(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
-
     if request.method == 'POST':
-
         form = StockEntryForm(request.POST)
 
         formset = StockEntryItemFormSet(
             request.POST,
             prefix='items'
-    )
-
+        )
         if form.is_valid() and formset.is_valid():
-
             stock_entry = form.save(commit=False)
 
             stock_entry.added_by = request.user
@@ -211,87 +161,76 @@ def register_stock(request):
 
             total_cost = 0
 
-            total_cost = 0
-            
             for item_form in formset:
-                if item_form.cleaned_data:
-                    for item_form in formset:
-                        if (
-                            item_form.cleaned_data
-                            and not item_form.cleaned_data.get('DELETE')
-                            and item_form.cleaned_data.get('product')
-                        ):
-                            item = item_form.save(commit=False)
-                            item.stock_entry = stock_entry
-                            item.subtotal = (
-                            item.quantity * item.unit_cost
-                            )
+                if (
+                    item_form.cleaned_data
+                    and not item_form.cleaned_data.get('DELETE')
+                    and item_form.cleaned_data.get('product')
+                ):
+                    item = item_form.save(commit=False)
+                    item.stock_entry = stock_entry
+                    item.subtotal = (
+                        item.quantity * item.unit_cost
+                    )
+                    
+                    total_cost += item.subtotal
 
-                            total_cost += item.subtotal
+                    item.save()
 
-                            item.save()
+                    product = item.product
 
-                            product = item.product
+                    product.quantity += item.quantity
 
-                            product.quantity += item.quantity
+                    product.unit_cost = item.unit_cost
 
-                            product.unit_cost = item.unit_cost
+                    normal_percentage = item_form.cleaned_data.get(
+                        'normal_percentage', 25
+                    )
 
-                            # GET PERCENTAGES FROM THIS ITEM FORM
+                    retail_percentage = item_form.cleaned_data.get(
+                        'retail_percentage', 20
+                    )
 
-                            normal_percentage = item_form.cleaned_data.get(
-                                'normal_percentage', 25
-                            )
-                            retail_percentage = item_form.cleaned_data.get(
-                                'retail_percentage', 20
-                            )
+                    wholesale_percentage = item_form.cleaned_data.get(
+                        'wholesale_percentage', 10
+                    )
 
-                            wholesale_percentage = item_form.cleaned_data.get(
-                                'wholesale_percentage', 10
-                            )
+                    product.normal_percentage = normal_percentage
 
-                            # SAVE PERCENTAGES
+                    product.retail_percentage = retail_percentage
 
-                            product.normal_percentage = normal_percentage
+                    product.wholesale_percentage = wholesale_percentage
 
-                            product.retail_percentage = retail_percentage
-
-                            product.wholesale_percentage = wholesale_percentage
-
-                            # SAVE PRODUCT
-
-                            product.save()
-
+                    product.save()
+        
             stock_entry.total_cost = total_cost
 
             stock_entry.save()
 
             if stock_entry.supplied_on_credit:
-
                 supplier = stock_entry.supplier
 
                 supplier.balance_due += total_cost
 
                 supplier.save()
-            messages.success(request,
-                             'Stock registered successfully.'
-            )    
+
+            messages.success(
+                request,
+                'Stock registered successfully.'
+            )
 
             return redirect('stock_history')
 
     else:
-
         form = StockEntryForm()
-
         formset = StockEntryItemFormSet(
             prefix='items'
         )
 
     context = {
-        'form': form,
-        'formset': formset
+    'form': form,
+    'formset': formset
     }
-    
 
     return render(
         request,
@@ -299,16 +238,10 @@ def register_stock(request):
         context
     )
 
+
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def stock_history(request):
-
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
-
     stock_entries = StockEntry.objects.all().order_by(
     '-date_added'
     )
@@ -329,14 +262,8 @@ def stock_history(request):
 
 
 @login_required
-def stock_details(request, id):
-
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')    
+@allowed_roles(['ADMIN', 'MANAGER'])
+def stock_details(request, id):  
 
     stock_entry = get_object_or_404(
         StockEntry,
@@ -358,14 +285,8 @@ def stock_details(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def low_stock(request):
-
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
 
     products = Product.objects.filter(
         quantity__lte=models.F('reorder_level')
@@ -386,14 +307,8 @@ def low_stock(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def stock_adjustments(request):
-
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     adjustments = StockAdjustment.objects.select_related('product', 'adjusted_by').order_by(
         '-adjusted_at'
     )
@@ -439,14 +354,9 @@ def stock_adjustments(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def add_product(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     if request.method == 'POST':
 
         form = ProductForm(request.POST)
@@ -467,14 +377,8 @@ def add_product(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def edit_product(request, id):
-
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     product = get_object_or_404(Product, id=id)
 
     if request.method == 'POST':
@@ -497,14 +401,9 @@ def edit_product(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def delete_product(request, id):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     product = get_object_or_404(Product, id=id)
 
     if request.method == 'POST':
@@ -522,14 +421,8 @@ def delete_product(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def supplier_list(request):
-
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     suppliers = Supplier.objects.all().order_by(
         'supplier_name'
     )
@@ -547,14 +440,9 @@ def supplier_list(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def add_supplier(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     if request.method == 'POST':
 
         form = SupplierForm(request.POST)
@@ -582,14 +470,9 @@ def add_supplier(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def supplier_details(request, id):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     supplier = get_object_or_404(
         Supplier,
         id=id
@@ -613,14 +496,9 @@ def supplier_details(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def supplier_credit(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     suppliers = Supplier.objects.filter(
         balance_due__gt=0
     ).order_by('-balance_due')
@@ -654,14 +532,9 @@ def supplier_credit(request):
     )
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def category_list(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     categories = Category.objects.all().order_by(
         'category_name'
     )
@@ -679,14 +552,9 @@ def category_list(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def add_category(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     if request.method == 'POST':
 
         form = CategoryForm(request.POST)
@@ -714,14 +582,9 @@ def add_category(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def edit_category(request, id):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     category = get_object_or_404(
         Category,
         id=id
@@ -757,14 +620,9 @@ def edit_category(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def delete_category(request, id):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     category = get_object_or_404(
         Category,
         id=id
@@ -792,14 +650,9 @@ def delete_category(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def category_details(request, id):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     category = get_object_or_404(
         Category,
         id=id
@@ -836,14 +689,9 @@ def category_details(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def pricing_list(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     products = Product.objects.all().order_by(
         'product_name'
     )
@@ -863,14 +711,9 @@ def pricing_list(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def update_pricing(request, id):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     product = get_object_or_404(
         Product,
         id=id
@@ -909,14 +752,9 @@ def update_pricing(request, id):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def reports_dashboard(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     total_products = Product.objects.count()
 
     total_quantity = (
@@ -971,14 +809,9 @@ def reports_dashboard(request):
 
 
 @login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
 def low_stock_report(request):
 
-    if not (
-        is_admin(request.user)
-        or is_manager(request.user)
-    ):
-
-        return redirect('access_denied')
     low_stock_products = Product.objects.filter(
         quantity__lte=F('reorder_level')
     ).order_by('quantity')
@@ -990,5 +823,167 @@ def low_stock_report(request):
     return render(
         request,
         'manager/reports/low_stock_report.html',
+        context
+    )
+
+@login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
+def edit_supplier(request, id):
+
+    supplier = get_object_or_404(
+        Supplier,
+        id=id
+    )
+
+    if request.method == 'POST':
+
+        form = SupplierForm(
+            request.POST,
+            instance=supplier
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                'Supplier updated successfully.'
+            )
+
+            return redirect('supplier_list')
+
+    else:
+
+        form = SupplierForm(
+            instance=supplier
+        )
+
+    context = {
+        'form': form,
+        'supplier': supplier
+    }
+
+    return render(
+        request,
+        'manager/edit_supplier.html',
+        context
+    )
+
+@login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
+def delete_supplier(request, id):
+
+    supplier = get_object_or_404(
+        Supplier,
+        id=id
+    )
+
+    if request.method == 'POST':
+
+        supplier.delete()
+
+        messages.success(
+            request,
+            'Supplier deleted successfully.'
+        )
+
+        return redirect('supplier_list')
+
+    context = {
+        'supplier': supplier
+    }
+
+    return render(
+        request,
+        'manager/delete_supplier.html',
+        context
+    )
+
+
+@login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
+def edit_stock_entry(request, id):
+
+    stock_entry = get_object_or_404(
+        StockEntry,
+        id=id
+    )
+
+    if request.method == 'POST':
+
+        form = StockEntryForm(
+            request.POST,
+            instance=stock_entry
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                'Stock entry updated successfully.'
+            )
+
+            return redirect('stock_history')
+
+    else:
+
+        form = StockEntryForm(
+            instance=stock_entry
+        )
+
+    context = {
+        'form': form,
+        'stock_entry': stock_entry
+    }
+
+    return render(
+        request,
+        'manager/edit_stock_entry.html',
+        context
+    )
+
+@login_required
+@allowed_roles(['ADMIN', 'MANAGER'])
+def delete_stock_entry(request, id):
+
+    stock_entry = get_object_or_404(
+        StockEntry,
+        id=id
+    )
+
+    if request.method == 'POST':
+
+        items = stock_entry.items.all()
+
+        for item in items:
+
+            product = item.product
+
+            product.quantity -= item.quantity
+
+            if product.quantity < 0:
+                product.quantity = 0
+
+            product.save()
+
+        stock_entry.delete()
+
+        messages.success(
+            request,
+            'Stock entry deleted successfully.'
+        )
+
+        return redirect('stock_history')
+
+    context = {
+        'stock_entry': stock_entry
+    }
+
+    return render(
+        request,
+        'manager/delete_stock_entry.html',
         context
     )

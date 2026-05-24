@@ -13,7 +13,7 @@
 
     </div>
 
-    {% if request.user.userprofile.role.username == 'MANAGER' or request.user.userprofile.role.username == 'ADMIN' %}
+    {% if request.user.groups.all %}
 
    <nav class="nav-menu">
 
@@ -118,7 +118,9 @@
             </strong>
 
             <span>
-                Stock Manager
+                {% for group in request.user.groups.all %}
+                {{ group.name }}
+                {% endfor %}
             </span>
             </div>
             <a href="{% url 'logout' %}" class="logout-btn">

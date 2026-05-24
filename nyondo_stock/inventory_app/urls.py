@@ -30,5 +30,9 @@ urlpatterns = [
     path('pricing/update/<int:id>/',views.update_pricing, name='update_pricing'),
     path('reports/', views.reports_dashboard, name='reports_dashboard'),
     path('low_stock_report/', views.low_stock_report, name='low_stock_report'),
+    path('edit_supplier/<int:id>/', views.edit_supplier, name='edit_supplier'),path('delete_supplier/<int:id>/', views.delete_supplier,name='delete_supplier'),
+    path('edit_stock_entry/<int:id>/',views.edit_stock_entry,name='edit_stock_entry'),
+    path('delete_stock_entry/<int:id>/',
+    views.delete_stock_entry,name='delete_stock_entry'),
 
 ]

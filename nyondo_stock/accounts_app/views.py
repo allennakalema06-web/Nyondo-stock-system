@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 # Create your views here.
+
 
 def login_view(request):
 
@@ -20,18 +23,28 @@ def login_view(request):
 
             login(request, user)
 
-            role = user.userprofile.role.username
-
-            if role == 'ADMIN':
+            if user.groups.filter(name='ADMIN').exists():
                 return redirect('admin_dashboard')
 
-            elif role == 'MANAGER':
+            elif user.groups.filter(name='MANAGER').exists():
                 return redirect('manager_dashboard')
 
-            elif role == 'ATTENDANT':
+            elif user.groups.filter(name='ATTENDANT').exists():
                 return redirect('attendant_dashboard')
 
-    return render(request, 'accounts/login.html')
+            else:
+                return redirect('access_denied')
+
+        else:
+            messages.error(
+                request,
+                'Invalid username or password'
+            )
+
+    return render(
+        request,
+        'accounts/login.html'
+    )
 
 def logout_view(request):
 
@@ -43,7 +56,7 @@ def logout_view(request):
 @login_required
 def admin_dashboard(request):
 
-    if request.user.userprofile.role.username != 'ADMIN':
+    if not request.user.groups.filter(name='ADMIN').exists():
         return redirect('login')
 
     return render(request, 'accounts/admin_dashboard.html')
@@ -51,7 +64,7 @@ def admin_dashboard(request):
 @login_required
 def manager_dashboard(request):
 
-    if request.user.userprofile.role.username != 'MANAGER':
+    if not request.user.groups.filter(name='MANAGER').exists():
         return redirect('login')
 
     return render(request, 'manager/manager_dashboard.html')
@@ -59,7 +72,7 @@ def manager_dashboard(request):
 @login_required
 def attendant_dashboard(request):
 
-    if request.user.userprofile.role.username != 'ATTENDANT':
+    if not request.user.groups.filter(name='ATTENDANT').exists():
         return redirect('login')
 
     return render(request, 'accounts/attendant_dashboard.html')
