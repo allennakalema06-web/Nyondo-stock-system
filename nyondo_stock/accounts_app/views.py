@@ -75,4 +75,4 @@ def attendant_dashboard(request):
     if not request.user.groups.filter(name='ATTENDANT').exists():
         return redirect('login')
 
-    return render(request, 'accounts/attendant_dashboard.html')
+    return render(request, 'attendant/attendant_dashboard.html')

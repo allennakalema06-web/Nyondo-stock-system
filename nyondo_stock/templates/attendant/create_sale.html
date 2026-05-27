@@ -1,0 +1,756 @@
+{% extends 'manager/base_manager.html' %} 
+{% block page_title %} 
+Create Sale 
+{% endblock %} 
+{% block content %}
+
+<div class="dashboard-header">
+  <div>
+    <h3>Create New Sale</h3>
+
+    <p>
+      Record customer purchases, transport charges, and complete payments
+      efficiently.
+    </p>
+  </div>
+</div>
+
+<div class="sales-container">
+  <form method="POST">
+    {% csrf_token %}
+
+    <div class="sales-grid">
+      <!-- LEFT SECTION -->
+
+      <div class="sales-left">
+        <!-- CUSTOMER SECTION -->
+
+        <div class="sales-card">
+          <div class="card-title">
+            <h3>Customer Information</h3>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label> Customer Name </label>
+
+              {{ form.customer_name }}
+            </div>
+
+            <div class="form-group">
+              <label> Phone Number </label>
+
+              {{ form.phone_number }}
+            </div>
+
+            <div class="form-group">
+              <label> Customer Type </label>
+
+              {{ form.customer_type }}
+            </div>
+          </div>
+        </div>
+
+        <!-- DELIVERY SECTION -->
+
+        <div class="sales-card">
+          <div class="card-title">
+            <h3>Delivery Information</h3>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label> Distance (KM) </label>
+
+              {{ form.distance_km }}
+            </div>
+
+            <div class="form-group">
+              <label> Transport Fee </label>
+
+              <input
+                type="text"
+                id="transport_fee"
+                class="form-control"
+                readonly
+                value="0"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- PRODUCTS SECTION -->
+
+        <div class="sales-card">
+          <div class="section-header">
+            <h3>Sale Items</h3>
+
+            <button type="button" class="add-product-btn" id="add-row">
+              <i class="ph ph-plus"></i>
+
+              Add Product
+            </button>
+          </div>
+          <div class="sales-table-wrapper">
+            <table class="sales-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Quantity</th>
+                  <th>Price</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <tbody id="sale-items-body">
+                <tr class="sale-row">
+                  <td>
+                    <select name="product" class="form-control product-select">
+                      <option value="">Select Product</option>
+
+                      {% for product in products %}
+
+                      <option
+                        value="{{ product.id }}"
+                        data-normal="{{ product.normal_price }}"
+                        data-retail="{{ product.retail_price }}"
+                        data-wholesale="{{ product.wholesale_price }}"
+                      >
+                        {{ product.product_name }}
+                      </option>
+
+                      {% endfor %}
+                    </select>
+                  </td>
+
+                  <td>
+                    <input
+                      type="number"
+                      name="quantity"
+                      class="form-control quantity-input"
+                      min="1"
+                      value="1"
+                    />
+                  </td>
+
+                  <td>
+                    <input
+                      type="number"
+                      name="price"
+                      class="form-control price-input"
+                      readonly
+                    />
+                  </td>
+
+                  <td>
+                    <input
+                      type="number"
+                      name="subtotal"
+                      class="form-control subtotal-input"
+                      readonly
+                    />
+                  </td>
+
+                  <td>
+                    <button type="button" class="delete-row-btn">
+                      <i class="ph ph-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+
+                <template id="empty-row-template">
+                  <tr class="sale-row">
+                    <td>
+                      <select
+                        name="product"
+                        class="form-control product-select"
+                      >
+                        <option value="">Select Product</option>
+
+                        {% for product in products %}
+
+                        <option
+                          value="{{ product.id }}"
+                          data-normal="{{ product.normal_price }}"
+                          data-retail="{{ product.retail_price }}"
+                          data-wholesale="{{ product.wholesale_price }}"
+                        >
+                          {{ product.product_name }}
+                        </option>
+
+                        {% endfor %}
+                      </select>
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        name="quantity"
+                        class="form-control quantity-input"
+                        min="1"
+                        value="1"
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        name="price"
+                        class="form-control price-input"
+                        readonly
+                      />
+                    </td>
+
+                    <td>
+                      <input
+                        type="number"
+                        name="subtotal"
+                        class="form-control subtotal-input"
+                        readonly
+                      />
+                    </td>
+
+                    <td>
+                      <button type="button" class="delete-row-btn">
+                        <i class="ph ph-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SECTION -->
+
+      <div class="sales-right">
+        <div class="sales-card summary-card">
+          <div class="card-title">
+            <h3>Sale Summary</h3>
+          </div>
+
+          <div class="summary-item">
+            <span> Products Total </span>
+
+            <strong id="products_total"> UGX 0 </strong>
+          </div>
+
+          <div class="summary-item">
+            <span> Transport Fee </span>
+
+            <strong id="transport_total"> UGX 0 </strong>
+          </div>
+
+          <div class="summary-item grand-total">
+            <span> Grand Total </span>
+
+            <strong id="grand_total"> UGX 0 </strong>
+          </div>
+
+          <div class="form-group">
+            <label> Amount Paid </label>
+
+            {{ form.amount_paid }}
+          </div>
+
+          <div class="form-group">
+            <label> Payment Method </label>
+
+            {{ form.payment_method }}
+          </div>
+
+          <div class="form-group">
+            <label> Transaction Reference </label>
+
+            {{ form.transaction_reference }}
+          </div>
+
+          <button type="submit" class="save-sale-btn">Issue Receipt</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<style>
+  .sales-table-wrapper {
+    max-height: 420px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+  }
+  .sales-container {
+    padding: 8px;
+    margin: 20px 0;
+  }
+
+  .sales-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr;
+    gap: 20px;
+    align-items: start;
+  }
+
+  .sales-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .sales-right {
+    position: sticky;
+    top: 20px;
+  }
+
+  .sales-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  }
+  .dashboard-header {
+    margin-bottom: 30px;
+  }
+
+  .dashboard-header h3 {
+    font-size: 30px;
+    margin-bottom: 10px;
+    color: #0f172a;
+  }
+
+  .dashboard-header p {
+    color: #64748b;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .add-product-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 12px;
+    background: linear-gradient(235deg, #0b1f3a, #1abc9c);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .add-product-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+  }
+
+  .add-product-btn i {
+    font-size: 18px;
+  }
+  .quantity-input {
+    width: 60px !important;
+    min-width: 60px !important;
+    max-width: 60px !important;
+    padding: 10px !important;
+    text-align: center;
+  }
+  .product-select {
+    min-width: 150px;
+  }
+
+  .price-input,
+  .subtotal-input {
+    min-width: 100px;
+  }
+
+  .delete-row-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .delete-row-btn:hover {
+    background: #fecaca;
+    transform: scale(1.05);
+  }
+
+  .delete-row-btn i {
+    font-size: 18px;
+  }
+
+  .card-title {
+    margin-bottom: 20px;
+  }
+
+  .card-title h3 {
+    font-size: 20px;
+    color: #0f172a;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+    background: #fff;
+  }
+
+  .form-control:focus {
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 4px rgba(26, 188, 156, 0.1);
+  }
+
+  .sales-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .sales-table thead {
+    background: #f8fafc;
+  }
+
+  .sales-table th {
+    padding: 16px;
+    text-align: left;
+    font-size: 14px;
+    color: #475569;
+  }
+
+  .sales-table td {
+    padding: 14px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+  }
+
+  .summary-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .summary-item span {
+    color: #64748b;
+    font-size: 15px;
+  }
+
+  .summary-item strong {
+    color: #0f172a;
+    font-size: 16px;
+  }
+
+  .grand-total {
+    padding: 18px;
+    border-radius: 14px;
+    background: linear-gradient(235deg, #0b1f3a, #1abc9c);
+  }
+
+  .grand-total span {
+    color: #d1fae5;
+    font-weight: 600;
+  }
+
+  .grand-total strong {
+    color: white;
+    font-size: 22px;
+  }
+
+  .save-sale-btn {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(235deg, #0b1f3a, #1abc9c);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+  }
+
+  .save-sale-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+  }
+
+  @media (max-width: 1100px) {
+    .sales-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .sales-right {
+      position: relative;
+      top: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .sales-table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
+</style>
+
+<script>
+  const customerTypeField = document.getElementById("id_customer_type");
+
+  const saleBody = document.getElementById("sale-items-body");
+
+  const addRowButton = document.getElementById("add-row");
+
+  const productsTotalField = document.getElementById("products_total");
+
+  const transportTotalField = document.getElementById("transport_total");
+
+  const grandTotalField = document.getElementById("grand_total");
+
+  const transportFeeInput = document.getElementById("transport_fee");
+
+  const distanceInput = document.getElementById("id_distance_km");
+
+  function calculateTransportFee() {
+
+    let distance =
+        parseFloat(distanceInput.value) || 0;
+
+    let total = 0;
+
+    document.querySelectorAll(".subtotal-input")
+    .forEach(function(input){
+
+        total += parseFloat(input.value) || 0;
+
+    });
+
+    let fee = 0;
+
+    if(distance === 0){
+
+        fee = 0;
+
+    }
+
+    else if(distance <= 10 && total >= 500000){
+
+        fee = 0;
+
+    }
+
+    else{
+
+        fee = 30000;
+
+    }
+
+    transportFeeInput.value = fee;
+
+    transportTotalField.innerText =
+        "UGX " + fee.toLocaleString();
+
+}
+  function updateRow(row) {
+    const customerType = customerTypeField.value;
+
+    const productSelect = row.querySelector(".product-select");
+
+    const quantityInput = row.querySelector(".quantity-input");
+
+    const priceInput = row.querySelector(".price-input");
+
+    const subtotalInput = row.querySelector(".subtotal-input");
+
+    let selectedOption = productSelect.options[productSelect.selectedIndex];
+
+    let price = 0;
+
+    if (customerType === "NORMAL") {
+      price = selectedOption.dataset.normal || 0;
+    } else if (customerType === "RETAIL") {
+      price = selectedOption.dataset.retail || 0;
+    } else if (customerType === "WHOLESALE") {
+      price = selectedOption.dataset.wholesale || 0;
+    }
+
+    priceInput.value = price;
+
+    let subtotal = price * (parseFloat(quantityInput.value) || 0);
+
+    subtotalInput.value = subtotal;
+
+    calculateGrandTotal();
+  }
+
+  function calculateGrandTotal(){
+
+    let total = 0;
+
+    document.querySelectorAll(
+        ".subtotal-input"
+    ).forEach(function(input){
+
+        total +=
+            parseFloat(input.value) || 0;
+
+    });
+
+    productsTotalField.innerText =
+        "UGX " + total.toLocaleString();
+
+    calculateTransportFee();
+
+    let transport =
+        parseFloat(
+            transportFeeInput.value
+        ) || 0;
+
+    let grandTotal =
+        total + transport;
+
+    grandTotalField.innerText =
+        "UGX " +
+        grandTotal.toLocaleString();
+
+}
+  function attachRowEvents(row) {
+    const productSelect = row.querySelector(".product-select");
+
+    const quantityInput = row.querySelector(".quantity-input");
+
+    productSelect.addEventListener("change", function () {
+      updateRow(row);
+    });
+
+    quantityInput.addEventListener("input", function () {
+      updateRow(row);
+    });
+  }
+
+  document.querySelectorAll("#sale-items-body tr").forEach(function (row) {
+    attachRowEvents(row);
+    attachDeleteEvents(row);
+    updateRow(row);
+  });
+
+  customerTypeField.addEventListener("change", function () {
+    document.querySelectorAll("#sale-items-body tr").forEach(function (row) {
+      updateRow(row);
+    });
+  });
+
+  distanceInput.addEventListener("input", calculateTransportFee);
+
+  addRowButton.addEventListener("click", function () {
+    const template = document.getElementById("empty-row-template");
+
+    const clone = template.content.cloneNode(true);
+
+    saleBody.prepend(clone);
+
+    const firstRow =
+    saleBody.querySelector(".sale-row");
+
+    attachRowEvents(firstRow);
+
+    attachDeleteEvents(firstRow);
+
+    updateRow(firstRow);
+  });
+
+  function attachDeleteEvents(row){
+
+    const deleteButton =
+        row.querySelector(
+            ".delete-row-btn"
+        );
+
+    deleteButton.addEventListener(
+        "click",
+        function(){
+
+            const rows =
+                document.querySelectorAll(
+                    ".sale-row"
+                );
+
+            if(rows.length === 1){
+
+                row.querySelector(
+                    ".product-select"
+                ).selectedIndex = 0;
+
+                row.querySelector(
+                    ".quantity-input"
+                ).value = 1;
+
+                row.querySelector(
+                    ".price-input"
+                ).value = "";
+
+                row.querySelector(
+                    ".subtotal-input"
+                ).value = "";
+
+            }
+
+            else{
+
+                row.remove();
+
+            }
+
+            calculateGrandTotal();
+
+        }
+    );
+
+}
+
+  
+</script>
+{% endblock %}

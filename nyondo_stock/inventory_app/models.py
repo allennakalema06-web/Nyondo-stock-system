@@ -55,6 +55,9 @@ class Product(models.Model):
     quantity = models.PositiveIntegerField(default=0)
 
     reorder_level = models.PositiveIntegerField(default=10)
+    eligible_for_scheme = models.BooleanField(
+    default=False)
+    is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -102,6 +105,14 @@ class Product(models.Model):
                 Decimal('100')
             )
         )
+
+    @property
+    def pricing_map(self):
+        return {
+        'NORMAL': self.normal_price,
+        'RETAIL': self.retail_price,
+        'WHOLESALE': self.wholesale_price,
+        }    
     
     def save(self, *args, **kwargs):
         self.generate_sku()
@@ -109,7 +120,11 @@ class Product(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.product_name    
+        return self.product_name 
+
+    @property
+    def available_stock(self):
+        return self.quantity   
     
 class Supplier(models.Model):
 
@@ -252,9 +267,10 @@ class StockEntry(models.Model):
         blank=True,
         null=True
     )
-    
 
-    date_added = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateTimeField(
+        auto_now_add=True
+    )
 
     
 

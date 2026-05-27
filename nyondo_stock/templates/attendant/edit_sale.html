@@ -1,0 +1,256 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Edit Sale Record
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <a href="{% url 'sales_history' %}" class="back-btn">
+            <i class="ph ph-arrow-left"></i>
+            Back
+        </a>
+
+        <h2>Edit Sale Record</h2>
+
+        <p>
+            Update payment information for this sale.
+        </p>
+
+    </div>
+
+</div>
+
+<div class="edit-sale-container">
+
+    <form method="POST" class="edit-sale-card">
+
+        {% csrf_token %}
+
+        <div class="summary-box">
+
+            <div class="summary-item">
+                <span>Customer</span>
+                <strong>
+                    {{ sale.customer.customer_name }}
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Total Amount</span>
+                <strong>
+                    UGX {{ sale.total_amount }}
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Current Balance</span>
+                <strong>
+                    UGX {{ sale.balance }}
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Payment Method</label>
+
+            <select
+                name="payment_method"
+                class="form-control"
+            >
+
+                <option
+                    value="CASH"
+                    {% if sale.payment_method == 'CASH' %}
+                    selected
+                    {% endif %}
+                >
+                    Cash
+                </option>
+
+                <option
+                    value="MOMO"
+                    {% if sale.payment_method == 'MOMO' %}
+                    selected
+                    {% endif %}
+                >
+                    Mobile Money
+                </option>
+
+                <option
+                    value="BANK"
+                    {% if sale.payment_method == 'BANK' %}
+                    selected
+                    {% endif %}
+                >
+                    Bank Transfer
+                </option>
+
+                <option
+                    value="CHEQUE"
+                    {% if sale.payment_method == 'CHEQUE' %}
+                    selected
+                    {% endif %}
+                >
+                    Cheque
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Transaction Reference</label>
+
+            <input
+                type="text"
+                name="transaction_reference"
+                class="form-control"
+                value="{{ sale.transaction_reference }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Amount Paid</label>
+
+            <input
+                type="number"
+                name="amount_paid"
+                class="form-control"
+                value="{{ sale.amount_paid }}"
+            >
+
+        </div>
+
+        <button type="submit" class="save-btn">
+
+            <i class="ph ph-check-circle"></i>
+
+            Update Sale
+
+        </button>
+
+    </form>
+
+</div>
+
+<style>
+
+.page-header{
+    margin-bottom:30px;
+}
+
+.page-header h2{
+    font-size:28px;
+    color:#0f172a;
+    margin-top:12px;
+}
+
+.page-header p{
+    color:#64748b;
+}
+
+.back-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    text-decoration:none;
+    color:#0f172a;
+    font-weight:600;
+}
+
+.edit-sale-container{
+    max-width:700px;
+}
+
+.edit-sale-card{
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.05);
+}
+
+.summary-box{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-bottom:30px;
+}
+
+.summary-item{
+    background:#f8fafc;
+    padding:18px;
+    border-radius:14px;
+}
+
+.summary-item span{
+    display:block;
+    color:#64748b;
+    font-size:14px;
+    margin-bottom:8px;
+}
+
+.summary-item strong{
+    color:#0f172a;
+    font-size:16px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:20px;
+}
+
+.form-group label{
+    font-weight:600;
+    color:#334155;
+}
+
+.form-control{
+    padding:14px 16px;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    font-size:14px;
+}
+
+.save-btn{
+    width:100%;
+    border:none;
+    padding:16px;
+    border-radius:14px;
+    background:linear-gradient(
+        235deg,
+        #0b1f3a,
+        #1abc9c
+    );
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.save-btn i{
+    margin-right:8px;
+}
+
+@media(max-width:768px){
+
+    .summary-box{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

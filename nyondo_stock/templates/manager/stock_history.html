@@ -25,12 +25,14 @@ Stock History
 
   <input type="text" placeholder="Search stock entries..." />
 </div>
+
 <div class="card">
   <div class="table-top">
     <h3>Recent Stock Entries</h3>
   </div>
 
   <div class="table-wrapper table-responsive">
+    
     <table>
       <thead>
         <tr>
@@ -94,12 +96,7 @@ Stock History
                 <i class="ph ph-pencil-simple"></i>
               </a>
 
-              <a
-                href="{% url 'delete_stock_entry' entry.id %}"
-                class="btn-icon delete"
-              >
-                <i class="ph ph-trash"></i>
-              </a>
+
             </div>
           </td>
         </tr>

@@ -76,7 +76,7 @@ class DepositPayment(models.Model):
     verified = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.customer.customer_name_name} - {self.amount_paid}"
+        return f"{self.customer.customer_name} - {self.amount_paid}"
     
 class DeliveryLocation(models.Model):
 

@@ -317,7 +317,7 @@ Register Stock
 
   .summary-card {
     position: sticky;
-    width: 380px;
+    width: 350px;
     height: 300px;
 
     top: 20px;
@@ -439,7 +439,7 @@ Register Stock
 
     attachUnitDisplayEvents();
 
-    tableBody.appendChild(newRow);
+    tableBody.prepend(newRow);
 
     totalForms.value = currentFormCount + 1;
 

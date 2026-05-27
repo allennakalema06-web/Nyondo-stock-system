@@ -17,10 +17,39 @@ class Sale(models.Model):
         ('BANK', 'Bank Transfer'),
         ('CHEQUE', 'Cheque'),
     )
+    SALE_SOURCES = (
+        ('DIRECT', 'Direct Sale'),
+        ('DEPOSIT', 'Deposit Completion'),
+    )
 
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
 
     attendant = models.ForeignKey('auth.User', on_delete=models.SET_NULL, null=True)
+    sale_source = models.CharField(
+        max_length=20,
+        choices=SALE_SOURCES,
+        default='DIRECT'
+    )
+    deposit_reference = models.ForeignKey(
+        'PendingCreditSale',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='completed_sales'
+
+    )
+
+    subtotal_amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
+
+    transport_charge = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0
+    )
 
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
     payment_method = models.CharField(
@@ -38,6 +67,15 @@ class Sale(models.Model):
     balance = models.DecimalField(max_digits=12, decimal_places=2, default=0)
 
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS)
+    
+    pending_credit_sale = models.OneToOneField(
+    'PendingCreditSale',
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True
+    )
+    completed_sale = models.BooleanField(default=False)
+    requires_delivery = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -130,7 +168,7 @@ class PendingCreditSale(models.Model):
     created_by = models.ForeignKey(
         'auth.User',
         on_delete=models.SET_NULL,
-        null=True
+        null=True, related_name='approved_credit_sales'
     )
 
     def __str__(self):

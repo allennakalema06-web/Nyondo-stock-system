@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .decorators import allowed_roles
+from django.utils import timezone
 
 # Create your views here.
 
@@ -84,7 +85,9 @@ def product_list(request):
 
     products = Product.objects.select_related(
         'category'
-    ).all().order_by('product_name')
+    ).filter(
+        is_active=True
+    ).order_by('product_name')
 
     search_query = request.GET.get('search')
 
@@ -408,7 +411,9 @@ def delete_product(request, id):
 
     if request.method == 'POST':
 
-        product.delete()
+        product.is_active = False
+        
+        product.save()
 
         return redirect('product_list')
 
@@ -942,48 +947,5 @@ def edit_stock_entry(request, id):
     return render(
         request,
         'manager/edit_stock_entry.html',
-        context
-    )
-
-@login_required
-@allowed_roles(['ADMIN', 'MANAGER'])
-def delete_stock_entry(request, id):
-
-    stock_entry = get_object_or_404(
-        StockEntry,
-        id=id
-    )
-
-    if request.method == 'POST':
-
-        items = stock_entry.items.all()
-
-        for item in items:
-
-            product = item.product
-
-            product.quantity -= item.quantity
-
-            if product.quantity < 0:
-                product.quantity = 0
-
-            product.save()
-
-        stock_entry.delete()
-
-        messages.success(
-            request,
-            'Stock entry deleted successfully.'
-        )
-
-        return redirect('stock_history')
-
-    context = {
-        'stock_entry': stock_entry
-    }
-
-    return render(
-        request,
-        'manager/delete_stock_entry.html',
         context
     )

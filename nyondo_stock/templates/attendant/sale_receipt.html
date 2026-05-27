@@ -1,0 +1,298 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Receipt
+{% endblock %}
+
+{% block content %}
+
+<div class="receipt-wrapper">
+
+    <div class="receipt-header">
+
+        <a
+            href="{% url 'sales_records' %}"
+            class="back-btn"
+        >
+            <i class="ph ph-arrow-left"></i>
+            Back
+        </a>
+
+        <button
+            onclick="window.print()"
+            class="print-btn"
+        >
+            <i class="ph ph-printer"></i>
+            Print Receipt
+        </button>
+
+    </div>
+
+    <div class="receipt-card">
+
+        <div class="company-section">
+
+            <h1>NYONDO GENERAL HARDWARE LTD</h1>
+
+            <p>
+                Nansana, Uganda
+            </p>
+
+            <span class="receipt-badge">
+                SALES RECEIPT
+            </span>
+
+        </div>
+
+        <div class="receipt-info">
+
+            <div>
+                <strong>Customer</strong>
+                <p>{{ sale.customer.customer_name }}</p>
+            </div>
+
+            <div>
+                <strong>Phone</strong>
+                <p>{{ sale.customer.phone_number }}</p>
+            </div>
+
+            <div>
+                <strong>Date</strong>
+                <p>
+                    {{ sale.created_at|date:"M d, Y H:i" }}
+                </p>
+            </div>
+
+            <div>
+                <strong>Payment Method</strong>
+                <p>{{ sale.payment_method }}</p>
+            </div>
+
+        </div>
+
+        <table class="receipt-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Price</th>
+                    <th>Subtotal</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>
+                        {{ item.product.product_name }}
+                    </td>
+
+                    <td>
+                        {{ item.quantity }}
+                    </td>
+
+                    <td>
+                        UGX {{ item.selling_price }}
+                    </td>
+
+                    <td>
+                        UGX {{ item.subtotal }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <div class="totals-section">
+
+            <div class="total-row">
+
+                <span>Subtotal</span>
+
+                <strong>
+                    UGX {{ sale.subtotal_amount }}
+                </strong>
+
+            </div>
+
+            <div class="total-row">
+
+                <span>Transport</span>
+
+                <strong>
+                    UGX {{ sale.transport_charge }}
+                </strong>
+
+            </div>
+
+            <div class="grand-total">
+
+                <span>Total</span>
+
+                <strong>
+                    UGX {{ sale.total_amount }}
+                </strong>
+
+            </div>
+
+        </div>
+
+        <div class="receipt-footer">
+
+            <p>
+                Thank you for shopping with us.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.receipt-wrapper{
+    max-width:1000px;
+    margin:auto;
+}
+
+.receipt-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.back-btn,
+.print-btn{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:12px 18px;
+    border:none;
+    border-radius:12px;
+    text-decoration:none;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.back-btn{
+    background:#f1f5f9;
+    color:#0f172a;
+}
+
+.print-btn{
+    background:linear-gradient(
+        235deg,
+        #0b1f3a,
+        #1abc9c
+    );
+    color:white;
+}
+
+.receipt-card{
+    background:white;
+    border-radius:24px;
+    padding:40px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.06);
+}
+
+.company-section{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.company-section h1{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.receipt-badge{
+    display:inline-block;
+    margin-top:16px;
+    padding:10px 20px;
+    border-radius:999px;
+    background:#dcfce7;
+    color:#166534;
+    font-weight:700;
+}
+
+.receipt-info{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.receipt-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:30px;
+}
+
+.receipt-table th{
+    background:#f8fafc;
+    padding:16px;
+    text-align:left;
+}
+
+.receipt-table td{
+    padding:16px;
+    border-bottom:1px solid #e2e8f0;
+}
+
+.totals-section{
+    margin-left:auto;
+    max-width:320px;
+}
+
+.total-row,
+.grand-total{
+    display:flex;
+    justify-content:space-between;
+    padding:14px 0;
+}
+
+.grand-total{
+    font-size:22px;
+    font-weight:700;
+    border-top:2px solid #0f172a;
+}
+
+.receipt-footer{
+    margin-top:40px;
+    text-align:center;
+    color:#64748b;
+}
+
+@media print{
+
+    .receipt-header{
+        display:none;
+    }
+
+    body{
+        background:white;
+    }
+
+    .receipt-card{
+        box-shadow:none;
+    }
+
+}
+
+</style>
+
+{% endblock %}

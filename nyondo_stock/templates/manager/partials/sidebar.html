@@ -8,14 +8,22 @@
 
         <div>
             <h2>NyondoStock</h2>
-            <p>STOCK MANAGER</p>
+            <p>
+            <span>
+                {% for group in request.user.groups.all %}
+                {{ group.name }}
+                {% endfor %}
+            </span>
+            </p>
         </div>
 
     </div>
 
-    {% if request.user.groups.all %}
+    {% for group in request.user.groups.all %}
 
-   <nav class="nav-menu">
+    {% if group.name == 'ADMIN' or group.name == 'MANAGER' %}
+
+        <nav class="nav-menu">
 
         <a href="{% url 'manager_dashboard' %}"
         class="nav-item {% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}">
@@ -100,7 +108,56 @@
 
         
     </nav>
+
     {% endif %}
+
+    {% if group.name == 'ADMIN' or group.name == 'ATTENDANT' %}
+    <nav class="nav-menu">
+        <a href="{% url 'attendant_dashboard' %}"
+        class="nav-item {% if request.resolver_match.url_name == 'attendant_dashboard' %}active{% endif %}">
+
+            <i class="ph ph-squares-four"></i>
+
+            Dashboard
+
+        </a>
+        <a href="{% url 'create_sale' %}"class="nav-item {% if request.resolver_match.url_name == 'create_sale' %}active{% endif %}">
+            <i class="ph ph-shopping-cart"></i>
+            Add New Sale
+        </a>
+        <a href="{% url 'sales_history' %}"class="nav-item {% if request.resolver_match.url_name == 'sales_history' %}active{% endif %}">
+            <i class="ph ph-file-text"></i>
+            Sales Records
+        </a>
+
+        <a href="#" class="nav-item">
+            <i class="ph ph-credit-card"></i>
+            Approved Deposits
+        </a>
+        
+        <a href="#"
+        class="nav-item">
+            <i class="ph ph-truck"></i>
+        
+            Deliveries
+        </a>
+        
+        <a href="#"
+        class="nav-item">
+            <i class="ph ph-receipt"></i>
+            Receipts
+        </a>
+
+
+    </nav>
+
+    {% endif %}
+
+
+    {% endfor %}
+
+   
+    
 
     <div class="sidebar-footer">
 

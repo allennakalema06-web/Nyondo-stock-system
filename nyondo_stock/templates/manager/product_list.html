@@ -163,37 +163,7 @@ Products
   </table>
   
 </div>
-<div class="pagination">
 
-    {% if page_obj.has_previous %}
-
-        <a href="?page=1&search={{ search_query }}&category={{ selected_category }}" class="page-btn">
-            First
-        </a>
-
-        <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&category={{ selected_category }}" class="page-btn">
-            Previous
-        </a>
-
-    {% endif %}
-
-    <span class="current-page">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
-    </span>
-
-    {% if page_obj.has_next %}
-
-        <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&category={{ selected_category }}" class="page-btn">
-            Next
-        </a>
-
-        <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&category={{ selected_category }}" class="page-btn">
-            Last
-        </a>
-
-    {% endif %}
-
-</div>
 
 <style>
 
