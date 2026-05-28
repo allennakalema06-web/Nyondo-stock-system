@@ -10,111 +10,170 @@ Attendant Dashboard
 
 <div class="dashboard-header">
 
+<div>
+
+    <h2>Sales Operations Center</h2>
+
+    <p>
+        Monitor today's business activity, operational health,
+        sales performance, deliveries, and live transactions.
+    </p>
+
+</div>
+
+</div>
+
+<!-- TODAY ACTIVITY -->
+
+<div class="section-title">
+
+<h3>Today's Activity</h3>
+
+</div>
+
+<div class="stats-grid">
+
+<div class="stat-card primary">
+
     <div>
 
-        <h3>Welcome to the attendant control center.</h3>
+        <span>Today's Revenue</span>
 
-        <p>
-            Monitor sales, deliveries, customer approvals, and stock movement.
-        </p>
+        <h2>
+            UGX {{ today_sales|floatformat:0 }}
+        </h2>
 
     </div>
+
+    <i class="ph ph-currency-circle-dollar"></i>
 
 </div>
 
 
-<!-- STATS GRID -->
+
+<div class="stat-card">
+
+    <div>
+
+        <span>Transactions</span>
+
+        <h2>{{ transaction_count }}</h2>
+
+    </div>
+
+    <i class="ph ph-receipt"></i>
+
+</div>
+
+
+
+<div class="stat-card">
+
+    <div>
+
+        <span>Items Sold</span>
+
+        <h2>{{ total_items_sold }}</h2>
+
+    </div>
+
+    <i class="ph ph-shopping-cart"></i>
+
+</div>
+
+</div>
+
+<!-- BUSINESS OVERVIEW -->
+
+<div class="section-title">
+
+<h3>Business Overview</h3>
+
+</div>
 
 <div class="stats-grid">
 
-    <div class="stat-card primary">
+<div class="stat-card success">
 
-        <div>
+    <div>
 
-            <span>Today's Revenue</span>
+        <span>Overall Revenue</span>
 
-            <h2>
-                UGX {{ today_sales|floatformat:0 }}
-            </h2>
-
-        </div>
-
-        <i class="ph ph-currency-circle-dollar"></i>
+        <h2>
+            UGX {{ overall_revenue|floatformat:0 }}
+        </h2>
 
     </div>
 
+    <i class="ph ph-chart-line-up"></i>
 
-    <div class="stat-card">
-
-        <div>
-
-            <span>Transactions</span>
-
-            <h2>{{ transaction_count }}</h2>
-
-        </div>
-
-        <i class="ph ph-receipt"></i>
-
-    </div>
+</div>
 
 
-    <div class="stat-card">
 
-        <div>
+<div class="stat-card warning">
 
-            <span>Items Sold</span>
+    <div>
 
-            <h2>{{ total_items_sold }}</h2>
+        <span>Total Customers</span>
 
-        </div>
-
-        <i class="ph ph-shopping-cart"></i>
+        <h2>
+            {{ total_customers }}
+        </h2>
 
     </div>
 
+    <i class="ph ph-users"></i>
 
-    <div class="stat-card success">
+</div>
 
-        <div>
 
-            <span>Approved Deposits</span>
 
-            <h2>{{ approved_deposits }}</h2>
+<div class="stat-card danger">
 
-        </div>
+    <div>
+
+        <span>Stock Value</span>
+
+        <h2>
+            UGX {{ stock_value|floatformat:0 }}
+        </h2>
+
+    </div>
+
+    <i class="ph ph-package"></i>
+
+</div>
+
+</div>
+
+<!-- OPERATIONAL STATUS -->
+
+<div class="section-title">
+
+<h3>Operational Status</h3>
+
+</div>
+
+<div class="status-grid">
+
+<div class="status-card">
+
+    <div class="status-icon green">
 
         <i class="ph ph-check-circle"></i>
 
     </div>
 
+    <div>
 
-    <div class="stat-card warning">
+        <strong>
+            Approved Deposits
+        </strong>
 
-        <div>
-
-            <span>Pending Deliveries</span>
-
-            <h2>{{ pending_deliveries }}</h2>
-
-        </div>
-
-        <i class="ph ph-truck"></i>
-
-    </div>
-
-
-    <div class="stat-card danger">
-
-        <div>
-
-            <span>Low Stock Alerts</span>
-
-            <h2>{{ low_stock_products }}</h2>
-
-        </div>
-
-        <i class="ph ph-warning-circle"></i>
+        <span>
+            {{ approved_deposits }} approved deposit requests
+        </span>
 
     </div>
 
@@ -122,59 +181,183 @@ Attendant Dashboard
 
 
 
-<!-- CONTENT GRID -->
+<div class="status-card">
+
+    <div class="status-icon orange">
+
+        <i class="ph ph-truck"></i>
+
+    </div>
+
+    <div>
+
+        <strong>
+            Pending Deliveries
+        </strong>
+
+        <span>
+            {{ pending_deliveries }} deliveries pending
+        </span>
+
+    </div>
+
+</div>
+
+
+
+<div class="status-card">
+
+    <div class="status-icon red">
+
+        <i class="ph ph-warning-circle"></i>
+
+    </div>
+
+    <div>
+
+        <strong>
+            Low Stock Alerts
+        </strong>
+
+        <span>
+            {{ low_stock_products }} products require restocking
+        </span>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- MAIN CONTENT -->
 
 <div class="content-grid">
 
-    <!-- RECENT TRANSACTIONS -->
+<!-- RECENT TRANSACTIONS -->
 
-    <div class="card row">
+<div class="card">
 
-        <div class="card-header">
+    <div class="card-header">
 
-            <h3>Recent Transactions</h3>
+        <h3>Live Transactions</h3>
+
+    </div>
+
+    <div class="activity-list">
+
+        {% for sale in recent_sales %}
+
+        <div class="activity-item">
+
+            <div>
+
+                <strong>
+                    {{ sale.customer.customer_name }}
+                </strong>
+
+                <span>
+                    {{ sale.created_at|timesince }} ago
+                </span>
+
+            </div>
+
+            <div class="activity-right">
+
+                <strong>
+                    UGX {{ sale.total_amount|floatformat:0 }}
+                </strong>
+
+                <span class="badge
+                {% if sale.payment_status == 'PAID' %}
+                success
+                {% elif sale.payment_status == 'PARTIAL' %}
+                warning
+                {% else %}
+                danger
+                {% endif %}
+                ">
+                    {{ sale.payment_status }}
+                </span>
+
+            </div>
 
         </div>
 
-        <div class="activity-list">
+        {% empty %}
 
-            {% for sale in recent_sales %}
+        <div class="empty-state">
 
-            <div class="activity-item">
+            <i class="ph ph-shopping-cart"></i>
+
+            <p>No transactions recorded.</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+
+<!-- SIDEBAR -->
+
+<div class="side-analytics">
+
+    <!-- TRANSPORT -->
+
+    <div class="card analytics-card">
+
+        <div class="analytics-top">
+
+            <div>
+
+                <span>Transport Revenue</span>
+
+                <h2>
+                    UGX {{ total_transport_money|floatformat:0 }}
+                </h2>
+
+            </div>
+
+            <i class="ph ph-truck"></i>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TOP PRODUCTS -->
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <h3>Top Products</h3>
+
+        </div>
+
+        <div class="top-products">
+
+            {% for product in top_products %}
+
+            <div class="top-product">
 
                 <div>
 
                     <strong>
-                        {{ sale.customer.customer_name }}
+                        {{ product.product__product_name }}
                     </strong>
-
-                    <span>
-                        {{ sale.created_at }}
-                    </span>
 
                 </div>
 
-                <div class="activity-right">
+                <div class="qty-pill">
 
-                    <strong>
-                        UGX {{ sale.total_amount|floatformat:0 }}
-                    </strong>
-
-                    <span class="badge success">
-                        Paid
-                    </span>
+                    {{ product.total }}
 
                 </div>
-
-            </div>
-
-            {% empty %}
-
-            <div class="empty-state">
-
-                <i class="ph ph-shopping-cart"></i>
-
-                <p>No recent transactions.</p>
 
             </div>
 
@@ -184,90 +367,21 @@ Attendant Dashboard
 
     </div>
 
+</div>
 
-
-    <!-- SIDEBAR ANALYTICS -->
-
-    <div class="side-analytics">
-
-        <!-- TRANSPORT -->
-
-        <div class="card analytics-card">
-
-            <div class="analytics-top">
-
-                <div>
-
-                    <span>Transport Revenue</span>
-
-                    <h2>
-                        UGX {{ total_transport_money|floatformat:0 }}
-                    </h2>
-
-                </div>
-
-                <i class="ph ph-truck"></i>
-
-            </div>
-
-        </div>
-
-
-
-        <!-- TOP PRODUCTS -->
-
-        <div class="card row">
-
-            <div class="card-header">
-
-                <h3>Top Products</h3>
-
-            </div>
-
-            <div class="top-products">
-
-                {% for product in top_products %}
-
-                <div class="top-product">
-
-                    <div>
-
-                        <strong>
-                            {{ product.product__product_name }}
-                        </strong>
-
-                    </div>
-
-                    <div class="qty-pill">
-
-                        {{ product.total }}
-
-                    </div>
-
-                </div>
-
-                {% endfor %}
-
-            </div>
-
-        </div>
-
-        </div>
-
-    </div>
 
 </div>
+
 <style>
 
 .dashboard-header{
-    margin-bottom:30px;
+    margin-bottom:35px;
 }
 
-.dashboard-header h3{
-    font-size:32px;
-    font-weight:700;
+.dashboard-header h2{
+    font-size:34px;
     color:#0f172a;
-    margin-bottom:8px;
+    margin-bottom:10px;
 }
 
 .dashboard-header p{
@@ -277,12 +391,26 @@ Attendant Dashboard
 
 
 
+.section-title{
+    margin-bottom:18px;
+    margin-top:10px;
+}
+
+.section-title h3{
+    font-size:18px;
+    color:#0f172a;
+}
+
+
+
 .stats-grid{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:20px;
-    margin-bottom:30px;
+    margin-bottom:35px;
 }
+
+
 
 .stat-card{
     background:white;
@@ -291,99 +419,120 @@ Attendant Dashboard
     display:flex;
     justify-content:space-between;
     align-items:center;
-    box-shadow:0 4px 14px rgba(0,0,0,0.06);
+    box-shadow:var(--shadow);
     transition:0.3s ease;
-    position:relative;
-    overflow:hidden;
 }
-.card,
-.stat-card,
-.analytics-top,
-table,
-.form-control,
-input,
-select,
-textarea {
-    box-shadow: var(--shadow);
-    }
+
 .stat-card:hover{
     transform:translateY(-4px);
 }
 
-.stat-card::before{
-    content:'';
-    position:absolute;
-    top:0;
-    left:0;
-    width:6px;
-    height:100%;
-}
-
-.stat-card.primary{
-    background:linear-gradient(235deg,#0b1f3a,#1abc9c);
-    color:white;
-}
-
-.stat-card.primary::before{
-    background:#ffffff;
-}
-
-.stat-card.success::before{
-    background:#10b981;
-}
-
-.stat-card.warning::before{
-    background:#f59e0b;
-}
-
-.stat-card.danger::before{
-    background:#ef4444;
-}
-
 .stat-card span{
     display:block;
+    margin-bottom:10px;
     font-size:14px;
     color:#64748b;
-    margin-bottom:10px;
-    font-weight:500;
-}
-
-.stat-card.primary span{
-    color:#d1fae5;
 }
 
 .stat-card h2{
     font-size:28px;
-    font-weight:700;
     color:#0f172a;
 }
 
-.stat-card.primary h2{
+.stat-card i{
+    font-size:42px;
+}
+
+
+
+.primary{
+    background:linear-gradient(235deg,#0b1f3a,#1abc9c);
+}
+
+.primary span,
+.primary h2,
+.primary i{
     color:white;
 }
 
-.stat-card.success h2{
-    color:#047857;
+
+
+.success{
+    border-left:5px solid #10b981;
 }
 
-.stat-card.warning h2{
+.warning{
+    border-left:5px solid #f59e0b;
+}
+
+.danger{
+    border-left:5px solid #ef4444;
+}
+
+
+
+.status-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-bottom:35px;
+}
+
+
+
+.status-card{
+    background:white;
+    border-radius:22px;
+    padding:22px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    box-shadow:var(--shadow);
+}
+
+
+
+.status-icon{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.status-icon i{
+    font-size:28px;
+}
+
+.status-icon.green{
+    background:#dcfce7;
+    color:#15803d;
+}
+
+.status-icon.orange{
+    background:#fef3c7;
     color:#b45309;
 }
 
-.stat-card.danger h2{
+.status-icon.red{
+    background:#fee2e2;
     color:#b91c1c;
 }
 
-.stat-card i{
-    font-size:40px;
-    opacity:0.9;
+
+
+.status-card strong{
+    display:block;
+    margin-bottom:5px;
+    color:#0f172a;
 }
 
-
-
-.stat-card.primary i{
-    color:white;
+.status-card span{
+    color:#64748b;
+    font-size:14px;
 }
+
 
 
 .content-grid{
@@ -393,21 +542,24 @@ textarea {
 }
 
 
+
 .card{
     background:white;
     border-radius:22px;
     padding:24px;
+    box-shadow:var(--shadow);
 }
+
+
 
 .card-header{
     margin-bottom:20px;
 }
 
 .card-header h3{
-    font-size:20px;
-    font-weight:700;
     color:#0f172a;
 }
+
 
 
 .activity-list{
@@ -415,6 +567,8 @@ textarea {
     flex-direction:column;
     gap:18px;
 }
+
+
 
 .activity-item{
     display:flex;
@@ -424,14 +578,10 @@ textarea {
     border-bottom:1px solid #f1f5f9;
 }
 
-.activity-item:last-child{
-    border-bottom:none;
-    padding-bottom:0;
-}
+
 
 .activity-item strong{
     color:#0f172a;
-    font-size:15px;
 }
 
 .activity-item span{
@@ -441,15 +591,12 @@ textarea {
     color:#64748b;
 }
 
-.activity-right{
-    text-align:right;
-}
 
 
 .badge{
     display:inline-block;
     margin-top:8px;
-    padding:7px 14px;
+    padding:6px 14px;
     border-radius:30px;
     font-size:12px;
     font-weight:700;
@@ -465,11 +612,16 @@ textarea {
     color:#92400e;
 }
 
+.badge.danger{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+
 
 .analytics-card{
     margin-bottom:24px;
     background:linear-gradient(235deg,#0b1f3a,#1abc9c);
-    color:white;
 }
 
 .analytics-top{
@@ -480,18 +632,19 @@ textarea {
 
 .analytics-top span{
     color:#d1fae5;
-    font-size:14px;
 }
 
 .analytics-top h2{
     margin-top:10px;
-    font-size:28px;
     color:white;
+    font-size:28px;
 }
 
 .analytics-top i{
     font-size:42px;
+    color:white;
 }
+
 
 
 .top-products{
@@ -500,15 +653,15 @@ textarea {
     gap:18px;
 }
 
+
+
 .top-product{
     display:flex;
     justify-content:space-between;
     align-items:center;
 }
 
-.top-product strong{
-    color:#0f172a;
-}
+
 
 .qty-pill{
     background:#ecfeff;
@@ -527,23 +680,20 @@ textarea {
     color:#64748b;
 }
 
-.empty-state i{
-    font-size:42px;
-    margin-bottom:12px;
-}
 
 
+@media(max-width:1100px){
 
-
-@media(max-width:1200px){
-
-    .stats-grid{
-        grid-template-columns:repeat(2,1fr);
+    .stats-grid,
+    .status-grid{
+        grid-template-columns:1fr 1fr;
     }
 
 }
 
-@media(max-width:900px){
+
+
+@media(max-width:850px){
 
     .content-grid{
         grid-template-columns:1fr;
@@ -551,23 +701,17 @@ textarea {
 
 }
 
+
+
 @media(max-width:700px){
 
-    .stats-grid{
+    .stats-grid,
+    .status-grid{
         grid-template-columns:1fr;
-    }
-
-    .activity-item{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:12px;
-    }
-
-    .activity-right{
-        text-align:left;
     }
 
 }
 
 </style>
+
 {% endblock %}

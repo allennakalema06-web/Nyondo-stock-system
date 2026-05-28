@@ -58,6 +58,13 @@ Sales History
     </div>
 
 </div>
+<div class="receipt-actions">
+
+    <a href="{% url 'create_sale' %}" class="btn btn-primary">
+        + Add New Sale
+    </a>
+
+</div>
 <div class="history-card">
     <div class="history-table-wrapper">
 
@@ -147,6 +154,14 @@ Sales History
               >
                 <i class="ph ph-pencil-simple"></i>
               </a>
+              <a
+                href="{% url 'sale_receipt' sale.id %}"
+                class="btn-icon receipt-btn"
+              >
+                <i class="ph ph-printer"></i>
+                
+              </a>
+
 
             </div>
           </td>
@@ -193,6 +208,31 @@ Sales History
     );
     overflow:hidden;
     position:relative;
+}
+.receipt-btn i{
+
+border-radius:12px;
+
+background:#d3fdff;
+
+color:#0891b2;
+
+text-decoration:none;
+
+transition:0.3s ease;
+
+
+}
+
+.receipt-btn:hover i{
+
+transform:translateY(-2px);
+
+}
+
+.receipt-btn i{
+
+font-size:20px;
 }
 
 .records-hero::before{

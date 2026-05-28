@@ -44,6 +44,14 @@ class SaleForm(forms.ModelForm):
             }
         )
     )
+    delivery_address = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control', 'placeholder': 'Delivery Address'
+            }
+        )
+    )
 
     distance_km = forms.DecimalField(
         required=False,
@@ -83,7 +91,7 @@ class SaleForm(forms.ModelForm):
             'amount_paid': forms.NumberInput(
                 attrs={
                     'class': 'form-control',
-                    'placeholder': 'Amount Paid'
+                    'placeholder': 'Amount Paid',
                 }
             ),
         }
@@ -126,16 +134,17 @@ class SaleForm(forms.ModelForm):
         payment_method = self.cleaned_data.get(
             'payment_method'
         )
+        # If payment method is not CASH, reference must be provided
         if payment_method != 'CASH':
             if not reference:
                 raise forms.ValidationError(
                     'Transaction reference is required.'
                 )
-
-        if len(reference) < 5:
+        #Only check length if reference exists
+        if reference and len(reference) < 5:
 
             raise forms.ValidationError(
-                'Reference is too short.'
+                'Reference must be at least 5 characters long.'
             )
         return reference
     

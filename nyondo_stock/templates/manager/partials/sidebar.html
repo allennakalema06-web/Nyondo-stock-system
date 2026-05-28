@@ -116,7 +116,7 @@
         <a href="{% url 'attendant_dashboard' %}"
         class="nav-item {% if request.resolver_match.url_name == 'attendant_dashboard' %}active{% endif %}">
 
-            <i class="ph ph-squares-four"></i>
+            <i class="ph ph-house"></i>
 
             Dashboard
 
@@ -129,26 +129,24 @@
             <i class="ph ph-file-text"></i>
             Sales Records
         </a>
-
-        <a href="#" class="nav-item">
-            <i class="ph ph-credit-card"></i>
-            Approved Deposits
-        </a>
-        
-        <a href="#"
-        class="nav-item">
-            <i class="ph ph-truck"></i>
-        
-            Deliveries
-        </a>
-        
-        <a href="#"
-        class="nav-item">
+        <a href="{% url 'receipt_records' %}"class="nav-item {% if request.resolver_match.url_name == 'receipt_records' %}active{% endif %}">
             <i class="ph ph-receipt"></i>
-            Receipts
+            Receipt Records
+        </a>
+        <a href="{% url 'pending_deposit_sales' %}"class="nav-item {% if request.resolver_match.url_name == 'pending_deposit_sales' %}active{% endif %}">
+            <i class="ph ph-wallet"></i>
+            Pending Deposit Sales
+        </a>
+        <a href="{% url 'transport_records' %}"class="nav-item {% if request.resolver_match.url_name == 'transport_records' %}active{% endif %}">
+            <i class="ph ph-truck"></i>
+            Transport Records
+        </a>
+        <a href="{% url 'stock_check' %}"class="nav-item {% if request.resolver_match.url_name == 'stock_check' %}active{% endif %}">
+            <i class="ph ph-package"></i>
+            Sales Records
         </a>
 
-
+        
     </nav>
 
     {% endif %}

@@ -29,9 +29,34 @@ urlpatterns = [
     name='edit_sale'
     ),
     path(
-    'receipt/<int:sale_id>/',
+    'sale_receipt/<int:sale_id>/',
     views.sale_receipt,
     name='sale_receipt'
     ),
+    path( 
+        'receipt_records/', 
+        views.receipt_records, name='receipt_records' 
+    ), 
+    path( 
+        'transport_records/', 
+        views.transport_records, name='transport_records' 
+    ), 
+    path( 
+        'stock-check/', 
+        views.stock_check, 
+        name='stock_check' 
+    ),
+    path(
+        'pending_deposit_sales/',
+        views.pending_deposit_sales,name='pending_deposit_sales'
+    ),
+    path(
+        'complete_pending_sale/[int:pending_id](int:pending_id)/',
+        views.complete_pending_sale,
+        name='complete_pending_sale'
+    ),
+    
+
+
 
 ]

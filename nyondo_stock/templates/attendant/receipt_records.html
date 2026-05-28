@@ -1,0 +1,420 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Receipt Records
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+
+<div>
+
+    <a href="{% url 'attendant_dashboard' %}" class="back-btn">
+        ← Back
+    </a>
+
+    <h2>Receipt Records</h2>
+
+    <p>
+        View, manage, and reprint all generated customer receipts.
+    </p>
+
+</div>
+
+
+</div>
+
+<div class="receipt-container">
+
+
+<div class="receipt-card">
+
+    <div class="table-header">
+
+        <h3>Generated Receipts</h3>
+
+        <span class="receipt-count">
+            {{ receipts.count }} Receipts
+        </span>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="receipt-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Receipt No</th>
+
+                    <th>Customer</th>
+
+                    <th>Total Amount</th>
+
+                    <th>Payment</th>
+
+                    <th>Date</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for receipt in receipts %}
+
+                <tr>
+
+                    <td>
+
+                        <span class="receipt-badge">
+                            {{ receipt.receipt_number }}
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ receipt.sale.customer.customer_name }}
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ receipt.sale.total_amount }}
+
+                    </td>
+
+                    <td>
+
+                        <span class="payment-method">
+
+                            {{ receipt.sale.payment_method }}
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        {{ receipt.generated_at|date:"d M Y" }}
+
+                    </td>
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="{% url 'sale_receipt' receipt.sale.id %}"
+                                class="view-btn"
+                            >
+                                View
+                            </a>
+
+                            <a
+                                href="{% url 'sale_receipt' receipt.sale.id %}"
+                                target="_blank"
+                                class="print-btn"
+                            >
+                                Print
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="6">
+
+                        <div class="empty-state">
+
+                            <h3>No Receipts Found</h3>
+
+                            <p>
+                                No receipt records have been generated yet.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</div>
+
+<style>
+
+.page-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.page-header h2{
+
+    font-size:28px;
+
+    color:#0f172a;
+
+    margin-top:12px;
+
+    margin-bottom:8px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+}
+
+.back-btn{
+
+    text-decoration:none;
+
+    color:#1abc9c;
+
+    font-weight:600;
+
+}
+
+.receipt-container{
+
+    margin-top:20px;
+
+}
+
+.receipt-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:24px;
+
+    box-shadow:var(--shadow);
+
+}
+
+.table-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.table-header h3{
+
+    color:#0f172a;
+
+    font-size:20px;
+
+}
+
+.receipt-count{
+
+    background:#ecfeff;
+
+    color:#0891b2;
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    font-size:14px;
+
+}
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+.receipt-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.receipt-table thead{
+
+    background:#f8fafc;
+
+}
+
+.receipt-table th{
+
+    padding:16px;
+
+    text-align:left;
+
+    color:#475569;
+
+    font-size:14px;
+
+}
+
+.receipt-table td{
+
+    padding:16px;
+
+    border-bottom:1px solid #f1f5f9;
+
+    color:#334155;
+
+}
+
+.receipt-badge{
+
+    background:#dbeafe;
+
+    color:#2563eb;
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+.payment-method{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    padding:8px 12px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.action-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.view-btn{
+
+    text-decoration:none;
+
+    background:#1abc9c;
+
+    color:white;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.print-btn{
+
+    text-decoration:none;
+
+    background:#0f172a;
+
+    color:white;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.empty-state{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+}
+
+.empty-state h3{
+
+    color:#0f172a;
+
+    margin-bottom:10px;
+
+}
+
+.empty-state p{
+
+    color:#64748b;
+
+}
+
+@media(max-width:768px){
+
+    .page-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:12px;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

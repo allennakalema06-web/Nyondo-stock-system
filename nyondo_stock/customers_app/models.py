@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.timezone import now
 # Create your models here.
 
 class Customer(models.Model):
@@ -131,6 +131,7 @@ class TransportDelivery(models.Model):
         choices=DELIVERY_STATUS,
         default='PENDING'
     )
+    delivery_address = models.CharField(max_length=255, blank=True, null=True)
 
     dispatch_date = models.DateTimeField(auto_now_add=True)
 
@@ -139,6 +140,8 @@ class TransportDelivery(models.Model):
         on_delete=models.SET_NULL,
         null=True
     )
+    created_at = models.DateTimeField(default=now)
+    
 
     def __str__(self):
         return f"{self.customer.customer_name} - {self.delivery_status}"   

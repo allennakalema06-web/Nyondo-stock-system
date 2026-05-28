@@ -1,0 +1,409 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Pending Deposit Sales
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+
+<div>
+
+    <a href="{% url 'attendant_dashboard' %}" class="back-btn">
+        ← Back
+    </a>
+
+    <h2>Pending Deposit Sales</h2>
+
+    <p>
+        Approved customer deposits waiting for
+        final sale completion and receipt generation.
+    </p>
+
+</div>
+
+
+</div>
+
+<div class="deposit-container">
+
+
+<div class="deposit-card">
+
+    <div class="table-header">
+
+        <h3>Approved Deposit Sales</h3>
+
+        <span class="deposit-count">
+
+            {{ pending_sales.count }} Pending
+
+        </span>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="deposit-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Customer</th>
+
+                    <th>Total Amount</th>
+
+                    <th>Amount Paid</th>
+
+                    <th>Balance</th>
+
+                    <th>Status</th>
+
+                    <th>Date</th>
+
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for pending in pending_sales %}
+
+                <tr>
+
+                    <td>
+
+                        {{ pending.customer.customer_name }}
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ pending.total_amount }}
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ pending.amount_paid }}
+
+                    </td>
+
+                    <td>
+
+                        UGX {{ pending.balance_remaining }}
+
+                    </td>
+
+                    <td>
+
+                        {% if pending.approved_for_sale %}
+
+                        <span class="status approved">
+
+                            Approved
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="status waiting">
+
+                            Waiting
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>
+
+                        {{ pending.created_at|date:"d M Y" }}
+
+                    </td>
+
+                    <td>
+
+                        <div class="action-buttons">
+
+                            <a
+                                href="#"
+                                class="view-btn"
+                            >
+                                View
+                            </a>
+
+                            <a
+                                href="{% url 'complete_pending_sale' pending.id %}"
+                                class="complete-btn"
+                            >
+                                Complete Sale
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="7">
+
+                        <div class="empty-state">
+
+                            <h3>No Pending Deposit Sales</h3>
+
+                            <p>
+                                Approved deposit sales will appear here.
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+</div>
+
+<style>
+
+.page-header{
+
+    margin-bottom:25px;
+
+}
+
+.page-header h2{
+
+    font-size:28px;
+
+    color:#0f172a;
+
+    margin-top:12px;
+
+    margin-bottom:8px;
+
+}
+
+.page-header p{
+
+    color:#64748b;
+
+}
+
+.back-btn{
+
+    text-decoration:none;
+
+    color:#1abc9c;
+
+    font-weight:600;
+
+}
+
+.deposit-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:24px;
+
+    box-shadow:var(--shadow);
+
+}
+
+.table-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.table-header h3{
+
+    color:#0f172a;
+
+    font-size:20px;
+
+}
+
+.deposit-count{
+
+    background:#ecfeff;
+
+    color:#0891b2;
+
+    padding:10px 16px;
+
+    border-radius:12px;
+
+    font-size:14px;
+
+    font-weight:600;
+
+}
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+.deposit-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.deposit-table thead{
+
+    background:#f8fafc;
+
+}
+
+.deposit-table th{
+
+    padding:16px;
+
+    text-align:left;
+
+    font-size:14px;
+
+    color:#475569;
+
+}
+
+.deposit-table td{
+
+    padding:16px;
+
+    border-bottom:1px solid #f1f5f9;
+
+    color:#334155;
+
+}
+
+.status{
+
+    padding:8px 14px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+.status.approved{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+}
+
+.status.waiting{
+
+    background:#fef3c7;
+
+    color:#b45309;
+
+}
+
+.action-buttons{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.view-btn{
+
+    text-decoration:none;
+
+    background:#1abc9c;
+
+    color:white;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.complete-btn{
+
+    text-decoration:none;
+
+    background:#0f172a;
+
+    color:white;
+
+    padding:10px 16px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.empty-state{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+}
+
+.empty-state h3{
+
+    margin-bottom:10px;
+
+    color:#0f172a;
+
+}
+
+.empty-state p{
+
+    color:#64748b;
+
+}
+
+</style>
+
+{% endblock %}
