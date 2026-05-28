@@ -6,7 +6,7 @@ from .models import Receipt
 from django.db.models import Sum, F
 from django.utils import timezone
 from .models import Sale, SaleItem, PendingCreditSale
-from customers_app.models import TransportDelivery, Customer
+from customers_app.models import TransportDelivery, Customer, DeliveryLocation
 from inventory_app.models import Product
 from .forms import SaleForm
 from decimal import Decimal
@@ -289,27 +289,47 @@ def create_sale(request):
             Receipt.objects.create(
                 sale=sale, receipt_number=receipt_number
             )
-
-            # CREATE DELIVERY
+            #CREATE DELIVERY
             if sale.requires_delivery:
+                delivery_address = request.POST.get(
+                    'delivery_address'
+                ) or 'Unknown Location'
+                delivery_location, created = (
+                    DeliveryLocation.objects.get_or_create(
+                        customer=customer,location_name=delivery_address,
+                        defaults={
+                            'distance_km': distance_km,'transport_charge': transport_fee,
+                        }
+                    )
+                )
+                
                 TransportDelivery.objects.create(
                     customer=customer,
+
                     sale=sale,
-                    delivery_address='Not Provided',
+
+                    delivery_address=delivery_address,
+
+                    delivery_location=delivery_location,
+
                     transport_fee=transport_fee,
+
                     delivery_status='PENDING',
+
                     truck_number='Not Assigned',
+
                     driver_name='Not Assigned',
+
                     recorded_by=request.user
+
                 )
-            messages.success(
-                request, 
-                'Sale recorded successfully.'
-            )
-            return redirect(
-                'sale_receipt', 
-                sale_id=sale.id
-            )
+                messages.success(
+                    request, 
+                    'Sale recorded successfully.'
+                )
+                return redirect(
+                    'sale_receipt', sale_id=sale.id
+                )
     else:
         form = SaleForm()
 
