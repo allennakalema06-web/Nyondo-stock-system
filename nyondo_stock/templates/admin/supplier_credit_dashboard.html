@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2>Supplier Credit Dashboard</h2>
+
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mb-3">
+        Back
+    </a>
+
+    <div class="row">
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Total Supplier Credit</h5>
+                <h3>UGX {{ total_supplier_credit }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Suppliers Owed</h5>
+                <h3>{{ suppliers_with_credit.count }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h5>Actions</h5>
+
+                <a href="{% url 'supplier_credit_list' %}" class="btn btn-primary btn-sm mb-2">
+                    View Supplier Balances
+                </a>
+
+                <a href="{% url 'record_supplier_payment' %}" class="btn btn-success btn-sm">
+                    Record Payment
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h4>Recent Credit Stock Entries</h4>
+
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Supplier</th>
+                <th>Total Cost</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for stock in recent_credit_stock %}
+
+            <tr>
+                <td>{{ stock.supplier }}</td>
+                <td>{{ stock.total_cost }}</td>
+                <td>{{ stock.date_added }}</td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

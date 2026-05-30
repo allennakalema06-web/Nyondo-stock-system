@@ -51,7 +51,7 @@ urlpatterns = [
         views.pending_deposit_sales,name='pending_deposit_sales'
     ),
     path(
-        'complete_pending_sale/[int:pending_id](int:pending_id)/',
+        'complete_pending_sale/<int:pending_id>/',
         views.complete_pending_sale,
         name='complete_pending_sale'
     ),

@@ -1,5 +1,5 @@
 from django import forms
-from .models import StockEntry, Product, StockEntryItem, StockAdjustment, Supplier, Category
+from .models import StockEntry, Product, StockEntryItem, StockAdjustment, Supplier, Category, SupplierPayment
 from django.forms import inlineformset_factory
 
 
@@ -14,7 +14,6 @@ class StockEntryForm(forms.ModelForm):
             'supplied_on_credit',
             'stock_date',
             'invoice_number',
-            'supplied_on_credit',
             'notes',
         ]
         widgets = {
@@ -423,3 +422,50 @@ class PricingForm(forms.ModelForm):
             }),
 
         }
+class SupplierPaymentForm(forms.ModelForm):
+
+    class Meta:
+
+        model = SupplierPayment
+
+        fields = [
+
+            'supplier',
+
+            'amount_paid',
+
+            'payment_method',
+
+            'transaction_reference',
+
+        ]
+
+        widgets = {
+
+            'supplier': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+
+            'amount_paid': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter amount paid'
+                }
+            ),
+
+            'payment_method': forms.Select(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
+
+            'transaction_reference': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Transaction reference'
+                }
+            ),
+
+        }       

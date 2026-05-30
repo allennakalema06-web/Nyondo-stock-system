@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
-from .models import Product, StockEntry, Category, Supplier, StockAdjustment, StockEntryItem
+from .models import Product, StockEntry, Category, Supplier, StockAdjustment
 from django.db import models
 from .forms import StockEntryForm, ProductForm, StockEntryItemFormSet, StockAdjustmentForm, SupplierForm, CategoryForm, PricingForm
 from django.db.models import Sum, F
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .decorators import allowed_roles
+from accounts_app.decorators import allowed_roles
 from django.utils import timezone
 
 # Create your views here.

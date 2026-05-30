@@ -1,0 +1,450 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Admin Sales Overview
+{% endblock %}
+
+{% block content %}
+
+{% include 'manager/partials/topbar.html' %}
+
+<div class="page-header">
+
+```
+<div>
+
+    <h2>
+        Sales Management Overview
+    </h2>
+
+    <p>
+        Monitor transactions, payment statuses and attendant sales performance.
+    </p>
+
+</div>
+```
+
+</div>
+
+<!-- SUMMARY GRID -->
+
+<div class="summary-grid">
+
+```
+<div class="summary-card primary">
+
+    <div>
+
+        <span>Total Sales Revenue</span>
+
+        <h2>
+            UGX {{ total_sales|floatformat:0 }}
+        </h2>
+
+    </div>
+
+    <i class="ph ph-money"></i>
+
+</div>
+
+
+<div class="summary-card">
+
+    <div>
+
+        <span>Total Transactions</span>
+
+        <h2>
+            {{ total_transactions }}
+        </h2>
+
+    </div>
+
+    <i class="ph ph-receipt"></i>
+
+</div>
+
+
+<div class="summary-card success">
+
+    <div>
+
+        <span>Paid Sales</span>
+
+        <h2>
+            {{ paid_sales }}
+        </h2>
+
+    </div>
+
+    <i class="ph ph-check-circle"></i>
+
+</div>
+
+
+<div class="summary-card warning">
+
+    <div>
+
+        <span>Partial Payments</span>
+
+        <h2>
+            {{ partial_sales }}
+        </h2>
+
+    </div>
+
+    <i class="ph ph-warning-circle"></i>
+
+</div>
+```
+
+</div>
+
+<!-- SALES TABLE -->
+
+<div class="records-card">
+
+```
+<div class="records-header">
+
+    <h3>
+        Sales Records
+    </h3>
+
+</div>
+
+<div class="table-wrapper">
+
+    <table class="sales-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Receipt</th>
+
+                <th>Customer</th>
+
+                <th>Attendant</th>
+
+                <th>Amount</th>
+
+                <th>Paid</th>
+
+                <th>Balance</th>
+
+                <th>Status</th>
+
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for sale in sales %}
+
+            <tr>
+
+                <td>
+
+                    {% if sale.receipt %}
+
+                    {{ sale.receipt.receipt_number }}
+
+                    {% else %}
+
+                    -
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ sale.customer.customer_name }}
+
+                </td>
+
+                <td>
+
+                    {{ sale.attendant.username }}
+
+                </td>
+
+                <td>
+
+                    UGX {{ sale.total_amount|floatformat:0 }}
+
+                </td>
+
+                <td>
+
+                    UGX {{ sale.amount_paid|floatformat:0 }}
+
+                </td>
+
+                <td>
+
+                    UGX {{ sale.balance|floatformat:0 }}
+
+                </td>
+
+                <td>
+
+                    {% if sale.payment_status == 'PAID' %}
+
+                    <span class="status paid">
+
+                        Paid
+
+                    </span>
+
+                    {% else %}
+
+                    <span class="status partial">
+
+                        Partial
+
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {{ sale.created_at|date:"d M Y" }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="8">
+
+                    <div class="empty-state">
+
+                        <i class="ph ph-shopping-cart"></i>
+
+                        <h3>
+                            No sales records found
+                        </h3>
+
+                        <p>
+                            Sales transactions will appear here.
+                        </p>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+```
+
+</div>
+
+<style>
+
+.page-header{
+    margin-bottom:30px;
+}
+
+.page-header h2{
+    font-size:32px;
+    margin-bottom:10px;
+    color:#0f172a;
+}
+
+.page-header p{
+    color:#64748b;
+}
+
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.summary-card{
+    background:white;
+    border-radius:22px;
+    padding:24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+}
+
+.summary-card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:6px;
+    height:100%;
+}
+
+.summary-card.primary{
+    background:linear-gradient(235deg,#0b1f3a,#1abc9c);
+    color:white;
+}
+
+.summary-card.primary::before{
+    background:white;
+}
+
+.summary-card.success::before{
+    background:#10b981;
+}
+
+.summary-card.warning::before{
+    background:#f59e0b;
+}
+
+.summary-card span{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    color:#64748b;
+}
+
+.summary-card.primary span{
+    color:#d1fae5;
+}
+
+.summary-card h2{
+    font-size:28px;
+    color:#0f172a;
+}
+
+.summary-card.primary h2{
+    color:white;
+}
+
+.summary-card.success h2{
+    color:#047857;
+}
+
+.summary-card.warning h2{
+    color:#b45309;
+}
+
+.summary-card i{
+    font-size:42px;
+}
+
+.records-card{
+    background:white;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:var(--shadow);
+}
+
+.records-header{
+    margin-bottom:20px;
+}
+
+.records-header h3{
+    color:#0f172a;
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+.sales-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.sales-table thead{
+    background:#f8fafc;
+}
+
+.sales-table th{
+    padding:16px;
+    text-align:left;
+    color:#475569;
+    font-size:14px;
+}
+
+.sales-table td{
+    padding:16px;
+    border-bottom:1px solid #f1f5f9;
+    color:#334155;
+}
+
+.status{
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+}
+
+.status.paid{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status.partial{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.empty-state{
+    text-align:center;
+    padding:60px 20px;
+}
+
+.empty-state i{
+    font-size:42px;
+    margin-bottom:12px;
+    color:#94a3b8;
+}
+
+.empty-state h3{
+    margin-bottom:10px;
+    color:#0f172a;
+}
+
+.empty-state p{
+    color:#64748b;
+}
+
+@media(max-width:1200px){
+
+    .summary-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:700px){
+
+    .summary-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

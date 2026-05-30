@@ -1,0 +1,279 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Expense Records
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+```
+<div>
+
+    <h2>
+        Expense Records
+    </h2>
+
+    <p>
+        Track operational costs and business expenditures.
+    </p>
+
+</div>
+
+<a href="{% url 'add_expense' %}" class="add-btn">
+
+    + Add Expense
+
+</a>
+```
+
+</div>
+
+<div class="summary-card">
+
+```
+<div>
+
+    <span>
+        Total Expenses
+    </span>
+
+    <h2>
+        UGX {{ total_expenses|floatformat:0 }}
+    </h2>
+
+</div>
+
+<i class="ph ph-wallet"></i>
+```
+
+</div>
+
+<div class="records-card">
+
+```
+<div class="table-wrapper">
+
+    <table class="expense-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Expense Type</th>
+
+                <th>Amount</th>
+
+                <th>Payment Method</th>
+
+                <th>Reference</th>
+
+                <th>Recorded By</th>
+
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for expense in expenses %}
+
+            <tr>
+
+                <td>
+
+                    {{ expense.expense_type }}
+
+                </td>
+
+                <td>
+
+                    UGX {{ expense.amount|floatformat:0 }}
+
+                </td>
+
+                <td>
+
+                    {{ expense.payment_method }}
+
+                </td>
+
+                <td>
+
+                    {{ expense.transaction_reference|default:"-" }}
+
+                </td>
+
+                <td>
+
+                    {{ expense.recorded_by }}
+
+                </td>
+
+                <td>
+
+                    {{ expense.created_at|date:"d M Y" }}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="6">
+
+                    <div class="empty-state">
+
+                        <i class="ph ph-wallet"></i>
+
+                        <h3>
+                            No expenses found
+                        </h3>
+
+                        <p>
+                            Expense records will appear here.
+                        </p>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+```
+
+</div>
+
+<style>
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.page-header h2{
+    font-size:30px;
+    margin-bottom:10px;
+    color:#0f172a;
+}
+
+.page-header p{
+    color:#64748b;
+}
+
+.add-btn{
+    background:linear-gradient(235deg,#0b1f3a,#1abc9c);
+    color:white;
+    text-decoration:none;
+    padding:14px 22px;
+    border-radius:14px;
+    font-weight:700;
+}
+
+.summary-card{
+    background:white;
+    border-radius:22px;
+    padding:24px;
+    margin-bottom:25px;
+    box-shadow:var(--shadow);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.summary-card span{
+    color:#64748b;
+    font-size:14px;
+}
+
+.summary-card h2{
+    margin-top:10px;
+    font-size:30px;
+    color:#b91c1c;
+}
+
+.summary-card i{
+    font-size:46px;
+    color:#ef4444;
+}
+
+.records-card{
+    background:white;
+    border-radius:22px;
+    padding:24px;
+    box-shadow:var(--shadow);
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+.expense-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.expense-table thead{
+    background:#f8fafc;
+}
+
+.expense-table th{
+    padding:16px;
+    text-align:left;
+    color:#475569;
+    font-size:14px;
+}
+
+.expense-table td{
+    padding:16px;
+    border-bottom:1px solid #f1f5f9;
+    color:#334155;
+}
+
+.empty-state{
+    text-align:center;
+    padding:60px 20px;
+}
+
+.empty-state i{
+    font-size:42px;
+    margin-bottom:12px;
+    color:#94a3b8;
+}
+
+.empty-state h3{
+    margin-bottom:10px;
+    color:#0f172a;
+}
+
+.empty-state p{
+    color:#64748b;
+}
+
+@media(max-width:700px){
+
+    .page-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+    }
+
+}
+
+</style>
+
+{% endblock %}

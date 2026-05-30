@@ -1,0 +1,77 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Pending Pickups
+{% endblock %}
+
+{% block content %}
+
+<div class="records-card">
+
+    <h2>Pending Goods Pickups</h2>
+
+    <table class="records-table">
+
+        <thead>
+
+            <tr>
+                <th>Customer</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for pickup in pickups %}
+
+            <tr>
+
+                <td>
+                    {{ pickup.customer.customer_name }}
+                </td>
+
+                <td>
+                    UGX {{ pickup.total_amount }}
+                </td>
+
+                <td>
+                    {{ pickup.status }}
+                </td>
+
+                <td>
+
+                    <a href="{% url 'approve_pickup' pickup.id %}" class="approve-btn">
+
+                        Approve
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<style>
+
+.approve-btn{
+    background:#1abc9c;
+    color:white;
+    padding:10px 14px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Add Expense
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+```
+<div>
+
+    <a href="{% url 'expense_records' %}" class="back-btn">
+
+        ← Back
+
+    </a>
+
+    <h2>
+        Record Business Expense
+    </h2>
+
+    <p>
+        Capture operational expenses and business expenditures.
+    </p>
+
+</div>
+```
+
+</div>
+
+<div class="form-card">
+
+```
+<form method="POST">
+
+    {% csrf_token %}
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label>
+                Expense Type
+            </label>
+
+            {{ form.expense_type }}
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Payment Method
+            </label>
+
+            {{ form.payment_method }}
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Transaction Reference
+            </label>
+
+            {{ form.transaction_reference }}
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Amount
+            </label>
+
+            {{ form.amount }}
+
+        </div>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>
+            Description
+        </label>
+
+        {{ form.description }}
+
+    </div>
+
+    <div class="form-actions">
+
+        <button type="submit" class="submit-btn">
+
+            Save Expense
+
+        </button>
+
+    </div>
+
+</form>
+```
+
+</div>
+
+<style>
+
+.page-header{
+    margin-bottom:25px;
+}
+
+.page-header h2{
+    font-size:30px;
+    margin-top:12px;
+    margin-bottom:10px;
+    color:#0f172a;
+}
+
+.page-header p{
+    color:#64748b;
+}
+
+.back-btn{
+    text-decoration:none;
+    color:#1abc9c;
+    font-weight:600;
+}
+
+.form-card{
+    background:white;
+    border-radius:22px;
+    padding:30px;
+    box-shadow:var(--shadow);
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:10px;
+    font-weight:600;
+    color:#0f172a;
+}
+
+.form-control{
+    width:100%;
+    padding:14px;
+    border:1px solid #cbd5e1;
+    border-radius:14px;
+    outline:none;
+    font-size:14px;
+}
+
+.form-control:focus{
+    border-color:#1abc9c;
+}
+
+.form-actions{
+    margin-top:10px;
+}
+
+.submit-btn{
+    background:linear-gradient(235deg,#0b1f3a,#1abc9c);
+    color:white;
+    border:none;
+    padding:14px 24px;
+    border-radius:14px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+@media(max-width:700px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+{% endblock %}

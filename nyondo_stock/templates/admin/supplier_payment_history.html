@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2>Supplier Payment History</h2>
+
+    <a href="{% url 'supplier_credit_dashboard' %}" class="btn btn-secondary mb-3">
+        Back
+    </a>
+
+    <div class="card p-3 mb-3">
+
+        <h4>Total Paid
+
+            <span class="badge bg-success">
+                UGX {{ total_paid }}
+            </span>
+
+        </h4>
+
+    </div>
+
+    <table class="table table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>Supplier</th>
+
+                <th>Amount</th>
+
+                <th>Method</th>
+
+                <th>Reference</th>
+
+                <th>Recorded By</th>
+
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for payment in payments %}
+
+            <tr>
+
+                <td>{{ payment.supplier }}</td>
+
+                <td>{{ payment.amount_paid }}</td>
+
+                <td>{{ payment.payment_method }}</td>
+
+                <td>{{ payment.transaction_reference }}</td>
+
+                <td>{{ payment.recorded_by }}</td>
+
+                <td>{{ payment.payment_date }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

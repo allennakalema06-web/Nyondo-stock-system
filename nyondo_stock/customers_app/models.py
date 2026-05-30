@@ -15,7 +15,7 @@ class Customer(models.Model):
     phone_number = models.CharField(max_length=20)
 
     nin = models.CharField(
-        max_length=14,
+        max_length=15,
         unique=True,
         blank=True,
         null=True
@@ -33,6 +33,26 @@ class Customer(models.Model):
         max_digits=12,
         decimal_places=2,
         default=0
+    )
+    employer_name = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True
+    )
+ 
+    next_of_kin = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True
+    )
+    next_of_kin_contact = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    is_scheme_customer = models.BooleanField(
+        default=False
     )
 
     registered_at = models.DateTimeField(auto_now_add=True)

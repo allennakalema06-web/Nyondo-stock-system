@@ -51,28 +51,3 @@ def logout_view(request):
     logout(request)
 
     return redirect('login')
-
-
-@login_required
-def admin_dashboard(request):
-
-    if not request.user.groups.filter(name='ADMIN').exists():
-        return redirect('login')
-
-    return render(request, 'accounts/admin_dashboard.html')
-
-@login_required
-def manager_dashboard(request):
-
-    if not request.user.groups.filter(name='MANAGER').exists():
-        return redirect('login')
-
-    return render(request, 'manager/manager_dashboard.html')
-
-@login_required
-def attendant_dashboard(request):
-
-    if not request.user.groups.filter(name='ATTENDANT').exists():
-        return redirect('login')
-
-    return render(request, 'attendant/attendant_dashboard.html')

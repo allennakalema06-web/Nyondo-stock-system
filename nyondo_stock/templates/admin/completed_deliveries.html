@@ -1,0 +1,42 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block content %}
+
+<h2>Completed Deliveries</h2>
+
+<table>
+
+<thead>
+
+<tr>
+    <th>Customer</th>
+    <th>Amount</th>
+    <th>Charge</th>
+    <th>Status</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for delivery in deliveries %}
+
+<tr>
+
+    <td>{{ delivery.customer }}</td>
+
+    <td>{{ delivery.sale.total_amount }}</td>
+
+    <td>{{ delivery.transport_charge }}</td>
+
+    <td>{{ delivery.delivery_status }}</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% endblock %}

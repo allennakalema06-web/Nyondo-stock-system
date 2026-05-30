@@ -1,0 +1,276 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Temporary Receipt
+{% endblock %}
+
+{% block content %}
+
+<div class="receipt-container">
+
+    <div class="receipt-header">
+
+        <a href="{% url 'pending_pickups' %}" class="back-btn">
+            ← Back
+        </a>
+
+        <h2>Temporary Deposit Receipt</h2>
+
+        <button onclick="window.print()" class="print-btn">
+            Print Receipt
+        </button>
+
+    </div>
+
+    <div class="receipt-card">
+
+        <div class="company-section">
+
+            <h1>NYONDO GENERAL HARDWARE LTD</h1>
+
+            <p>Nansana, Uganda</p>
+
+            <p>Temporary Deposit Receipt</p>
+
+        </div>
+
+        <hr>
+
+        <div class="customer-section">
+
+            <p>
+                <strong>Customer:</strong>
+                {{ pending_sale.customer.customer_name }}
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                {{ pending_sale.customer.phone_number }}
+            </p>
+
+            <p>
+                <strong>NIN:</strong>
+                {{ pending_sale.customer.nin }}
+            </p>
+
+            <p>
+                <strong>Date:</strong>
+                {{ pending_sale.created_at|date:"d M Y H:i" }}
+            </p>
+
+        </div>
+
+        <table class="receipt-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Product</th>
+
+                    <th>Qty</th>
+
+                    <th>Price</th>
+
+                    <th>Subtotal</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for item in items %}
+
+                <tr>
+
+                    <td>
+                        {{ item.product.product_name }}
+                    </td>
+
+                    <td>
+                        {{ item.quantity }}
+                    </td>
+
+                    <td>
+                        UGX {{ item.selling_price }}
+                    </td>
+
+                    <td>
+                        UGX {{ item.subtotal }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <div class="totals-section">
+
+            <p>
+                <strong>Total Amount:</strong>
+                UGX {{ pending_sale.total_amount }}
+            </p>
+
+            <p>
+                <strong>Amount Paid:</strong>
+                UGX {{ pending_sale.amount_paid }}
+            </p>
+
+            <p>
+                <strong>Balance Remaining:</strong>
+                UGX {{ pending_sale.balance_remaining }}
+            </p>
+
+        </div>
+
+        <div class="note-section">
+
+            <p>
+
+                This is a temporary deposit receipt.
+                Goods will only be released after approval.
+
+            </p>
+            <p>
+                Thank you for choosing Nyondo.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<style>
+
+.receipt-container{
+
+    padding:20px;
+
+}
+
+.receipt-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:20px;
+
+}
+
+.back-btn{
+
+    text-decoration:none;
+
+    color:#1abc9c;
+
+    font-weight:600;
+
+}
+
+.print-btn{
+
+    background:#1abc9c;
+
+    color:white;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+.receipt-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+
+}
+
+.company-section{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+}
+
+.receipt-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:20px;
+
+}
+
+.receipt-table th,
+
+.receipt-table td{
+
+    border:1px solid #ddd;
+
+    padding:12px;
+
+}
+
+.receipt-table th{
+
+    background:#f8fafc;
+
+}
+
+.totals-section{
+
+    margin-top:20px;
+
+}
+
+.note-section{
+
+    margin-top:30px;
+
+    font-style:italic;
+
+    color:#64748b;
+
+}
+
+@media print {
+
+    .print-btn,
+
+    .back-btn,
+
+    .sidebar,
+
+    nav,
+
+    header {
+
+        display:none !important;
+
+    }
+
+}
+
+</style>
+
+{% endblock %}

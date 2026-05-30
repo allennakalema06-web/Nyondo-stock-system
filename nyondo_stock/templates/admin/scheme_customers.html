@@ -1,0 +1,111 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Scheme Customers
+{% endblock %}
+
+{% block content %}
+
+<div class="records-card">
+
+    <div class="records-header">
+        <h2>Scheme Customers</h2>
+    </div>
+
+    <table class="records-table">
+
+        <thead>
+
+            <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>NIN</th>
+                <th>Balance</th>
+                <th>Status</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for customer in customers %}
+
+            <tr>
+
+                <td>{{ customer.customer_name }}</td>
+
+                <td>{{ customer.phone_number }}</td>
+
+                <td>{{ customer.nin }}</td>
+
+                <td>
+                    UGX {{ customer.balance_due }}
+                </td>
+
+                <td>
+
+                    {% if customer.is_scheme_customer %}
+
+                    <span class="active-status">
+                        Active
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+
+                <td colspan="5">
+
+                    No scheme customers found.
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<style>
+
+.records-card{
+    background:white;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:var(--shadow);
+}
+
+.records-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.records-table th,
+.records-table td{
+    padding:16px;
+    border-bottom:1px solid #e2e8f0;
+    text-align:left;
+}
+
+.active-status{
+    background:#dcfce7;
+    color:#15803d;
+    padding:8px 14px;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:700;
+}
+
+</style>
+
+{% endblock %}

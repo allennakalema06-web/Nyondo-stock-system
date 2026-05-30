@@ -659,6 +659,33 @@
           transform: translateX(0);
         }
       }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+      }
+
+      .summary-card {
+        background: white;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow:
+          0 10px 30px rgba(16, 185, 129, 0.08),
+          0 4px 12px rgba(13, 77, 77, 0.06);
+      }
+
+      .summary-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #0b1f3a;
+      }
+
+      .summary-label {
+        color: #64748b;
+        margin-top: 6px;
+      }
     </style>
     <script>
       const messages = document.querySelectorAll(".alert-message");
@@ -706,9 +733,7 @@
           {% endfor %}
         </div>
 
-        {% endif %} 
-        {% block content %} 
-        {% endblock %}
+        {% endif %} {% block content %} {% endblock %}
       </main>
     </div>
   </body>

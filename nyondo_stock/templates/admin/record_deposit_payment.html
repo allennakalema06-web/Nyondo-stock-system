@@ -1,0 +1,33 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Record Deposit
+{% endblock %}
+
+{% block content %}
+
+<div class="form-container">
+
+    <div class="form-header">
+
+        <h2>Record Deposit Payment</h2>
+
+    </div>
+
+    <form method="POST" class="main-form">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="submit-btn">
+
+            Save Deposit
+
+        </button>
+
+    </form>
+
+</div>
+
+{% endblock %}

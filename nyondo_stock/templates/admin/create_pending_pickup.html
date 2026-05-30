@@ -1,0 +1,447 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block page_title %}
+Create Pending Pickup
+{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+
+        <a href="{% url 'deposit_dashboard' %}" class="back-btn">
+            ← Back
+        </a>
+
+        <h2>Create Pending Pickup</h2>
+
+        <p>
+            Register products a deposit-scheme customer wants to collect later.
+        </p>
+
+    </div>
+
+</div>
+
+<form method="POST" class="pickup-form">
+
+    {% csrf_token %}
+
+    <div class="form-card">
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Scheme Customer</label>
+
+                <select name="customer" required>
+
+                    <option value="">Select Customer</option>
+
+                    {% for customer in customers %}
+
+                    <option value="{{ customer.id }}">
+                        {{ customer.customer_name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Transport Charge</label>
+
+                <input 
+                    type="number"
+                    name="transport_charge"
+                    id="transportCharge"
+                    value="0"
+                    min="0"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="products-card">
+
+        <div class="products-header">
+
+            <h3>Products</h3>
+
+            <button 
+                type="button"
+                class="add-btn"
+                onclick="addProductRow()"
+            >
+                + Add Product
+            </button>
+
+        </div>
+
+        <div id="productsContainer">
+
+            <div class="product-row">
+
+                <select name="product" class="product-select" required>
+
+                    <option value="">Select Product</option>
+
+                    {% for product in products %}
+
+                    <option 
+                        value="{{ product.id }}"
+                        data-price="{{ product.selling_price }}"
+                    >
+                        {{ product.product_name }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <input 
+                    type="number"
+                    name="quantity"
+                    class="quantity-input"
+                    placeholder="Qty"
+                    min="1"
+                    required
+                >
+
+                <input 
+                    type="number"
+                    name="price"
+                    class="price-input"
+                    placeholder="Price"
+                    readonly
+                >
+
+                <input 
+                    type="number"
+                    name="subtotal"
+                    class="subtotal-input"
+                    placeholder="Subtotal"
+                    readonly
+                >
+
+                <button 
+                    type="button"
+                    class="remove-btn"
+                    onclick="removeRow(this)"
+                >
+                    ✕
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="totals-card">
+
+        <div class="total-line">
+
+            <span>Subtotal</span>
+
+            <strong id="subtotalDisplay">
+                UGX 0
+            </strong>
+
+        </div>
+
+        <div class="total-line grand-total">
+
+            <span>Total Amount</span>
+
+            <strong id="grandTotalDisplay">
+                UGX 0
+            </strong>
+
+        </div>
+
+    </div>
+
+    <div class="submit-area">
+
+        <button type="submit" class="submit-btn">
+            Create Pending Pickup
+        </button>
+
+    </div>
+
+</form>
+
+<style>
+
+.page-header{
+    margin-bottom:25px;
+}
+
+.page-header h2{
+    font-size:28px;
+    margin-top:12px;
+    margin-bottom:10px;
+    color:#0f172a;
+}
+
+.page-header p{
+    color:#64748b;
+}
+
+.back-btn{
+    text-decoration:none;
+    color:#1abc9c;
+    font-weight:600;
+}
+
+.form-card,
+.products-card,
+.totals-card{
+    background:white;
+    padding:24px;
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    margin-bottom:25px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    margin-bottom:8px;
+    font-weight:600;
+    color:#334155;
+}
+
+.form-group input,
+.form-group select{
+    padding:14px;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    font-size:15px;
+}
+
+.products-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.products-header h3{
+    color:#0f172a;
+}
+
+.add-btn{
+    background:#1abc9c;
+    color:white;
+    border:none;
+    padding:12px 18px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:700;
+}
+
+.product-row{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr auto;
+    gap:15px;
+    margin-bottom:15px;
+}
+
+.product-row input,
+.product-row select{
+    padding:14px;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+}
+
+.remove-btn{
+    background:#ef4444;
+    color:white;
+    border:none;
+    border-radius:12px;
+    width:45px;
+    cursor:pointer;
+    font-size:18px;
+}
+
+.total-line{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+    font-size:18px;
+}
+
+.grand-total{
+    font-size:24px;
+    font-weight:700;
+    color:#0f172a;
+}
+
+.submit-area{
+    text-align:right;
+}
+
+.submit-btn{
+    background:#1abc9c;
+    color:white;
+    border:none;
+    padding:16px 28px;
+    border-radius:14px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+@media(max-width:900px){
+
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .product-row{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+<script>
+
+function addProductRow(){
+
+    const container = document.getElementById('productsContainer');
+
+    const firstRow = document.querySelector('.product-row');
+
+    const newRow = firstRow.cloneNode(true);
+
+    newRow.querySelectorAll('input').forEach(input => {
+        input.value = '';
+    });
+
+    newRow.querySelector('.price-input').value = '';
+    newRow.querySelector('.subtotal-input').value = '';
+
+    container.appendChild(newRow);
+
+    attachEvents();
+
+}
+
+function removeRow(button){
+
+    const rows = document.querySelectorAll('.product-row');
+
+    if(rows.length > 1){
+        button.parentElement.remove();
+        calculateTotals();
+    }
+
+}
+
+function attachEvents(){
+
+    const rows = document.querySelectorAll('.product-row');
+
+    rows.forEach(row => {
+
+        const productSelect = row.querySelector('.product-select');
+
+        const quantityInput = row.querySelector('.quantity-input');
+
+        const priceInput = row.querySelector('.price-input');
+
+        const subtotalInput = row.querySelector('.subtotal-input');
+
+        productSelect.addEventListener('change', () => {
+
+            const selectedOption = productSelect.options[
+                productSelect.selectedIndex
+            ];
+
+            const price = selectedOption.dataset.price || 0;
+
+            priceInput.value = price;
+
+            calculateRow(row);
+
+        });
+
+        quantityInput.addEventListener('input', () => {
+            calculateRow(row);
+        });
+
+    });
+
+}
+
+function calculateRow(row){
+
+    const quantity = parseFloat(
+        row.querySelector('.quantity-input').value
+    ) || 0;
+
+    const price = parseFloat(
+        row.querySelector('.price-input').value
+    ) || 0;
+
+    const subtotal = quantity * price;
+
+    row.querySelector('.subtotal-input').value = subtotal;
+
+    calculateTotals();
+
+}
+
+function calculateTotals(){
+
+    let subtotal = 0;
+
+    document.querySelectorAll('.subtotal-input').forEach(input => {
+
+        subtotal += parseFloat(input.value) || 0;
+
+    });
+
+    const transport = parseFloat(
+        document.getElementById('transportCharge').value
+    ) || 0;
+
+    const grandTotal = subtotal + transport;
+
+    document.getElementById('subtotalDisplay').innerText =
+        'UGX ' + subtotal.toLocaleString();
+
+    document.getElementById('grandTotalDisplay').innerText =
+        'UGX ' + grandTotal.toLocaleString();
+
+}
+
+document.getElementById('transportCharge')
+.addEventListener('input', calculateTotals);
+
+attachEvents();
+
+</script>
+
+{% endblock %}

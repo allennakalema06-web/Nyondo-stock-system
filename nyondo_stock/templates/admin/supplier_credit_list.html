@@ -1,0 +1,53 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block content %}
+
+<div class="page-header">
+    <h2>Supplier Credit List</h2>
+</div>
+
+<div class="summary-card">
+    <h3>Total Outstanding Credit</h3>
+    <h2>UGX {{ total_credit }}</h2>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Supplier</th>
+            <th>Phone</th>
+            <th>Balance Due</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for supplier in suppliers %}
+
+        <tr>
+            <td>{{ supplier.supplier_name }}</td>
+            <td>{{ supplier.phone_number }}</td>
+            <td>UGX {{ supplier.balance_due }}</td>
+
+            <td>
+                <a href="{% url 'supplier_credit_details' supplier.id %}">
+                    View
+                </a>
+            </td>
+        </tr>
+
+    {% empty %}
+
+        <tr>
+            <td colspan="4">
+                No supplier credit records found.
+            </td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+</table>
+
+{% endblock %}

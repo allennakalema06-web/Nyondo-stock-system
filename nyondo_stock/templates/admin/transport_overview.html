@@ -1,0 +1,43 @@
+{% extends 'manager/base_manager.html' %}
+
+{% block content %}
+
+<h2>Transport Overview</h2>
+
+<div class="dashboard-cards">
+
+    <div class="card">
+        <h3>Total Deliveries</h3>
+        <h2>{{ total_deliveries }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Pending Deliveries</h3>
+        <h2>{{ pending_deliveries }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Completed Deliveries</h3>
+        <h2>{{ completed_deliveries }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Transport Income</h3>
+        <h2>UGX {{ total_transport_income }}</h2>
+    </div>
+
+</div>
+
+<div class="actions">
+
+    <a href="{% url 'pending_deliveries' %}">
+        Pending Deliveries
+    </a>
+
+    <a href="{% url 'completed_deliveries' %}">
+        Completed Deliveries
+    </a>
+
+</div>
+
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from inventory_app.decorators import allowed_roles
+from accounts_app.decorators import allowed_roles
 from .models import Receipt
 from django.db.models import Sum, F
 from django.utils import timezone
@@ -10,6 +10,7 @@ from customers_app.models import TransportDelivery, Customer, DeliveryLocation
 from inventory_app.models import Product
 from .forms import SaleForm
 from decimal import Decimal
+from django.db import transaction
 # Create your views here.
 
 @login_required
@@ -184,11 +185,12 @@ def create_sale(request):
 
             #VALIDATE STOCK + QUANTITIES
 
-            for product_id, quantity in zip(product_ids, quantities):
+            for product_id, quantity, price in zip(product_ids, quantities, prices):
                 if not product_id:
                     continue
                 product = Product.objects.get(id=product_id)
                 quantity = int(quantity)
+                selling_price = Decimal(price) if price else Decimal('0')
                 #QUANTITY VALIDATION
                 if quantity <= 0:
                     messages.error(
@@ -204,6 +206,14 @@ def create_sale(request):
                         f'Not enough stock for {product.product_name}'
                     )
                     return redirect('create_sale')
+                # SELLING PRICE RULE
+                if selling_price <= product.unit_cost:
+                    messages.error(
+                        request,
+                        f'{product.product_name} selling price cannot be below cost price.'
+                    )
+                    return redirect('create_sale')
+                
             #TRANSPORT LOGIC
             transport_fee = Decimal('0')
             if distance_km > 0:
@@ -427,7 +437,7 @@ def edit_sale(request, sale_id):
             'Sale record updated successfully.'
         )
 
-        return redirect('sales_records')
+        return redirect('sales_history')
 
     context = {
         'sale': sale,
@@ -515,99 +525,134 @@ def pending_deposit_sales(request):
 @login_required
 @allowed_roles(['ADMIN', 'ATTENDANT'])
 def complete_pending_sale(request, pending_id):
+
     pending_sale = PendingCreditSale.objects.get(
         id=pending_id
     )
-    
+
     if pending_sale.status == 'COMPLETED':
+
         messages.warning(
-        request,
-        'This deposit sale is already completed.'
+            request,
+            'This deposit sale is already completed.'
         )
-        return redirect('pending_deposit_sales')
 
-    # CREATE FINAL SALE
-
-    sale = Sale.objects.create(
-        customer=pending_sale.customer,
-
-        attendant=request.user,
-
-        sale_source='DEPOSIT',
-
-        deposit_reference=pending_sale,
-
-        subtotal_amount=pending_sale.total_amount,
-
-        transport_charge=pending_sale.transport_charge,
-
-        total_amount=pending_sale.total_amount,
-
-        amount_paid=pending_sale.amount_paid,
-
-        balance=0,
-
-        payment_status='PAID',
-
-        payment_method='CASH',
-
-        completed_sale=True
-
-    )
-
-    # CREATE SALE ITEMS
+        return redirect(
+            'pending_deposit_sales'
+        )
 
     pending_items = pending_sale.items.all()
 
+    # CHECK STOCK FIRST
+
     for item in pending_items:
-        
-        SaleItem.objects.create(
-            
-            sale=sale,
-
-            product=item.product,
-
-            quantity=item.quantity,
-
-            selling_price=item.selling_price,
-
-            subtotal=item.subtotal
-
-        )
-
-        # REDUCE STOCK
 
         product = item.product
 
-        product.quantity -= item.quantity
+        if product.quantity < item.quantity:
 
-        product.save()
+            messages.error(
+                request,
+                f'Insufficient stock for {product.product_name}'
+            )
 
-    # CREATE RECEIPT
+            return redirect(
+                'pending_deposit_sales'
+            )
 
-    receipt_number = f"RCPT-{sale.id}"
+    # EVERYTHING BELOW RUNS AS ONE TRANSACTION
 
-    Receipt.objects.create(
-        
-        sale=sale,
-        receipt_number=receipt_number
+    with transaction.atomic():
 
-    )
+        # CREATE FINAL SALE
 
-    # MARK DEPOSIT COMPLETE
+        sale = Sale.objects.create(
 
-    pending_sale.status = 'COMPLETED'
+            customer=pending_sale.customer,
 
-    pending_sale.save()
+            attendant=request.user,
+
+            sale_source='DEPOSIT',
+
+            deposit_reference=pending_sale,
+
+            subtotal_amount=pending_sale.total_amount,
+
+            transport_charge=pending_sale.transport_charge,
+
+            total_amount=pending_sale.total_amount,
+
+            amount_paid=pending_sale.amount_paid,
+
+            balance=0,
+
+            payment_status='PAID',
+
+            payment_method='CASH',
+
+            completed_sale=True
+
+        )
+
+        # CREATE SALE ITEMS + REDUCE STOCK
+
+        for item in pending_items:
+
+            SaleItem.objects.create(
+
+                sale=sale,
+
+                product=item.product,
+
+                quantity=item.quantity,
+
+                selling_price=item.selling_price,
+
+                subtotal=item.subtotal
+
+            )
+
+            product = item.product
+
+            product.quantity -= item.quantity
+
+            product.save()
+
+        # CREATE RECEIPT
+
+        receipt_number = (
+            f"RCPT-{sale.id}-"
+            f"{timezone.now().strftime('%Y%m%d%H%M%S')}"
+        )
+
+        Receipt.objects.create(
+
+            sale=sale,
+
+            receipt_number=receipt_number
+
+        )
+
+        # MARK PENDING SALE COMPLETE
+
+        pending_sale.status = 'COMPLETED'
+
+        pending_sale.save()
 
     messages.success(
+
         request,
+
         'Pending deposit successfully completed.'
+
     )
 
     return redirect(
+
         'sale_receipt',
-        sale.id
+
+        sale_id=sale.id
+
     )
 
 

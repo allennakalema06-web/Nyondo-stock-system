@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <h2>{{ supplier.supplier_name }}</h2>
+
+    <a href="{% url 'supplier_credit_list' %}"
+       class="btn btn-secondary mb-3">
+
+        Back
+
+    </a>
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div class="card p-3">
+
+                <h5>Current Balance</h5>
+
+                <h3>
+                    UGX {{ supplier.balance_due }}
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card p-3">
+
+                <h5>Total Credit Stock</h5>
+
+                <h3>
+                    UGX {{ total_credit_stock }}
+                </h3>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card p-3">
+
+                <h5>Total Paid</h5>
+
+                <h3>
+                    UGX {{ total_paid }}
+                </h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h4>Credit Stock Entries</h4>
+
+    <table class="table table-bordered">
+
+        <thead>
+
+            <tr>
+
+                <th>Entry ID</th>
+
+                <th>Total Cost</th>
+
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for entry in stock_entries %}
+
+            <tr>
+
+                <td>{{ entry.id }}</td>
+
+                <td>{{ entry.total_cost }}</td>
+
+                <td>{{ entry.date_added }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <hr>
+
+    <h4>Payments Made</h4>
+
+    <table class="table table-striped">
+
+        <thead>
+
+            <tr>
+
+                <th>Amount</th>
+
+                <th>Method</th>
+
+                <th>Date</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for payment in payments %}
+
+            <tr>
+
+                <td>{{ payment.amount_paid }}</td>
+
+                <td>{{ payment.payment_method }}</td>
+
+                <td>{{ payment.payment_date }}</td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}
