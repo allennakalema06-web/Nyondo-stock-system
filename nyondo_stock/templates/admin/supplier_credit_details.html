@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'manager/base_manager.html' %}
 
 {% block content %}
 
@@ -7,7 +7,7 @@
     <h2>{{ supplier.supplier_name }}</h2>
 
     <a href="{% url 'supplier_credit_list' %}"
-       class="btn btn-secondary mb-3">
+       class="btn back-btn btn-secondary mb-3">
 
         Back
 
@@ -140,5 +140,13 @@
     </table>
 
 </div>
+<style>
+    .back-btn{
+    text-decoration:none;
+    color:#1abc9c;
+    font-weight:600;
+}
 
+
+</style>
 {% endblock %}

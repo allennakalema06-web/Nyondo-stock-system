@@ -14,10 +14,10 @@ Create Pending Pickup
             ← Back
         </a>
 
-        <h2>Create Pending Pickup</h2>
+        <h2>Create Scheme Order</h2>
 
         <p>
-            Register products a deposit-scheme customer wants to collect later.
+            Create an order that the customer will pay for in installments.
         </p>
 
     </div>
@@ -49,20 +49,6 @@ Create Pending Pickup
                     {% endfor %}
 
                 </select>
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Transport Charge</label>
-
-                <input 
-                    type="number"
-                    name="transport_charge"
-                    id="transportCharge"
-                    value="0"
-                    min="0"
-                >
 
             </div>
 
@@ -137,7 +123,7 @@ Create Pending Pickup
                     class="remove-btn"
                     onclick="removeRow(this)"
                 >
-                    ✕
+                    <i class="ph ph-trash"></i>
                 </button>
 
             </div>
@@ -160,7 +146,7 @@ Create Pending Pickup
 
         <div class="total-line grand-total">
 
-            <span>Total Amount</span>
+            <span>Order Total</span>
 
             <strong id="grandTotalDisplay">
                 UGX 0
@@ -173,7 +159,7 @@ Create Pending Pickup
     <div class="submit-area">
 
         <button type="submit" class="submit-btn">
-            Create Pending Pickup
+            Create Scheme Order
         </button>
 
     </div>
@@ -215,7 +201,7 @@ Create Pending Pickup
 
 .form-grid{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
+    grid-template-columns:1fr;
     gap:20px;
 }
 
@@ -327,35 +313,97 @@ Create Pending Pickup
 
 <script>
 
-function addProductRow(){
+function addProductRow() {
 
-    const container = document.getElementById('productsContainer');
+    const container =
+        document.getElementById('productsContainer');
 
-    const firstRow = document.querySelector('.product-row');
+    const templateRow =
+        document.querySelector('.product-row');
 
-    const newRow = firstRow.cloneNode(true);
+    const newRow =
+        templateRow.cloneNode(true);
 
-    newRow.querySelectorAll('input').forEach(input => {
-        input.value = '';
+    // Clear all values
+
+    newRow.querySelector('.product-select')
+          .selectedIndex = 0;
+
+    newRow.querySelector('.quantity-input')
+          .value = '';
+
+    newRow.querySelector('.price-input')
+          .value = '';
+
+    newRow.querySelector('.subtotal-input')
+          .value = '';
+
+    // Attach events only to the new row
+
+    const productSelect =
+        newRow.querySelector('.product-select');
+
+    const quantityInput =
+        newRow.querySelector('.quantity-input');
+
+    productSelect.addEventListener('change', () => {
+
+        const selectedOption =
+            productSelect.options[
+                productSelect.selectedIndex
+            ];
+
+        const price =
+            selectedOption.dataset.price || 0;
+
+        newRow.querySelector('.price-input')
+              .value = price;
+
+        calculateRow(newRow);
+
     });
 
-    newRow.querySelector('.price-input').value = '';
-    newRow.querySelector('.subtotal-input').value = '';
+    quantityInput.addEventListener('input', () => {
 
-    container.appendChild(newRow);
+        calculateRow(newRow);
 
-    attachEvents();
+    });
+
+    // Add new empty row at the top
+
+    container.prepend(newRow);
 
 }
 
-function removeRow(button){
+function removeRow(button) {
 
-    const rows = document.querySelectorAll('.product-row');
+    const rows =
+        document.querySelectorAll('.product-row');
 
-    if(rows.length > 1){
-        button.parentElement.remove();
+    if (rows.length === 1) {
+
+        const row = button.parentElement;
+
+        row.querySelector('.product-select')
+           .selectedIndex = 0;
+
+        row.querySelector('.quantity-input')
+           .value = '';
+
+        row.querySelector('.price-input')
+           .value = '';
+
+        row.querySelector('.subtotal-input')
+           .value = '';
+
         calculateTotals();
+
+        return;
     }
+
+    button.parentElement.remove();
+
+    calculateTotals();
 
 }
 
@@ -422,25 +470,19 @@ function calculateTotals(){
         subtotal += parseFloat(input.value) || 0;
 
     });
-
-    const transport = parseFloat(
-        document.getElementById('transportCharge').value
-    ) || 0;
-
-    const grandTotal = subtotal + transport;
+    if(subtotal < 0){
+        subtotal = 0;
+    }
 
     document.getElementById('subtotalDisplay').innerText =
         'UGX ' + subtotal.toLocaleString();
 
     document.getElementById('grandTotalDisplay').innerText =
-        'UGX ' + grandTotal.toLocaleString();
+        'UGX ' + subtotal.toLocaleString();
 
 }
-
-document.getElementById('transportCharge')
-.addEventListener('input', calculateTotals);
-
 attachEvents();
+
 
 </script>
 

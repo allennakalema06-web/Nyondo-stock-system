@@ -162,6 +162,10 @@ class PendingCreditSale(models.Model):
     )
 
     approved_for_sale = models.BooleanField(default=False)
+    
+    is_scheme_order = models.BooleanField(
+        default=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
 

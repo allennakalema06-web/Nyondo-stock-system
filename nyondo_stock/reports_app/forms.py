@@ -146,7 +146,7 @@ class DepositPaymentForm(forms.ModelForm):
 
         fields = [
 
-            'customer',
+            'pending_sale',
 
             'amount_paid',
 

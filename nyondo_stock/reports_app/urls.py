@@ -51,7 +51,7 @@ urlpatterns = [
         name='scheme_customers'
     ),
     path(
-        'record_deposit-payment/',
+        'record_deposit_payment/',
         views.record_deposit_payment,
         name='record_deposit_payment'
     ),
@@ -73,8 +73,8 @@ urlpatterns = [
         name='approve_pickup'
     ),
     path(
-        'create_pending_pickup/',
-        views.create_pending_pickup,name='create_pending_pickup'
+        'create_scheme_order/',
+        views.create_scheme_order,name='create_scheme_order'
     ),
     path(
         'temporary_receipt/<int:pending_id>/',

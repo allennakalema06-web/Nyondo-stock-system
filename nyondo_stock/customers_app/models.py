@@ -67,9 +67,11 @@ class DepositPayment(models.Model):
         ('BANK', 'Bank Transfer'),
         ('CHEQUE', 'Cheque'),
     )
-    customer = models.ForeignKey(
-        Customer,
-        on_delete=models.CASCADE
+    pending_sale = models.ForeignKey(
+        'sales_app.PendingCreditSale',
+        on_delete=models.CASCADE,
+        related_name='deposits',
+        default=1
     )
 
     amount_paid = models.DecimalField(

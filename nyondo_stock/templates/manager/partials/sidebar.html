@@ -1,4 +1,6 @@
 <aside class="sidebar">
+
+  <!-- LOGO -->
   <div class="logo-section">
     <div class="logo-icon">
       <i class="ph ph-garage"></i>
@@ -7,311 +9,198 @@
     <div>
       <h2>NyondoStock</h2>
       <p>
-        <span>
-          {% for group in request.user.groups.all %} {{ group.name }} {% endfor
-          %}
-        </span>
+        <span>{{ request.user.groups.first.name }}</span>
       </p>
     </div>
   </div>
 
-  {% for group in request.user.groups.all %} {% if group.name == 'ADMIN' or
-  group.name == 'MANAGER' %}
+
+  {# ================= MANAGER ================= #}
+  {% if is_manager and not is_admin %}
 
   <nav class="nav-menu">
-    <a
-      href="{% url 'manager_dashboard' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}"
-    >
-      <i class="ph ph-squares-four"></i>
 
-      Dashboard
+    <a href="{% url 'manager_dashboard' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'manager_dashboard' %}active{% endif %}">
+      <i class="ph ph-squares-four"></i> Dashboard
     </a>
 
-    <a
-      href="{% url 'product_list' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}"
-    >
-      <i class="ph ph-package"></i>
-
-      Products
-    </a>
-    <a
-      href="{% url 'stock_history' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'stock_history' %}active{% endif %}"
-    >
-      <i class="ph ph-file-text"></i>
-
-      Stock Records
+    <a href="{% url 'product_list' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+      <i class="ph ph-package"></i> Products
     </a>
 
-    <a
-      href="{% url 'supplier_list' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'supplier_list' %}active{% endif %}"
-    >
-      <i class="ph ph-truck"></i>
-
-      Suppliers
+    <a href="{% url 'stock_history' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'stock_history' %}active{% endif %}">
+      <i class="ph ph-file-text"></i> Stock Records
     </a>
 
-    <a
-      href="{% url 'register_stock' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'register_stock' %}active{% endif %}"
-    >
-      <i class="ph ph-plus-circle"></i>
-
-      Register Stock
+    <a href="{% url 'supplier_list' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'supplier_list' %}active{% endif %}">
+      <i class="ph ph-truck"></i> Suppliers
     </a>
 
-    <a
-      href="{% url 'stock_adjustments' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'stock_adjustments' %}active{% endif %}"
-    >
-      <i class="ph ph-arrows-clockwise"></i>
-
-      Stock Adjustments
+    <a href="{% url 'register_stock' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'register_stock' %}active{% endif %}">
+      <i class="ph ph-plus-circle"></i> Register Stock
     </a>
 
-    <a
-      href="{% url 'low_stock' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'low_stock' %}active{% endif %}"
-    >
-      <i class="ph ph-warning-circle"></i>
-
-      Low Stock
+    <a href="{% url 'stock_adjustments' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'stock_adjustments' %}active{% endif %}">
+      <i class="ph ph-arrows-clockwise"></i> Stock Adjustments
     </a>
 
-    <a
-      href="{% url 'category_list' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}"
-    >
-      <i class="ph ph-squares-four"></i>
-      Categories
+    <a href="{% url 'low_stock' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'low_stock' %}active{% endif %}">
+      <i class="ph ph-warning-circle"></i> Low Stock
     </a>
 
-    <a
-      href="{% url 'pricing_list' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'pricing_list' %}active{% endif %}"
-    >
-      <i class="ph ph-currency-circle-dollar"></i>
-      Pricing
+    <a href="{% url 'category_list' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">
+      <i class="ph ph-squares-four"></i> Categories
     </a>
 
-    <a
-      href="{% url 'reports_dashboard' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'reports_dashboard' %}active{% endif %}"
-    >
-      <i class="ph ph-chart-bar"></i>
-      Reports
+    <a href="{% url 'pricing_list' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'pricing_list' %}active{% endif %}">
+      <i class="ph ph-currency-circle-dollar"></i> Pricing
     </a>
+
+    <a href="{% url 'reports_dashboard' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'reports_dashboard' %}active{% endif %}">
+      <i class="ph ph-chart-bar"></i> Reports
+    </a>
+
   </nav>
+  {% endif %}
 
-  {% endif %} {% if group.name == 'ADMIN' or group.name == 'ATTENDANT' %}
-  <nav class="nav-menu">
-    <a
-      href="{% url 'attendant_dashboard' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'attendant_dashboard' %}active{% endif %}"
-    >
-      <i class="ph ph-house"></i>
 
-      Dashboard
-    </a>
-    <a
-      href="{% url 'create_sale' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'create_sale' %}active{% endif %}"
-    >
-      <i class="ph ph-shopping-cart"></i>
-      Add New Sale
-    </a>
-    <a
-      href="{% url 'sales_history' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'sales_history' %}active{% endif %}"
-    >
-      <i class="ph ph-file-text"></i>
-      Sales Records
-    </a>
-    <a
-      href="{% url 'receipt_records' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'receipt_records' %}active{% endif %}"
-    >
-      <i class="ph ph-receipt"></i>
-      Receipt Records
-    </a>
-    <a
-      href="{% url 'pending_deposit_sales' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'pending_deposit_sales' %}active{% endif %}"
-    >
-      <i class="ph ph-wallet"></i>
-      Pending Deposit Sales
-    </a>
-    <a
-      href="{% url 'transport_records' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'transport_records' %}active{% endif %}"
-    >
-      <i class="ph ph-truck"></i>
-      Transport Records
-    </a>
-    <a
-      href="{% url 'stock_check' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'stock_check' %}active{% endif %}"
-    >
-      <i class="ph ph-package"></i>
-      Sales Records
-    </a>
-  </nav>
-
-  {% endif %} {% if group.name == 'ADMIN' %}
+  {# ================= ATTENDANT ================= #}
+  {% if is_attendant and not is_admin %}
 
   <nav class="nav-menu">
-    <a
-      href="{% url 'admin_dashboard' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}"
-    >
-      <i class="ph ph-shield-star"></i>
-      Admin Dashboard
+
+    <a href="{% url 'attendant_dashboard' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'attendant_dashboard' %}active{% endif %}">
+      <i class="ph ph-house"></i> Dashboard
     </a>
 
-    <a
-      href="{% url 'expense_records' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'expense_records' %}active{% endif %}"
-    >
-      <i class="ph ph-money"></i>
-      Expenses
+    <a href="{% url 'create_sale' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'create_sale' %}active{% endif %}">
+      <i class="ph ph-shopping-cart"></i> Add New Sale
     </a>
 
-    <a
-      href="{% url 'add_expense' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'add_expense' %}active{% endif %}"
-    >
-      <i class="ph ph-plus-circle"></i>
-      Add Expense
+    <a href="{% url 'sales_history' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'sales_history' %}active{% endif %}">
+      <i class="ph ph-file-text"></i> Sales Records
     </a>
 
-    <a
-      href="{% url 'deposit_dashboard' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'deposit_dashboard' %}active{% endif %}"
-    >
-      <i class="ph ph-wallet"></i>
-      Deposit Scheme
+    <a href="{% url 'receipt_records' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'receipt_records' %}active{% endif %}">
+      <i class="ph ph-receipt"></i> Receipt Records
     </a>
 
-    <a
-      href="{% url 'scheme_customers' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'scheme_customers' %}active{% endif %}"
-    >
-      <i class="ph ph-users"></i>
-      Scheme Customers
+    <a href="{% url 'pending_deposit_sales' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'pending_deposit_sales' %}active{% endif %}">
+      <i class="ph ph-wallet"></i> Pending Deposits
     </a>
 
-    <a
-      href="{% url 'record_deposit_payment' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'record_deposit_payment' %}active{% endif %}"
-    >
-      <i class="ph ph-currency-circle-dollar"></i>
-      Record Deposit
+    <a href="{% url 'transport_records' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'transport_records' %}active{% endif %}">
+      <i class="ph ph-truck"></i> Transport Records
     </a>
 
-    <a
-      href="{% url 'deposit_history' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'deposit_history' %}active{% endif %}"
-    >
-      <i class="ph ph-clock-counter-clockwise"></i>
-      Deposit History
+    <a href="{% url 'stock_check' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'stock_check' %}active{% endif %}">
+      <i class="ph ph-package"></i> Stock Check
     </a>
 
-    <a
-      href="{% url 'pending_pickups' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'pending_pickups' %}active{% endif %}"
-    >
-      <i class="ph ph-package"></i>
-      Pending Pickups
-    </a>
-
-    <a
-      href="{% url 'create_pending_pickup' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'create_pending_pickup' %}active{% endif %}"
-    >
-      <i class="ph ph-shopping-cart"></i>
-      Create Pickup
-    </a>
-
-    <a
-      href="{% url 'supplier_credit_dashboard' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'supplier_credit_dashboard' %}active{% endif %}"
-    >
-      <i class="ph ph-bank"></i>
-      Supplier Credit
-    </a>
-
-    <a
-      href="{% url 'supplier_credit_list' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'supplier_credit_list' %}active{% endif %}"
-    >
-      <i class="ph ph-list"></i>
-      Supplier Balances
-    </a>
-
-    <a
-      href="{% url 'record_supplier_payment' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'record_supplier_payment' %}active{% endif %}"
-    >
-      <i class="ph ph-credit-card"></i>
-      Pay Supplier
-    </a>
-
-    <a
-      href="{% url 'supplier_payment_history' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'supplier_payment_history' %}active{% endif %}"
-    >
-      <i class="ph ph-receipt"></i>
-      Payment History
-    </a>
-
-    <a
-      href="{% url 'transport_overview' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'transport_overview' %}active{% endif %}"
-    >
-      <i class="ph ph-truck"></i>
-      Transport Overview
-    </a>
-
-    <a
-      href="{% url 'pending_deliveries' %}"
-      class="nav-item {% if request.resolver_match.url_name == 'pending_deliveries' %}active{% endif %}"
-    >
-      <i class="ph ph-map-pin-line"></i>
-      Pending Deliveries
-    </a>
-
-    <a
-      href="{% url 'completed_deliveries' %}"
-      class="nav-item 
-      {% if request.resolver_match.url_name == 'completed_deliveries' %}active{% endif %}"
-    >
-      <i class="ph ph-check-circle"></i>
-      Completed Deliveries
-    </a>
   </nav>
+  {% endif %}
 
-  {% endif %} 
-  
-  {% endfor %}
 
+  {# ================= ADMIN (OVERRIDES EVERYTHING) ================= #}
+  {% if is_admin %}
+
+  <nav class="nav-menu">
+
+    <a href="{% url 'admin_dashboard' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+      <i class="ph ph-shield-star"></i> Admin Dashboard
+    </a>
+
+    <a href="{% url 'expense_records' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'expense_records' %}active{% endif %}">
+      <i class="ph ph-money"></i> Expenses
+    </a>
+
+    
+
+    <a href="{% url 'deposit_dashboard' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'deposit_dashboard' %}active{% endif %}">
+      <i class="ph ph-wallet"></i> Deposit Scheme
+    </a>
+
+    <a href="{% url 'scheme_customers' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'scheme_customers' %}active{% endif %}">
+      <i class="ph ph-users"></i> Scheme Customers
+    </a>
+
+    
+
+    <a href="{% url 'deposit_history' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'deposit_history' %}active{% endif %}">
+      <i class="ph ph-clock-counter-clockwise"></i> Deposit History
+    </a>
+
+    <a href="{% url 'pending_pickups' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'pending_pickups' %}active{% endif %}">
+      <i class="ph ph-package"></i> Pending Pickups
+    </a>
+
+    <a href="{% url 'create_scheme_order' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'create_scheme_order' %}active{% endif %}">
+      <i class="ph ph-shopping-cart"></i> Create Pickup
+    </a>
+
+    <a href="{% url 'supplier_credit_dashboard' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'supplier_credit_dashboard' %}active{% endif %}">
+      <i class="ph ph-bank"></i> Supplier Credit
+    </a>
+
+
+    <a href="{% url 'supplier_payment_history' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'supplier_payment_history' %}active{% endif %}">
+      <i class="ph ph-receipt"></i> Payment History
+    </a>
+
+    <a href="{% url 'transport_overview' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'transport_overview' %}active{% endif %}">
+      <i class="ph ph-truck"></i> Transport Overview
+    </a>
+
+    
+
+  </nav>
+  {% endif %}
+
+
+  <!-- FOOTER -->
   <div class="sidebar-footer">
-    <div class="avatar">{{ request.user.username|slice:":2"|upper }}</div>
+    <div class="avatar">
+      {{ request.user.username|slice:":2"|upper }}
+    </div>
 
     <div class="user-details">
-      <div style="display: inline-block">
-        <strong> {{ request.user.username }} </strong>
+      <strong>{{ request.user.username }}</strong>
 
-        <span>
-          {% for group in request.user.groups.all %} {{ group.name }} {% endfor
-          %}
-        </span>
-      </div>
+      <span>
+        {{ request.user.groups.first.name }}
+      </span>
+
       <a href="{% url 'logout' %}" class="logout-btn">
         <i class="ph ph-sign-out"></i>
       </a>
     </div>
   </div>
+
 </aside>

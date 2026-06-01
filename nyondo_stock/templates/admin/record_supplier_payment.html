@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'manager/base_manager.html' %}
 
 {% block content %}
 
@@ -6,11 +6,11 @@
 
     <h2>Record Supplier Payment</h2>
 
-    <a href="{% url 'supplier_credit_dashboard' %}" class="btn btn-secondary mb-3">
+    <a href="{% url 'supplier_credit_dashboard' %}" class="btn back-btn btn-secondary mb-3">
         Back
     </a>
 
-    <div class="card p-4">
+    <div class="form-card p-4">
 
         <form method="POST">
 
@@ -30,5 +30,19 @@
     </div>
 
 </div>
+<style>
+    .back-btn{
+    text-decoration:none;
+    color:#1abc9c;
+    font-weight:600;
+}
+.form-card{
+    background:white;
+    border-radius:22px;
+    padding:30px;
+    box-shadow:var(--shadow);
+}
+
+</style>
 
 {% endblock %}

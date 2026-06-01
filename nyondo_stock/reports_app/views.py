@@ -317,7 +317,8 @@ def deposit_dashboard(request):
     ).count()
 
     recent_deposits = DepositPayment.objects.select_related(
-        'customer'
+        'pending_sale',
+        'pending_sale__customer'
     ).order_by('-payment_date')[:8]
 
     context = {
@@ -404,60 +405,11 @@ def scheme_customers(request):
 
 @login_required
 @allowed_roles(['ADMIN'])
-def record_deposit_payment(request):
-
-    if request.method == 'POST':
-
-        form = DepositPaymentForm(request.POST)
-
-        if form.is_valid():
-
-            deposit = form.save(commit=False)
-
-            customer = deposit.customer
-
-            customer.balance_due -= deposit.amount_paid
-            
-            if customer.balance_due < 0:
-                customer.balance_due = 0
-
-            customer.save()
-
-            deposit.remaining_balance = customer.balance_due
-
-            deposit.verified = True
-
-            deposit.save()
-
-            messages.success(
-                request,
-                'Deposit payment recorded successfully.'
-            )
-
-            return redirect('deposit_dashboard')
-
-    else:
-
-        form = DepositPaymentForm()
-
-    context = {
-
-        'form': form
-
-    }
-
-    return render(
-        request,
-        'admin/record_deposit_payment.html',
-        context
-    )
-
-@login_required
-@allowed_roles(['ADMIN'])
 def deposit_history(request):
 
     deposits = DepositPayment.objects.select_related(
-        'customer'
+        'pending_sale',
+        'pending_sale__customer'
     ).order_by('-payment_date')
 
     total_deposits = deposits.aggregate(
@@ -507,135 +459,6 @@ def pending_pickups(request):
     return render(
         request,
         'admin/pending_pickups.html',
-        context
-    )
-
-@login_required
-@allowed_roles(['ADMIN'])
-def approve_pickup(request, pending_id):
-
-    pickup = PendingCreditSale.objects.get(
-        id=pending_id
-    )
-
-    pickup.approved_for_sale = True
-
-    pickup.save()
-
-    messages.success(
-        request,
-        'Pickup approved successfully.'
-    )
-
-    return redirect('pending_pickups')
-
-
-@login_required
-@allowed_roles(['ADMIN'])
-def create_pending_pickup(request):
-
-    customers = Customer.objects.filter(
-        is_scheme_customer=True
-    )
-
-    products = Product.objects.filter(
-        eligible_for_scheme=True
-    )
-
-    if request.method == 'POST':
-
-        customer_id = request.POST.get('customer')
-
-        amount_paid = Decimal(
-            request.POST.get('amount_paid') or 0
-        )
-
-        product_ids = request.POST.getlist('product')
-
-        quantities = request.POST.getlist('quantity')
-
-        prices = request.POST.getlist('price')
-
-        subtotals = request.POST.getlist('subtotal')
-
-        customer = Customer.objects.get(
-            id=customer_id
-        )
-
-        total_amount = Decimal('0')
-
-        for subtotal in subtotals:
-
-            if subtotal:
-
-                total_amount += Decimal(subtotal)
-
-        balance_remaining = (
-            total_amount - amount_paid
-        )
-
-        pending_sale = PendingCreditSale.objects.create(
-
-            customer=customer,
-
-            total_amount=total_amount,
-
-            amount_paid=amount_paid,
-
-            balance_remaining=balance_remaining,
-
-            created_by=request.user
-
-        )
-
-        for product_id, quantity, price, subtotal in zip(
-            product_ids,
-            quantities,
-            prices,
-            subtotals
-        ):
-
-            if not product_id:
-                continue
-
-            product = Product.objects.get(
-                id=product_id
-            )
-
-            PendingCreditSaleItem.objects.create(
-
-                pending_sale=pending_sale,
-
-                product=product,
-
-                quantity=int(quantity),
-
-                selling_price=Decimal(price),
-
-                subtotal=Decimal(subtotal)
-
-            )
-
-        messages.success(
-            request,
-            'Pending pickup created successfully.'
-        )
-
-        return redirect(
-            'pending_pickups'
-        )
-
-    context = {
-
-        'customers': customers,
-
-        'products': products,
-
-    }
-
-    return render(
-        request,
-        'admin/create_pending_pickup.html',
         context
     )
 
@@ -879,7 +702,7 @@ def transport_overview(request):
     ).count()
 
     total_transport_income = deliveries.aggregate(
-        total=Sum('transport_charge')
+        total=Sum('transport_fee')
     )['total'] or 0
 
     context = {
@@ -938,5 +761,206 @@ def completed_deliveries(request):
     return render(
         request,
         'admin/completed_deliveries.html',
+        context
+    )
+
+
+@login_required
+@allowed_roles(['ADMIN'])
+def approve_pickup(request, pending_id):
+
+    pickup = PendingCreditSale.objects.get(
+        id=pending_id
+    )
+
+    if pickup.balance_remaining > 0:
+
+        messages.error(
+            request,
+            'Customer has not completed payment.'
+        )
+
+        return redirect(
+            'pending_pickups'
+        )
+
+    pickup.approved_for_sale = True
+
+    pickup.save()
+
+    messages.success(
+        request,
+        'Pickup approved successfully.'
+    )
+
+    return redirect(
+        'pending_pickups'
+    )
+
+@login_required
+@allowed_roles(['ADMIN'])
+def record_deposit_payment(request):
+
+    if request.method == 'POST':
+
+        form = DepositPaymentForm(request.POST)
+
+        if form.is_valid():
+
+            deposit = form.save(commit=False)
+
+            pending_sale = deposit.pending_sale
+
+            # Add payment to the order
+
+            pending_sale.amount_paid += deposit.amount_paid
+
+            # Update remaining balance
+
+            pending_sale.balance_remaining = (
+                pending_sale.total_amount -
+                pending_sale.amount_paid
+            )
+
+            pending_sale.save()
+
+            # Save balance snapshot on deposit record
+
+            deposit.remaining_balance = (
+                pending_sale.balance_remaining
+            )
+
+            deposit.verified = True
+
+            deposit.save()
+
+            messages.success(
+                request,
+                'Deposit payment recorded successfully.'
+            )
+
+            return redirect(
+                'deposit_dashboard'
+            )
+
+    else:
+
+        form = DepositPaymentForm()
+
+    context = {
+
+        'form': form
+
+    }
+
+    return render(
+        request,
+        'admin/record_deposit_payment.html',
+        context
+    )
+
+@login_required
+@allowed_roles(['ADMIN'])
+def create_scheme_order(request):
+
+    customers = Customer.objects.filter(
+        is_scheme_customer=True
+    )
+
+    products = Product.objects.filter(
+        eligible_for_scheme=True
+    )
+
+    if request.method == 'POST':
+
+        customer_id = request.POST.get('customer')
+
+        product_ids = request.POST.getlist('product')
+
+        quantities = request.POST.getlist('quantity')
+
+        prices = request.POST.getlist('price')
+
+        subtotals = request.POST.getlist('subtotal')
+
+        customer = get_object_or_404(
+            Customer,
+            id=customer_id
+        )
+
+        total_amount = Decimal('0')
+
+        for subtotal in subtotals:
+
+            if subtotal:
+
+                total_amount += Decimal(subtotal)
+
+        pending_sale = PendingCreditSale.objects.create(
+
+            customer=customer,
+
+            total_amount=total_amount,
+
+            amount_paid=Decimal('0'),
+
+            balance_remaining=total_amount,
+
+            approved_for_sale=False,
+
+            created_by=request.user
+
+        )
+
+        for product_id, quantity, price, subtotal in zip(
+
+            product_ids,
+            quantities,
+            prices,
+            subtotals
+
+        ):
+
+            if not product_id:
+                continue
+
+            product = Product.objects.get(
+                id=product_id
+            )
+
+            PendingCreditSaleItem.objects.create(
+
+                pending_sale=pending_sale,
+
+                product=product,
+
+                quantity=int(quantity),
+
+                selling_price=Decimal(price),
+
+                subtotal=Decimal(subtotal)
+
+            )
+
+        messages.success(
+            request,
+            'Scheme order created successfully.'
+        )
+
+        return redirect(
+            'pending_pickups'
+        )
+
+    context = {
+
+        'customers': customers,
+
+        'products': products,
+
+    }
+
+    return render(
+        request,
+        'admin/create_scheme_order.html',
         context
     )

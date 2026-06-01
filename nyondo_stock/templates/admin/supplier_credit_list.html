@@ -5,6 +5,10 @@
 <div class="page-header">
     <h2>Supplier Credit List</h2>
 </div>
+<a href="{% url 'supplier_credit_dashboard' %}" class="btn back-btn btn-secondary mb-3">
+        Back
+    </a>
+
 
 <div class="summary-card">
     <h3>Total Outstanding Credit</h3>
@@ -31,7 +35,7 @@
             <td>UGX {{ supplier.balance_due }}</td>
 
             <td>
-                <a href="{% url 'supplier_credit_details' supplier.id %}">
+                <a href="{% url 'supplier_credit_details' supplier.id %}" class="btn btn-primary">
                     View
                 </a>
             </td>
@@ -49,5 +53,14 @@
 
     </tbody>
 </table>
+<style>
+    .back-btn{
+    text-decoration:none;
+    color:#1abc9c;
+    font-weight:600;
+}
+
+
+</style>
 
 {% endblock %}

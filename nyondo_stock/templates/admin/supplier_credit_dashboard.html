@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'manager/base_manager.html' %}
 
 {% block content %}
 
@@ -6,7 +6,7 @@
 
     <h2>Supplier Credit Dashboard</h2>
 
-    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mb-3">
+    <a href="{% url 'admin_dashboard' %}" class="btn back-btn">
         Back
     </a>
 
@@ -34,7 +34,7 @@
                     View Supplier Balances
                 </a>
 
-                <a href="{% url 'record_supplier_payment' %}" class="btn btn-success btn-sm">
+                <a href="{% url 'record_supplier_payment' %}" class="btn btn-primary btn-success btn-sm">
                     Record Payment
                 </a>
 
@@ -74,5 +74,14 @@
     </table>
 
 </div>
+<style>
+    .back-btn{
+    text-decoration:none;
+    color:#1abc9c;
+    font-weight:600;
+}
+
+
+</style>
 
 {% endblock %}

@@ -6,7 +6,7 @@ Record Deposit
 
 {% block content %}
 
-<div class="form-container">
+<div class="form-container form-card ">
 
     <div class="form-header">
 
@@ -20,7 +20,7 @@ Record Deposit
 
         {{ form.as_p }}
 
-        <button type="submit" class="submit-btn">
+        <button type="submit" class="submit-btn btn btn-primary">
 
             Save Deposit
 
@@ -29,5 +29,14 @@ Record Deposit
     </form>
 
 </div>
+<style>
 
+.form-card{
+    background:white;
+    border-radius:22px;
+    padding:30px;
+    box-shadow:var(--shadow);
+}
+
+</style>
 {% endblock %}
