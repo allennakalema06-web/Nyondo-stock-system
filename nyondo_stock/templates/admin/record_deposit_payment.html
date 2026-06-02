@@ -1,42 +1,128 @@
 {% extends 'manager/base_manager.html' %}
 
 {% block page_title %}
-Record Deposit
+Record Deposit Payment
 {% endblock %}
 
 {% block content %}
 
-<div class="form-container form-card ">
+<div class="page-header">
+    <h2>Record Deposit Payment</h2>
+    <p>Record a payment made by a scheme customer.</p>
+</div>
 
-    <div class="form-header">
+<div class="form-card">
 
-        <h2>Record Deposit Payment</h2>
-
-    </div>
+    <!-- GLOBAL ERRORS -->
+    {% if form.non_field_errors %}
+        <div class="form-errors">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <form method="POST" class="main-form">
-
         {% csrf_token %}
 
-        {{ form.as_p }}
+        <!-- PENDING SALE -->
+        <div class="form-group">
+            <label>{{ form.pending_sale.label }}</label>
+            {{ form.pending_sale }}
 
-        <button type="submit" class="submit-btn btn btn-primary">
+            {% for error in form.pending_sale.errors %}
+                <small class="error-text">{{ error }}</small>
+            {% endfor %}
+        </div>
 
+        <!-- AMOUNT PAID -->
+        <div class="form-group">
+            <label>{{ form.amount_paid.label }}</label>
+            {{ form.amount_paid }}
+
+            {% for error in form.amount_paid.errors %}
+                <small class="error-text">{{ error }}</small>
+            {% endfor %}
+        </div>
+
+        <!-- OPTIONAL: PAYMENT DATE (if exists) -->
+        {% if form.payment_date %}
+        <div class="form-group">
+            <label>{{ form.payment_date.label }}</label>
+            {{ form.payment_date }}
+
+            {% for error in form.payment_date.errors %}
+                <small class="error-text">{{ error }}</small>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <button type="submit" class="submit-btn">
             Save Deposit
-
         </button>
 
     </form>
 
 </div>
+
 <style>
+
+.page-header{
+    margin-bottom:20px;
+}
 
 .form-card{
     background:white;
-    border-radius:22px;
     padding:30px;
+    border-radius:18px;
     box-shadow:var(--shadow);
+    max-width:700px;
+}
+
+.form-group{
+    margin-bottom:18px;
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    font-weight:600;
+    margin-bottom:8px;
+    color:#334155;
+}
+
+.form-group input,
+.form-group select{
+    padding:14px;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+}
+
+.form-errors{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.error-text{
+    color:#dc2626;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.submit-btn{
+    margin-top:10px;
+    background:#1abc9c;
+    color:white;
+    padding:14px 20px;
+    border:none;
+    border-radius:12px;
+    font-weight:700;
+    cursor:pointer;
 }
 
 </style>
+
 {% endblock %}

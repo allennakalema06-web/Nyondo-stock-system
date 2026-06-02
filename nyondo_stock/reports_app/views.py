@@ -867,9 +867,8 @@ def create_scheme_order(request):
         is_scheme_customer=True
     )
 
-    products = Product.objects.filter(
-        eligible_for_scheme=True
-    )
+    products = Product.objects.all()
+    
 
     if request.method == 'POST':
 

@@ -71,15 +71,19 @@ Records
           <td>{{ delivery.customer.phone_number }}</td>
 
           <td>
-            {% if delivery.delivery_location %} {{
-            delivery.delivery_location.location_name }} {% else %} {{
-            delivery.delivery_address|default:"N/A" }} {% endif %}
+            {% if delivery.delivery_location %}
+                {{ delivery.delivery_location.location_name }}
+            {% else %}
+                {{ delivery.delivery_address|default:"N/A" }}
+            {% endif %}
           </td>
 
           <td>
-            {% if delivery.delivery_location %} {{
-            delivery.delivery_location.distance_km }} KM {% else %} N/A {% endif
-            %}
+            {% if delivery.delivery_location %}
+                {{ delivery.delivery_location.distance_km }} KM
+            {% else %}
+                N/A
+            {% endif %}
           </td>
 
           <td>UGX {{ delivery.transport_fee }}</td>
@@ -98,6 +102,7 @@ Records
 
           <td>{{ delivery.created_at|date:"d M Y" }}</td>
         </tr>
+        
 
         {% empty %}
 

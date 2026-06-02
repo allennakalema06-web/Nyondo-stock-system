@@ -1,4 +1,5 @@
 from django import forms
+import re
 from .models import StockEntry, Product, StockEntryItem, StockAdjustment, Supplier, Category, SupplierPayment
 from django.forms import inlineformset_factory
 
@@ -359,6 +360,56 @@ class SupplierForm(forms.ModelForm):
             }),
 
         }
+
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get('phone_number')
+
+        pattern = r'^(07\d{8}|2567\d{8})$'
+        if not re.match(pattern, phone):
+            raise forms.ValidationError("Enter a valid Ugandan phone number.")
+
+        return phone
+    def clean_alternative_phone(self):
+        phone = self.cleaned_data.get('alternative_phone')
+
+        if not phone:
+            return phone
+
+        pattern = r'^(07\d{8}|2567\d{8})$'
+        if not re.match(pattern, phone):
+            raise forms.ValidationError("Enter a valid Ugandan phone number.")
+
+        return phone
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        if Supplier.objects.filter(email=email).exists():
+            raise forms.ValidationError("A supplier with this email already exists.")
+
+        return email
+    def clean_tin_number(self):
+        tin = self.cleaned_data.get('tin_number')
+
+        if tin:
+            pattern = r'^[A-Z0-9]{8,15}$'
+            if not re.match(pattern, tin):
+                raise forms.ValidationError("Enter a valid TIN number.")
+
+        return tin
+    def clean_website(self):
+        website = self.cleaned_data.get('website')
+
+        if website and not website.startswith(('http://', 'https://')):
+            raise forms.ValidationError("Website must start with http:// or https://")
+
+        return website
+    def clean_supplier_name(self):
+        name = self.cleaned_data.get('supplier_name')
+
+        if not name or len(name.strip()) < 3:
+            raise forms.ValidationError("Supplier name is too short.")
+
+        return name
 
 class CategoryForm(forms.ModelForm):
 

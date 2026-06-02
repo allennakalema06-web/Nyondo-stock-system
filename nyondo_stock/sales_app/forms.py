@@ -6,9 +6,6 @@ from customers_app.models import Customer
 
 from inventory_app.models import Product
 
-from django import forms
-
-from .models import Sale
 
 
 class SaleForm(forms.ModelForm):

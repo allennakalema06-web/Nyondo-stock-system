@@ -132,8 +132,34 @@
        class="nav-item {% if request.resolver_match.url_name == 'expense_records' %}active{% endif %}">
       <i class="ph ph-money"></i> Expenses
     </a>
+    <a href="{% url 'admin_stock_overview' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'admin_stock_overview' %}active{% endif %}">
+      <i class="ph ph-package"></i> Stock Overview
+    </a>
+    <a href="{% url 'admin_sales_overview' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'admin_sales_overview' %}active{% endif %}">
+      <i class="ph ph-chart-bar"></i> Sales Overview
+    </a>
 
     
+
+    
+    <a href="{% url 'supplier_credit_dashboard' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'supplier_credit_dashboard' %}active{% endif %}">
+      <i class="ph ph-bank"></i> Supplier Credit
+    </a>
+
+
+    <a href="{% url 'supplier_payment_history' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'supplier_payment_history' %}active{% endif %}">
+      <i class="ph ph-receipt"></i> Payment History
+    </a>
+
+
+    <a href="{% url 'transport_overview' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'transport_overview' %}active{% endif %}">
+      <i class="ph ph-truck"></i> Transport Overview
+    </a>
 
     <a href="{% url 'deposit_dashboard' %}"
        class="nav-item {% if request.resolver_match.url_name == 'deposit_dashboard' %}active{% endif %}">
@@ -162,20 +188,9 @@
       <i class="ph ph-shopping-cart"></i> Create Pickup
     </a>
 
-    <a href="{% url 'supplier_credit_dashboard' %}"
-       class="nav-item {% if request.resolver_match.url_name == 'supplier_credit_dashboard' %}active{% endif %}">
-      <i class="ph ph-bank"></i> Supplier Credit
-    </a>
-
-
-    <a href="{% url 'supplier_payment_history' %}"
-       class="nav-item {% if request.resolver_match.url_name == 'supplier_payment_history' %}active{% endif %}">
-      <i class="ph ph-receipt"></i> Payment History
-    </a>
-
-    <a href="{% url 'transport_overview' %}"
-       class="nav-item {% if request.resolver_match.url_name == 'transport_overview' %}active{% endif %}">
-      <i class="ph ph-truck"></i> Transport Overview
+    <a href="{% url 'admin_reports_center' %}"
+       class="nav-item {% if request.resolver_match.url_name == 'admin_reports_center' %}active{% endif %}">
+      <i class="ph ph-file"></i> Reports Center
     </a>
 
     
@@ -191,11 +206,13 @@
     </div>
 
     <div class="user-details">
+      <div>
       <strong>{{ request.user.username }}</strong>
 
       <span>
         {{ request.user.groups.first.name }}
       </span>
+      </div>
 
       <a href="{% url 'logout' %}" class="logout-btn">
         <i class="ph ph-sign-out"></i>

@@ -28,45 +28,39 @@ Create Pending Pickup
 
     {% csrf_token %}
 
+    <!-- CUSTOMER -->
     <div class="form-card">
 
-        <div class="form-grid">
+        <div class="form-group">
 
-            <div class="form-group">
+            <label>Scheme Customer</label>
 
-                <label>Scheme Customer</label>
+            <select name="customer" required>
 
-                <select name="customer" required>
+                <option value="">Select Customer</option>
 
-                    <option value="">Select Customer</option>
+                {% for customer in customers %}
 
-                    {% for customer in customers %}
+                <option value="{{ customer.id }}">
+                    {{ customer.customer_name }}
+                </option>
 
-                    <option value="{{ customer.id }}">
-                        {{ customer.customer_name }}
-                    </option>
+                {% endfor %}
 
-                    {% endfor %}
-
-                </select>
-
-            </div>
+            </select>
 
         </div>
 
     </div>
 
+    <!-- PRODUCTS -->
     <div class="products-card">
 
         <div class="products-header">
 
             <h3>Products</h3>
 
-            <button 
-                type="button"
-                class="add-btn"
-                onclick="addProductRow()"
-            >
+            <button type="button" class="add-btn" onclick="addProductRow()">
                 + Add Product
             </button>
 
@@ -82,10 +76,7 @@ Create Pending Pickup
 
                     {% for product in products %}
 
-                    <option 
-                        value="{{ product.id }}"
-                        data-price="{{ product.selling_price }}"
-                    >
+                    <option value="{{ product.id }}" data-price="{{ product.retail_price }}">
                         {{ product.product_name }}
                     </option>
 
@@ -93,37 +84,14 @@ Create Pending Pickup
 
                 </select>
 
-                <input 
-                    type="number"
-                    name="quantity"
-                    class="quantity-input"
-                    placeholder="Qty"
-                    min="1"
-                    required
-                >
+                <input type="number" name="quantity" class="quantity-input" placeholder="Qty" min="1" required>
 
-                <input 
-                    type="number"
-                    name="price"
-                    class="price-input"
-                    placeholder="Price"
-                    readonly
-                >
+                <input type="number" name="price" class="price-input" placeholder="Price" readonly>
 
-                <input 
-                    type="number"
-                    name="subtotal"
-                    class="subtotal-input"
-                    placeholder="Subtotal"
-                    readonly
-                >
+                <input type="number" name="subtotal" class="subtotal-input" placeholder="Subtotal" readonly>
 
-                <button 
-                    type="button"
-                    class="remove-btn"
-                    onclick="removeRow(this)"
-                >
-                    <i class="ph ph-trash"></i>
+                <button type="button" class="remove-btn" onclick="removeRow(this)">
+                    🗑
                 </button>
 
             </div>
@@ -132,30 +100,22 @@ Create Pending Pickup
 
     </div>
 
+    <!-- TOTALS -->
     <div class="totals-card">
 
         <div class="total-line">
-
             <span>Subtotal</span>
-
-            <strong id="subtotalDisplay">
-                UGX 0
-            </strong>
-
+            <strong id="subtotalDisplay">UGX 0</strong>
         </div>
 
         <div class="total-line grand-total">
-
-            <span>Order Total</span>
-
-            <strong id="grandTotalDisplay">
-                UGX 0
-            </strong>
-
+            <span>Total</span>
+            <strong id="grandTotalDisplay">UGX 0</strong>
         </div>
 
     </div>
 
+    <!-- SUBMIT -->
     <div class="submit-area">
 
         <button type="submit" class="submit-btn">
@@ -165,7 +125,6 @@ Create Pending Pickup
     </div>
 
 </form>
-
 <style>
 
 .page-header{
@@ -313,176 +272,108 @@ Create Pending Pickup
 
 <script>
 
+document.addEventListener('DOMContentLoaded', function () {
+
+    const container = document.getElementById('productsContainer');
+
+    // PRODUCT SELECT CHANGE
+    container.addEventListener('change', function (e) {
+
+        if (e.target.classList.contains('product-select')) {
+
+            const row = e.target.closest('.product-row');
+
+            const price = e.target.selectedOptions[0].dataset.price || 0;
+
+            row.querySelector('.price-input').value = price;
+
+            calculateRow(row);
+        }
+    });
+
+    // QUANTITY INPUT
+    container.addEventListener('input', function (e) {
+
+        if (e.target.classList.contains('quantity-input')) {
+
+            const row = e.target.closest('.product-row');
+
+            calculateRow(row);
+        }
+    });
+
+});
+
+
+function calculateRow(row) {
+
+    const qty = parseFloat(row.querySelector('.quantity-input').value) || 0;
+
+    const price = parseFloat(row.querySelector('.price-input').value) || 0;
+
+    const subtotal = qty * price;
+
+    row.querySelector('.subtotal-input').value = subtotal;
+
+    calculateTotals();
+}
+
+
+function calculateTotals() {
+
+    let total = 0;
+
+    document.querySelectorAll('.subtotal-input').forEach(input => {
+
+        total += parseFloat(input.value) || 0;
+    });
+
+    document.getElementById('subtotalDisplay').innerText =
+        'UGX ' + total.toLocaleString();
+
+    document.getElementById('grandTotalDisplay').innerText =
+        'UGX ' + total.toLocaleString();
+}
+
+
 function addProductRow() {
 
-    const container =
-        document.getElementById('productsContainer');
+    const container = document.getElementById('productsContainer');
 
-    const templateRow =
-        document.querySelector('.product-row');
+    const template = document.querySelector('.product-row');
 
-    const newRow =
-        templateRow.cloneNode(true);
+    const newRow = template.cloneNode(true);
 
-    // Clear all values
-
-    newRow.querySelector('.product-select')
-          .selectedIndex = 0;
-
-    newRow.querySelector('.quantity-input')
-          .value = '';
-
-    newRow.querySelector('.price-input')
-          .value = '';
-
-    newRow.querySelector('.subtotal-input')
-          .value = '';
-
-    // Attach events only to the new row
-
-    const productSelect =
-        newRow.querySelector('.product-select');
-
-    const quantityInput =
-        newRow.querySelector('.quantity-input');
-
-    productSelect.addEventListener('change', () => {
-
-        const selectedOption =
-            productSelect.options[
-                productSelect.selectedIndex
-            ];
-
-        const price =
-            selectedOption.dataset.price || 0;
-
-        newRow.querySelector('.price-input')
-              .value = price;
-
-        calculateRow(newRow);
-
-    });
-
-    quantityInput.addEventListener('input', () => {
-
-        calculateRow(newRow);
-
-    });
-
-    // Add new empty row at the top
+    newRow.querySelector('.product-select').selectedIndex = 0;
+    newRow.querySelector('.quantity-input').value = '';
+    newRow.querySelector('.price-input').value = '';
+    newRow.querySelector('.subtotal-input').value = '';
 
     container.prepend(newRow);
-
 }
+
 
 function removeRow(button) {
 
-    const rows =
-        document.querySelectorAll('.product-row');
+    const rows = document.querySelectorAll('.product-row');
 
     if (rows.length === 1) {
 
         const row = button.parentElement;
 
-        row.querySelector('.product-select')
-           .selectedIndex = 0;
-
-        row.querySelector('.quantity-input')
-           .value = '';
-
-        row.querySelector('.price-input')
-           .value = '';
-
-        row.querySelector('.subtotal-input')
-           .value = '';
+        row.querySelector('.product-select').selectedIndex = 0;
+        row.querySelector('.quantity-input').value = '';
+        row.querySelector('.price-input').value = '';
+        row.querySelector('.subtotal-input').value = '';
 
         calculateTotals();
-
         return;
     }
 
     button.parentElement.remove();
 
     calculateTotals();
-
 }
-
-function attachEvents(){
-
-    const rows = document.querySelectorAll('.product-row');
-
-    rows.forEach(row => {
-
-        const productSelect = row.querySelector('.product-select');
-
-        const quantityInput = row.querySelector('.quantity-input');
-
-        const priceInput = row.querySelector('.price-input');
-
-        const subtotalInput = row.querySelector('.subtotal-input');
-
-        productSelect.addEventListener('change', () => {
-
-            const selectedOption = productSelect.options[
-                productSelect.selectedIndex
-            ];
-
-            const price = selectedOption.dataset.price || 0;
-
-            priceInput.value = price;
-
-            calculateRow(row);
-
-        });
-
-        quantityInput.addEventListener('input', () => {
-            calculateRow(row);
-        });
-
-    });
-
-}
-
-function calculateRow(row){
-
-    const quantity = parseFloat(
-        row.querySelector('.quantity-input').value
-    ) || 0;
-
-    const price = parseFloat(
-        row.querySelector('.price-input').value
-    ) || 0;
-
-    const subtotal = quantity * price;
-
-    row.querySelector('.subtotal-input').value = subtotal;
-
-    calculateTotals();
-
-}
-
-function calculateTotals(){
-
-    let subtotal = 0;
-
-    document.querySelectorAll('.subtotal-input').forEach(input => {
-
-        subtotal += parseFloat(input.value) || 0;
-
-    });
-    if(subtotal < 0){
-        subtotal = 0;
-    }
-
-    document.getElementById('subtotalDisplay').innerText =
-        'UGX ' + subtotal.toLocaleString();
-
-    document.getElementById('grandTotalDisplay').innerText =
-        'UGX ' + subtotal.toLocaleString();
-
-}
-attachEvents();
-
 
 </script>
 

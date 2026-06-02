@@ -119,8 +119,8 @@ class SchemeCustomerForm(forms.ModelForm):
         return contact
 
     def clean_nin(self):
-        nin = self.cleaned_data['nin'].upper()
-        pattern = r'^[A-Z]{2}[0-9]{10}[A-Z]{3}$'
+        nin = self.cleaned_data['nin'].strip().upper()
+        pattern = r'^[A-Z0-9]{14}$'
         if not re.match(pattern, nin):
             raise forms.ValidationError(
                 'Enter a valid Ugandan NIN.'
@@ -155,6 +155,8 @@ class DepositPaymentForm(forms.ModelForm):
             'transaction_reference',
 
         ]
+
+    
 
 class PendingCreditSaleForm(forms.ModelForm):
 
