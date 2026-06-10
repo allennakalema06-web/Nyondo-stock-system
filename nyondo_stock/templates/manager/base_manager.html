@@ -376,7 +376,6 @@
 
         padding: 24px;
         margin-bottom: 16px;
-        
 
         box-shadow: var(--shadow);
 
@@ -692,28 +691,80 @@
         color: #64748b;
         margin-top: 6px;
       }
+
+      .menu-toggle {
+        display: none;
+        background: linear-gradient(235deg, #0b1f3a, #1abc9c);
+        color: white;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        font-size: 18px;
+      }
+
+      /* Mobile */
+      @media (max-width: 768px) {
+        .sidebar {
+          position: fixed;
+          left: -260px;
+          top: 0;
+          height: 100vh;
+          z-index: 9999;
+          transition: left 0.3s ease;
+        }
+
+        .sidebar.active {
+          left: 0;
+        }
+
+        .main {
+          width: 100%;
+          padding: 15px;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .topbar {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 15px;
+        }
+
+        .search-box {
+          width: 100%;
+        }
+
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .messages-wrapper {
+          left: 10px;
+          right: 10px;
+        }
+
+        .alert-message {
+          min-width: auto;
+          width: 100%;
+        }
+      }
+      .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 9998;
+        display: none;
+      }
+
+      .overlay.active {
+        display: block;
+      }
     </style>
-    <script>
-      const messages = document.querySelectorAll(".alert-message");
-
-      messages.forEach(function (message) {
-        const closeBtn = message.querySelector(".close-message");
-
-        closeBtn.addEventListener("click", function () {
-          message.remove();
-        });
-
-        setTimeout(function () {
-          message.style.opacity = "0";
-
-          message.style.transform = "translateX(40px)";
-
-          setTimeout(function () {
-            message.remove();
-          }, 400);
-        }, 3000);
-      });
-    </script>
+    
   </head>
 
   <body>
@@ -721,6 +772,9 @@
       {% include 'manager/partials/sidebar.html' %}
 
       <main class="main">
+        <button class="menu-toggle" onclick="toggleSidebar()">
+          <i class="fas fa-bars"></i>
+        </button>
         {% if messages %}
 
         <div class="messages-wrapper">
@@ -742,5 +796,32 @@
         {% endif %} {% block content %} {% endblock %}
       </main>
     </div>
+
+    <script>
+      
+      function toggleSidebar() {
+        document.querySelector(".sidebar").classList.toggle("active");
+        document.querySelector(".overlay").classList.toggle("active");
+      }
+      const messages = document.querySelectorAll(".alert-message");
+
+      messages.forEach(function (message) {
+        const closeBtn = message.querySelector(".close-message");
+
+        closeBtn.addEventListener("click", function () {
+          message.remove();
+        });
+
+        setTimeout(function () {
+          message.style.opacity = "0";
+
+          message.style.transform = "translateX(40px)";
+
+          setTimeout(function () {
+            message.remove();
+          }, 400);
+        }, 3000);
+      });
+    </script>
   </body>
 </html>
