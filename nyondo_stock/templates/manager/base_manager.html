@@ -763,8 +763,56 @@
       .overlay.active {
         display: block;
       }
+      @media (max-width: 768px) {
+        .btn {
+          width: 100%;
+          margin: 5px 0;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          display: block;
+        }
+
+        .main {
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+      img,
+      video,
+      iframe {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+      }
+
+      table {
+        min-width: 900px;
+      }
+      @media (max-width: 768px) {
+        table {
+          min-width: 700px;
+        }
+      }
+      @media (max-width: 768px) {
+        .form-row {
+          flex-direction: column;
+        }
+      }
+      @media (max-width: 768px) {
+        .form-grid,
+        .register-grid,
+        .form-container {
+          grid-template-columns: 1fr !important;
+        }
+      }
     </style>
-    
   </head>
 
   <body>
@@ -798,7 +846,6 @@
     </div>
 
     <script>
-      
       function toggleSidebar() {
         document.querySelector(".sidebar").classList.toggle("active");
         document.querySelector(".overlay").classList.toggle("active");
