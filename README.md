@@ -1,133 +1,115 @@
-# Nyondo Stock System
+# 🏗️ Nyondo Stock System
 
-A web-based inventory management system built with Django to help businesses efficiently manage products, track stock levels, and maintain accurate inventory records.
+A web-based inventory, sales, and supplier management system built with **Django** to help businesses efficiently manage stock, monitor inventory, and streamline daily operations.
 
-## Project Overview
+## Overview
 
-The Nyondo Stock System was developed as a Software Engineering project to address common inventory management challenges faced by businesses. The system provides a centralized platform for managing products, monitoring stock levels, and maintaining organized inventory records.
+Nyondo Stock System was developed for **Nyondo General Hardware** to digitize inventory and sales management. The application replaces manual record-keeping with a centralized platform that improves stock tracking, product management, and business operations.
 
-The project was built using Django and PostgreSQL and is deployed on Render, providing a real-world example of a production-ready web application.
+The project is built with **Python**, **Django**, and **PostgreSQL**, and is deployed on **Render**.
 
-## Key Features
+---
 
-### Inventory Management
+##  Features
 
-* Track available stock
-* Update inventory quantities
-* Monitor product availability
+-  Inventory Management
+-  Sales Management
+-  Product Management
+-  Supplier Management
+-  User Authentication
+-  Role-Based Access Control
+-  Dashboard Overview
+-  Stock Monitoring
 
-### Product Management
+---
 
-* Add new products
-* Edit existing products
-* Delete products when necessary
-* Organize inventory records
-
-### User Authentication
-
-* Secure login system
-* Protected application access
-* User account management
+#  Screenshots
 
 ### Dashboard
 
-* Overview of inventory information
-* Quick access to key system functions
-* Centralized management interface
+![Dashboard](assets/screenshots/dashboard.png)
 
-## Technology Stack
+### Login
 
-### Backend
+![Login](assets/screenshots/login.png)
 
-* Python
-* Django
+### Products
 
-### Database
+![Products](assets/screenshots/products.png)
 
-* SQLite (Local Development)
-* PostgreSQL (Production)
+### Inventory
 
-### Frontend
+![Inventory](assets/screenshots/inventory.png)
 
-* HTML
-* CSS
-* JavaScript
+### Sales
 
-### Tools & Deployment
+![Sales](assets/screenshots/sales.png)
 
-* Git
-* GitHub
-* Render
+---
 
-## What I Learned
+##  Tech Stack
 
-This project helped me strengthen my skills in:
+| Category | Technologies |
+|-----------|--------------|
+| Backend | Python, Django |
+| Frontend | HTML, CSS, JavaScript |
+| Database | SQLite (Development), PostgreSQL (Production) |
+| Deployment | Render |
+| Version Control | Git & GitHub |
 
-* Django web development
-* Database design and management
-* PostgreSQL integration
-* Authentication and authorization
-* Git and version control
-* Deployment workflows
-* Problem-solving and debugging
-* python logic integration
-* Software architecture fundamentals
+---
 
-## Live Demo
+##  Live Demo
 
-Live Application:
-[https://nyondo-stock-system-vfb9.onrender.com/]
+**Live Application**
 
-## GitHub Repository
+https://nyondo-stock-system-vfb9.onrender.com/
 
-Repository:
-https://github.com/allennakalema06-web/Nyondo-stock-system.git
+---
 
-## Installation
+##  Installation
 
-### Clone the Repository
+### Clone the repository
 
 ```bash
 git clone https://github.com/allennakalema06-web/Nyondo-stock-system.git
 ```
 
-### Navigate into the Project
+### Navigate into the project
 
 ```bash
-cd nyondo-stock-system
+cd Nyondo-stock-system
 ```
 
-### Create a Virtual Environment
+### Create a virtual environment
 
 ```bash
 python -m venv venv
 ```
 
-### Activate the Virtual Environment
+### Activate the virtual environment
 
-Windows:
+**Windows**
 
 ```bash
-source venv\Scripts\activate
+venv\Scripts\activate
 ```
 
-Linux/Mac:
+**Linux / macOS**
 
 ```bash
 source venv/bin/activate
 ```
 
-### Install Dependencies
+### Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Configure Environment Variables
+### Configure environment variables
 
-Create a `.env` file and add the required environment variables.
-
-Example:
+Create a `.env` file.
 
 ```env
 SECRET_KEY=your-secret-key
@@ -135,13 +117,13 @@ DEBUG=True
 DATABASE_URL=your-database-url
 ```
 
-### Run Migrations
+### Run migrations
 
 ```bash
 python manage.py migrate
 ```
 
-### Start the Development Server
+### Start the development server
 
 ```bash
 python manage.py runserver
@@ -149,37 +131,57 @@ python manage.py runserver
 
 Open:
 
-```text
-http://127.0.0.1:8000
+```
+http://127.0.0.1:8000/
 ```
 
-## Future Improvements
+---
 
-The following enhancements are planned:
+##  Skills Demonstrated
 
-* Advanced reporting and analytics
-* User profile management
-* Notification system
-* Pagination for large datasets
-* User settings and preferences
-* Enhanced dashboard insights
-* Improved inventory reporting
-* Role-based permissions
+- Django Web Development
+- Authentication & Authorization
+- PostgreSQL Integration
+- Inventory Management Systems
+- Database Design
+- Deployment with Render
+- Git & GitHub Workflow
+- Software Architecture
+- Problem Solving & Debugging
+
+---
+
+##  Roadmap
+
+Planned improvements include:
+
+- Reporting & Analytics
+- Notifications
+- User Profiles
+- Pagination
+- Settings Module
+- Dashboard Enhancements
+- REST API
+- AI-powered Sales Insights
+
+---
 
 ## Project Status
 
- Active Development
+🟢 Active Development
 
-The system is functional and deployed, with additional features and improvements planned as part of ongoing development.
+The application is fully functional, deployed, and continues to evolve with new features and improvements.
 
-## Author
+---
 
-Allen Nakalema
+##  Author
 
-Software Engineer | Python Developer
+**Allen Nakalema**
 
-GitHub:
-https://github.com/allennakalema06
+Software Engineer | AI Engineer
 
-LinkedIn:
-(https://www.linkedin.com/in/allen-nakalema-99b8373aa/)
+GitHub: https://github.com/allennakalema06-web
+
+LinkedIn: https://www.linkedin.com/in/allen-nakalema-99b8373aa/
+
+---
