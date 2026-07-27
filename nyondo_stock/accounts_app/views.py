@@ -23,17 +23,19 @@ def login_view(request):
 
             login(request, user)
 
+            from django.http import HttpResponse
+
             if user.groups.filter(name='ADMIN').exists():
-                return redirect('admin_dashboard')
+                return HttpResponse("ADMIN LOGIN SUCCESS")
 
             elif user.groups.filter(name='MANAGER').exists():
-                return redirect('manager_dashboard')
+                return HttpResponse("MANAGER LOGIN SUCCESS")
 
             elif user.groups.filter(name='ATTENDANT').exists():
-                return redirect('attendant_dashboard')
+                return HttpResponse("ATTENDANT LOGIN SUCCESS")
 
             else:
-                return redirect('access_denied')
+                return HttpResponse("NO GROUP FOUND")
 
         else:
             messages.error(
