@@ -9,6 +9,17 @@ from django.contrib import messages  # type: ignore
 
 def login_view(request):
 
+    # Redirect already logged-in users directly to their dashboard
+    if request.user.is_authenticated:
+        if request.user.groups.filter(name='ADMIN').exists():
+            return redirect('admin_dashboard')
+        elif request.user.groups.filter(name='MANAGER').exists():
+            return redirect('manager_dashboard')
+        elif request.user.groups.filter(name='ATTENDANT').exists():
+            return redirect('attendant_dashboard')
+        else:
+            return redirect('access_denied')
+
     if request.method == 'POST':
 
         username = request.POST.get('username')
@@ -25,16 +36,20 @@ def login_view(request):
             login(request, user)
 
             if user.groups.filter(name='ADMIN').exists():
-                return HttpResponse("ADMIN LOGIN SUCCESS")
+                return redirect('admin_dashboard')
 
             elif user.groups.filter(name='MANAGER').exists():
-                return HttpResponse("MANAGER LOGIN SUCCESS")
+                return redirect('manager_dashboard')
 
             elif user.groups.filter(name='ATTENDANT').exists():
-                return HttpResponse("ATTENDANT LOGIN SUCCESS")
+                return redirect('attendant_dashboard')
 
             else:
-                return HttpResponse("NO GROUP FOUND")
+                messages.warning(
+                    request,
+                    'Your account has no assigned group permissions.'
+                )
+                return redirect('access_denied')
 
         else:
             messages.error(
@@ -46,6 +61,7 @@ def login_view(request):
         request,
         'accounts/login.html'
     )
+
 
 def logout_view(request):
 
