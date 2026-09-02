@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect  # type: ignore
+from django.http import HttpResponse  # type: ignore
 from django.contrib.auth import authenticate, login, logout  # type: ignore
 from django.contrib.auth.decorators import login_required  # type: ignore
 from django.contrib import messages  # type: ignore
@@ -22,8 +23,6 @@ def login_view(request):
         if user is not None:
 
             login(request, user)
-
-            from django.http import HttpResponse
 
             if user.groups.filter(name='ADMIN').exists():
                 return HttpResponse("ADMIN LOGIN SUCCESS")
