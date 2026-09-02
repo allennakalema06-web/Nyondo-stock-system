@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect  # type: ignore
 from functools import wraps
 
 def allowed_roles(allowed_roles=[]):

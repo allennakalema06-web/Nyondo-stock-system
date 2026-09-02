@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
+from django.shortcuts import render, redirect  # type: ignore
+from django.contrib.auth import authenticate, login, logout  # type: ignore
+from django.contrib.auth.decorators import login_required  # type: ignore
+from django.contrib import messages  # type: ignore
 
 # Create your views here.
 

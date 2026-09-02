@@ -11,10 +11,20 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import os 
-from dotenv import load_dotenv
+import os
+import importlib
 
-load_dotenv()
+try:
+    from dotenv import load_dotenv  # type: ignore[import-not-found]
+    load_dotenv()
+except ImportError:  # pragma: no cover - optional dependency in local dev
+    def load_dotenv(*args, **kwargs):
+        return False
+
+try:
+    import dj_database_url  # type: ignore[import-not-found]
+except ImportError:  # pragma: no cover - optional dependency in local dev
+    dj_database_url = None
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -97,13 +107,9 @@ WSGI_APPLICATION = 'nyondo_stock.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-
-import dj_database_url
-
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-
-if DATABASE_URL:
+if DATABASE_URL and dj_database_url is not None:
     DATABASES = {
         "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
