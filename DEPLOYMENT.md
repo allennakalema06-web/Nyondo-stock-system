@@ -53,3 +53,32 @@ shell connections to PyPI were blocked despite a network permission grant.
 The existing project venv was not accessed or modified. Rerun both commands in a
 provisioned environment before deployment. Static manifest generation, full pinned
 dependency installation, and live Neon connectivity remain unverified.
+
+
+## Neon CLI setup (2026-10-28)
+
+The repository is linked locally to project `old-butterfly-92432077`, branch
+`production`, organization `org-solitary-firefly-93806107`. `neon.ts` declares
+Postgres-only usage. Run `npx neon@latest deploy` to reconcile it and pull the
+branch environment. The local `.neon` link and environment files are ignored.
+
+Django loads repository-root `.env.local` and `.env` before application-directory
+env files; process environment variables take priority. The existing Django ORM,
+`dj-database-url` and `psycopg2-binary` use `DATABASE_URL` for application traffic.
+Use `DATABASE_URL_UNPOOLED` as `DATABASE_URL` in the migration process for direct
+schema operations; do not replace the application's pooled connection permanently.
+
+Install Python requirements into `.venv` at the repository root. `npm run build`
+uses that environment (or `PYTHON`, if set) to run Django checks and collect static
+assets. `npm start` runs the local development server at http://127.0.0.1:8000/.
+Production continues to use the Gunicorn command above.
+
+With the local server running, run `.venv\Scripts\python.exe scripts/verify_neon.py`
+on Windows (`.venv/bin/python scripts/verify_neon.py` on Linux). It verifies Neon
+connectivity, HTTP login, database-backed sessions, the manager dashboard, and
+category create/read/update/delete through HTTP. It creates a temporary manager
+account and category and removes its test records in a finally block.
+
+The initial 44 Django migrations were applied successfully to the empty Neon
+production database using the direct connection. Existing local/Render inventory
+and user records were not transferred.

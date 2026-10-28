@@ -21,3 +21,5 @@ env/
 *.pem
 *.key
 /nyondo_stock/Readme
+.neon
+node_modules/

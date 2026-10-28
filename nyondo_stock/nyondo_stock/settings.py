@@ -16,7 +16,15 @@ from django.core.exceptions import ImproperlyConfigured
 
 try:
     from dotenv import load_dotenv  # type: ignore[import-not-found]
-    load_dotenv()
+    # Neon writes env files at the repository root. Process env takes priority.
+    _app_dir = Path(__file__).resolve().parent.parent
+    for _env_file in (
+        _app_dir.parent / ".env.local",
+        _app_dir.parent / ".env",
+        _app_dir / ".env.local",
+        _app_dir / ".env",
+    ):
+        load_dotenv(_env_file, override=False)
 except ImportError:  # pragma: no cover - optional dependency in local dev
     def load_dotenv(*args, **kwargs):
         return False
