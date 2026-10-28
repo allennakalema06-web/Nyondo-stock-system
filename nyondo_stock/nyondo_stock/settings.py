@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
-import importlib
+from django.core.exceptions import ImproperlyConfigured
 
 try:
     from dotenv import load_dotenv  # type: ignore[import-not-found]
@@ -39,18 +39,17 @@ if not SECRET_KEY:
     raise Exception("SECRET_KEY not found in environment variables!")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "False").strip().lower() in {"true", "1", "yes"}
 
 
+# Comma-separated values; include Render domains here when retaining that deployment.
 ALLOWED_HOSTS = [
-    "nyondo-stock-system-vfb9.onrender.com",
-    ".onrender.com",
-    "localhost",
-    "127.0.0.1",
+    host.strip() for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if host.strip()
 ]
-
 CSRF_TRUSTED_ORIGINS = [
-    "https://nyondo-stock-system-vfb9.onrender.com",
+    origin.strip() for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
 ]
 
 # Application definition
@@ -109,9 +108,14 @@ WSGI_APPLICATION = 'nyondo_stock.wsgi.application'
 
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if DATABASE_URL and dj_database_url is not None:
+if os.getenv("KOYEB_SERVICE_NAME") and not DATABASE_URL:
+    raise ImproperlyConfigured("DATABASE_URL must be set on Koyeb.")
+
+if DATABASE_URL:
+    if dj_database_url is None:
+        raise ImproperlyConfigured("Install dj-database-url to use DATABASE_URL.")
     DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, conn_health_checks=True)
     }
 else:
     DATABASES = {
@@ -162,4 +166,9 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}

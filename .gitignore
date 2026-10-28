@@ -11,3 +11,13 @@ media/
 
 
 .vscode/
+# Local environments, secrets, databases, and private credential notes
+.venv/
+env/
+.env.*
+!.env.example
+*.sqlite3
+*.sqlite3-*
+*.pem
+*.key
+/nyondo_stock/Readme
