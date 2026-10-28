@@ -1,5 +1,9 @@
 body {
-  height: 100vh;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  padding: 24px 16px;
+  box-sizing: border-box;
   background: linear-gradient(235deg, #0b1f3a, #1abc9c);
   display: flex;
   justify-content: center;
@@ -18,12 +22,12 @@ h2 {
 .card {
   background: white;
   padding: 15px 40px;
-  width: 330px;
-  height: 480px;
+  width: auto;
+  min-height: 480px;
   border-radius: 18px;
   text-align: start;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  margin-top: 50px !important;
+  margin-top: 0;
 }
 input {
   border: 1px solid #ccc;
@@ -86,4 +90,27 @@ label {
   border-radius: 20px;
   border-color: #1abc9c;
   border-style: solid;
+}
+
+/* Keep the original card, gradients and form styling; let added content flow. */
+.container { width: 410px; max-width: 100%; }
+.demo-access { margin-top: 22px; padding-top: 18px; border-top: 1px solid #dce7e6; }
+.demo-access h3 { margin: 0 0 12px; color: #103463; font-size: 18px; }
+.demo-buttons { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.demo-button { min-height: 48px; padding: 9px 6px; border: 1px solid #c4d8d4; border-radius: 7px; background: #f3f9f7; color: #103463; font-family: inherit; font-size: 14px; font-weight: bold; line-height: 1.35; cursor: pointer; }
+.demo-button:hover { border-color: #148573; background: #e7f4f0; }
+.demo-button:focus-visible, .demo-credentials summary:focus-visible, input:focus-visible, .button:focus-visible { outline: 3px solid #103463; outline-offset: 3px; }
+.demo-credentials { margin-top: 14px; color: #103463; font-size: 15px; }
+.demo-credentials summary { cursor: pointer; padding: 4px 0; }
+.demo-credentials dl { margin: 14px 0 0; }
+.demo-credential + .demo-credential { margin-top: 16px; }
+.demo-credential dt { font-weight: bold; margin-bottom: 6px; }
+.demo-credential dd { margin: 6px 0; color: #435967; line-height: 1.5; }
+.demo-credential code { display: block; color: #103463; font-size: 14px; user-select: all; overflow-wrap: anywhere; }
+.demo-note, .demo-status { color: #435967; font-size: 14px; line-height: 1.5; margin: 12px 0 0; }
+.demo-status:empty { display: none; }
+.login-footer { font-size: 14px; line-height: 1.5; margin-top: 20px; }
+.login-messages { color: #8a2525; font-size: 15px; }
+@media (max-width: 440px) {
+  .card { padding: 15px 24px; }
 }

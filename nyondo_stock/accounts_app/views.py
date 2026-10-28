@@ -3,6 +3,7 @@ from django.http import HttpResponse  # type: ignore
 from django.contrib.auth import authenticate, login, logout  # type: ignore
 from django.contrib.auth.decorators import login_required  # type: ignore
 from django.contrib import messages  # type: ignore
+from .demo_accounts import PUBLIC_DEMO_ACCOUNTS
 
 # Create your views here.
 
@@ -59,7 +60,8 @@ def login_view(request):
 
     return render(
         request,
-        'accounts/login.html'
+        'accounts/login.html',
+        {'demo_accounts': PUBLIC_DEMO_ACCOUNTS},
     )
 
 

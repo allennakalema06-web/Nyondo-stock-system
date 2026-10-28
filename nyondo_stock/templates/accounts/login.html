@@ -3,9 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login Page</title>
+    <title>Login | Nyondo</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'core/css/login.css' %}" />
+    <link rel="stylesheet" href="{% static 'core/css/login.css' %}?v=demo-20261028" />
+    <script src="{% static 'core/js/login-demo.js' %}?v=demo-20261028" defer></script>
   </head>
   <body>
     <div class="container">
@@ -19,6 +20,11 @@
             Sign in to take control of your inventory and track orders
             efficiently.
           </p>
+          {% if messages %}
+          <div class="login-messages" role="alert">
+            {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+          </div>
+          {% endif %}
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input
@@ -26,6 +32,8 @@
               class="form-control"
               id="username"
               name="username"
+              autocomplete="username"
+              required
               placeholder="Sarah"
             />
           </div>
@@ -36,11 +44,13 @@
               class="form-control"
               id="password"
               name="password"
+              autocomplete="current-password"
+              required
               placeholder="........"
             />
           </div>
           <div class="check">
-            <input type="checkbox" name="checkBox" />
+            <input type="checkbox" name="checkBox" id="checkBox" />
             <label for="checkBox">Remember me</label>
           </div>
           <div class="d-grid gap-2">
@@ -48,7 +58,32 @@
               Login
             </button>
           </div>
-          <p style="color: #555; text-align: center">
+          <section class="demo-access" aria-labelledby="demo-heading">
+            <h3 id="demo-heading">Try the demo</h3>
+            <div class="demo-buttons">
+              {% for account in demo_accounts %}
+              <button type="button" class="demo-button" data-demo-index="{{ forloop.counter0 }}">
+                Use {{ account.label }} Demo
+              </button>
+              {% endfor %}
+            </div>
+            <p id="demo-status" class="demo-status" role="status" aria-live="polite"></p>
+            <details class="demo-credentials">
+              <summary>View demo credentials</summary>
+              <dl>
+                {% for account in demo_accounts %}
+                <div class="demo-credential">
+                  <dt>{{ account.label }}</dt>
+                  <dd>Username <code>{{ account.username }}</code></dd>
+                  <dd>Password <code>{{ account.password }}</code></dd>
+                </div>
+                {% endfor %}
+              </dl>
+            </details>
+            <p class="demo-note">These accounts are for portfolio demonstration purposes.</p>
+          </section>
+          {{ demo_accounts|json_script:"demo-accounts" }}
+          <p class="login-footer" style="color: #555; text-align: center">
             &#169;2026 Nyondo General Hardware | All rights reserved.
           </p>
         </form>

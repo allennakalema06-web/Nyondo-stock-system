@@ -82,3 +82,52 @@ account and category and removes its test records in a finally block.
 The initial 44 Django migrations were applied successfully to the empty Neon
 production database using the direct connection. Existing local/Render inventory
 and user records were not transferred.
+
+
+## Public portfolio demo accounts
+
+The login page offers application-role demos for `demo_admin` (ADMIN),
+`demo_manager` (MANAGER), and `demo_attendant` (ATTENDANT). Their intentionally
+public, randomly generated demo-only passwords live in
+`nyondo_stock/accounts_app/demo_accounts.py`. That explicit allowlist is shared
+by the page and the seeder; no environment secrets are rendered. Database
+passwords remain Django password hashes.
+
+After installing requirements and configuring the intended DATABASE_URL, run
+from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe nyondo_stock\manage.py seed_demo_accounts
+```
+
+The command is transactional and repeatable. It requires the three configured
+role groups, preserves their permissions, refuses to overwrite an unrelated or
+superuser account, and touches only the three reserved demo usernames. Existing
+personal accounts, including `allen`, are not changed. To rotate public demo
+passwords, replace only these public values and rerun the command, then deploy
+the matching page. Do not assign these passwords to any private account.
+
+Demo users are active but never staff/superusers. They receive exactly one
+application role group and no direct user permissions. Middleware blocks Django
+administration and Django password-changing/reset-confirmation views for these
+reserved usernames. The existing role decorators remain the application access
+boundary; group permission definitions are unchanged.
+
+The three demo buttons fill the normal form without submitting it. Native
+`details` markup provides copyable credentials without JavaScript. The original
+card and gradient are retained with flowing height for mobile layouts.
+
+Validation commands (isolated tests use an in-memory SQLite database, never Neon):
+
+```powershell
+.\.venv\Scripts\python.exe nyondo_stock\manage.py check
+.\.venv\Scripts\python.exe nyondo_stock\manage.py test accounts_app --settings=nyondo_stock.test_settings --noinput
+npm run build
+```
+
+These are intentionally shared public accounts. Visitors can read and make
+changes allowed by their role in the same Neon dataset. This change adds neither
+per-visitor data isolation, scheduled data resets nor login rate limiting. Keep
+this deployment's records suitable for public demonstration; do not place real
+private customer records into a public demo. Public demo ADMIN access is the
+application dashboard, not Django's user/password administration.
